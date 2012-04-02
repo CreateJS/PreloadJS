@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>PreloadJS: Queue Example</title>
+
+	<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript">
+
+		function init() {
+			if (window.top == window) { start(); }
+		}
+
+		var map;
+		var preload;
+		var manifest;
+		var w = 150; // Item width
+		var h = 100; // Item height
+
+		function start() {
+			map = {};
+
+			// Populate a manifest with string-based items for preloading.
+			manifest = [];
+			var template = "http://thechive.files.wordpress.com/2012/03/eyegasms-%ID%.jpg"; // Some nice hi-res images
+			for (var i=1, l=18; i<=l; i++) {
+				manifest.push(template.replace("%ID%", i));
+			}
+
+			// Create a preloader. There is no manfest added to it up-front, we will add items on-demand.
+			preload = new PreloadJS();
+			preload.onFileLoad = handleFileLoad;
+			preload.onProgress = handleOverallProgress;
+			preload.onFileProgress = handleFileProgress;
+			preload.onError = handleFileError;
+			preload.setMaxLoads(5);
+
+			// Clicking the "Load Another" button will create a new instance
+			$("#loadAnotherBtn").click(loadAnother);
+			$("#loadAllBtn").click(loadAll);
+		}
+
+		function stop() {
+			if (preload != null) { preload.close(); }
+		}
+
+		function loadAll() {
+			while (manifest.length > 0) {
+				loadAnother();
+			}
+		}
+
+		function loadAnother() {
+			// Get the next manifest item.
+			var item = manifest.shift();
+			preload.loadFile(item);
+
+			// If we have no more items, disable the button.
+			if (manifest.length == 0) {
+				$("#loadAnotherBtn").attr("disabled", "disabled");
+				$("#loadAllBtn").attr("disabled", "disabled");
+			}
+
+			// Create a new loader display item
+			var div = $("#template").clone();
+			div.attr("id", ""); // Wipe out the ID
+			$("#container").append(div);
+			map[item] = div; // Store a reference to each item by its src
+		}
+
+		// File complete handler
+		function handleFileLoad(event) {
+			var div = map[event.src];
+			div.addClass("complete");
+
+			// Get a reference to the loaded image
+			var img = event.result;
+
+			// Resize it to fit inside the item
+
+			var r = img.width/img.height;
+			var ir = w/h
+			if (r > ir) {
+				img.width = w;
+				img.height = w/r;
+			} else {
+				img.height = h;
+				img.width = h;
+			}
+			div.append(img); // Add it to the DOM
+		}
+
+		// File progress handler
+		function handleFileProgress(event) {
+			var div = map[event.src]; // Lookup the related item
+			div.children("DIV").width(event.progress*div.width()); // Set the width the progress.
+		}
+
+		// Overall progress handler
+		function handleOverallProgress(event) {
+			$("#mainProgress > .progress").width(preload.progress * $("#mainProgress").width());
+		}
+
+		// An error happened on a file
+		function handleFileError(event) {
+			var div = map[event.src];
+			div.addClass("error");
+		}
+
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="./assets/demoStyles.css" />
+	<style type="text/css">
+		#template {
+			display:none;
+		}
+
+		#mainProgress {
+			width: auto;
+			height: 20px;
+			float: none;
+			position: relative;
+		}
+		#mainProgress LABEL { position: absolute; }
+
+		.item {
+			height: 100px;
+			width: 150px;
+			border: 1px solid #eee;
+			background-color: #ddd;
+			padding: 2px;
+			float:left;
+			position: relative;
+			text-align: center;
+		}
+		.item .progress {
+			width: 0;
+			height: 20px;
+			background-color: #9c9;
+			bottom: 0;
+		}
+		.complete {}
+		.error {
+			background-color: #FAA;
+		}
+		.complete DIV, .error DIV { display: none; }
+	</style>
+</head>
+<body onload="init()">
+
+	<div id="container" class="content">
+		<input type="button" id="loadAnotherBtn" value="Load Another" />
+		<input type="button" id="loadAllBtn" value="Load All" />
+		<div id="mainProgress" class="item">
+			<label>Overall Progress</label><div class="progress"></div>
+		</div>
+		<hr />
+		<!-- New items will get placed here -->
+	</div>
+
+	<!-- Item Template. This is cloned whenever we want a new one. -->
+	<div id="template" class="item">
+		<div class="progress"></div>
+	</div>
+
+</body>
+</html>

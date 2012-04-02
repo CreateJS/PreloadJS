@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Preload Images example</title>
+    <script src="http://createjs.com/demos/sharedAssets/libs/easel.js"></script>
+    <script src="http://createjs.com/demos/sharedAssets/libs/tween.js"></script>
+    <script src="http://createjs.com/demos/sharedAssets/libs/preload.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        var loaderBar;
+        var stage;
+        var loaderStage;
+        var bar;
+        var lc;
+        var offset;
+        var imageContainer;
+        var currentImage;
+        var update;
+        var borderPadding;
+        var loaderWidth;
+        var loaderColor;
+        var totalLoaded;
+        var preload;
+
+        function init() {
+	        if (window.top == window) { start(); }
+        }
+
+        function start() {
+			manifest = [
+				{src:"./assets/image0.jpg", id:"image0"},
+				{src:"./assets/image1.jpg", id:"image1"},
+				{src:"./assets/image2.jpg", id:"image2"},
+				{src:"./assets/image3.jpg", id:"image3"}
+			];
+
+            canvas = document.getElementById('myCanvas');
+            lc = document.getElementById('loaderCanvas');
+            update = false;
+            stage = new Stage(canvas);
+            loaderStage = new Stage(lc);
+            totalLoaded = 0;
+            borderPadding = 10;
+
+            var barHeight = 20;
+            loaderColor = Graphics.getRGB(0,0,0)
+            loaderBar = new Container();
+
+            bar = new Shape();
+            bar.graphics.beginFill(loaderColor);
+            bar.graphics.drawRect(0, 0, 1, barHeight);
+            bar.graphics.endFill();
+
+            imageContainer = new Container();
+            imageContainer.x = 430;
+            imageContainer.y = 200;
+            loaderWidth = 800;
+            stage.addChild(imageContainer);
+
+            var bgBar = new Shape();
+            var padding = 3
+            bgBar.graphics.setStrokeStyle(1);
+            bgBar.graphics.beginStroke(loaderColor);
+            bgBar.graphics.drawRect(-padding/2, -padding/2, loaderWidth, barHeight+padding);
+
+            loaderBar.addChild(bgBar);
+            loaderBar.addChild(bar);
+            loaderBar.x = loaderBar.y = 10;
+
+            loaderStage.addChild(loaderBar);
+
+            preload = new PreloadJS();
+            preload.onProgress = handleProgress;
+            preload.onComplete = handleComplete;
+            preload.onFileLoad = handleFileLoad;
+            preload.loadManifest(manifest);
+
+            loaderStage.update();
+            stage.update();
+            Ticker.setFPS(30);
+            Ticker.addListener(window);
+        }
+
+        function stop() {
+	        Ticker.removeListener(window);
+	        if (preload != null) { preload.close(); }
+        }
+
+        function handleProgress(event) {
+            bar.scaleX = (event*100)*(loaderWidth/100);
+            loaderStage.update();
+            if (bar.scaleX >= (100*(loaderWidth/100))) {
+                loaderBar.visible = false;
+                loaderStage.update();
+            }
+        }
+
+        function handleFileLoad(event) {
+            var img = new Image();
+            img.src = event.src;
+            img.onload = handleLoadComplete;
+        }
+
+        function handleLoadComplete(event) {
+
+            var movieClip = new Container();
+            var bmp = new Bitmap(this);
+            var _w = this.width;
+            var _h = this.height;
+
+            bmp.scaleX = bmp.scaleY = .75;
+            bmp.regX = _w/2;
+            bmp.regY = _h/2;
+            bmp.onPress = handlePress;
+            bmp.rotation = Math.random() * 16 - 8;
+
+            var border = new Shape();
+            border.graphics.beginFill(Graphics.getRGB(255,255,255));
+            border.graphics.drawRect(0, 0, _w+borderPadding, _h+borderPadding);
+            border.graphics.endFill();
+            border.rotation = bmp.rotation;
+            border.regX = _w/2;
+            border.regY = _h/2;
+            bmp.x = bmp.y = (borderPadding/2) * bmp.scaleX;
+
+            border.scaleX = border.scaleY =  bmp.scaleX;
+
+            border.shadow = new Shadow('#000000', 0, 0, 2.5);
+
+            movieClip.addChild(border);
+            movieClip.addChild(bmp);
+
+            imageContainer.addChild(movieClip);
+            update = true;
+            totalLoaded += 1;
+
+            if (totalLoaded == manifest.length) {
+                update = false;
+                stage.update();
+            }
+        }
+
+        function tweenComplete1() {
+
+        }
+
+        function handlePress(event) {
+            currentItem = event.target.parent;
+            update = true;
+            var tween = Tween.get(currentItem).to({y:-350}, 200).call(tweenComplete);
+        }
+
+        function tweenComplete() {
+            imageContainer.addChildAt(currentItem, 0);
+            var tween = Tween.get(currentItem).to({y:0}, 500).call(tweenComplete2);
+
+        }
+
+        function tweenComplete2() {
+
+            stage.update();
+            update = false;
+        }
+
+        function handleMove(event) {
+            currentItem.x = event.stageX+offset.x;
+            currentItem.y = event.stageY+offset.y;
+            stage.update();
+        }
+
+        function handleComplete(event) {
+            //console.log('handleComplete', event, totalLoaded);
+
+
+        }
+
+        function tick() {
+            if (update) {
+                stage.update();
+            }
+        }
+
+    </script>
+	<link rel="stylesheet" href="./assets/demoStyles.css" />
+</head>
+<body onload="init()">
+    <canvas id="myCanvas" width="960" height="400"></canvas><br/>
+    <canvas id="loaderCanvas" width="960" height="5"></canvas>
+</body>
+</html>
