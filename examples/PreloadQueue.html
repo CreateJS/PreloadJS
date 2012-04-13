@@ -5,22 +5,22 @@
 	<title>PreloadJS: Queue Example</title>
 
 	<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
+	<script src="../src/preloadjs/PreloadJS.js"></script>
+	<script src="../src/preloadjs/XHRLoader.js"></script>
+	<script src="../src/preloadjs/TagLoader.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript">
 
-		function init() {
-			if (window.top == window) { start(); }
-		}
-
-		var map;
+		var map = {};
 		var preload;
 		var manifest;
 		var w = 150; // Item width
 		var h = 100; // Item height
 
-		function start() {
-			map = {};
-
+		function init() {
+			if (window.top != window) {
+				document.getElementById("header").style.display = "none";
+			}
 			// Populate a manifest with string-based items for preloading.
 			manifest = [];
 			var template = "http://thechive.files.wordpress.com/2012/03/eyegasms-%ID%.jpg"; // Some nice hi-res images
@@ -34,7 +34,7 @@
 			preload.onProgress = handleOverallProgress;
 			preload.onFileProgress = handleFileProgress;
 			preload.onError = handleFileError;
-			preload.setMaxLoads(5);
+			preload.setMaxConnections(5);
 
 			// Clicking the "Load Another" button will create a new instance
 			$("#loadAnotherBtn").click(loadAnother);
@@ -148,6 +148,11 @@
 	</style>
 </head>
 <body onload="init()">
+
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Preload Queue</h1>
+	    <p>Click "load another" to add another image the the overall queue. As images are added, the preload progress reflects the overall loaded progress. Click "load all" to queue everything at once.</p>
+	</header>
 
 	<div id="container" class="content">
 		<input type="button" id="loadAnotherBtn" value="Load Another" />

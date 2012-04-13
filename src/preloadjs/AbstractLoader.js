@@ -1,4 +1,32 @@
-/* Copyright */
+/*
+* AbstractLoader for PreloadJS
+* Visit http://createjs.com/ for documentation, updates and examples.
+*
+*
+* Copyright (c) 2012 gskinner.com, inc.
+*
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 /**
  * @module PreloadJS
  */
@@ -38,51 +66,40 @@
 //Callbacks
 	/**
 	 * The callback to fire when progress changes.
-	 * @property onProgress
-	 * @type Function
-	 * @default null
+	 * @event onProgress
 	 */
 	p.onProgress = null;
 
 	/**
 	 * The callback to fire when a load starts.
-	 * @property onLoadStart
-	 * @type Function
-	 * @default null
+	 * @event onLoadStart
 	 */
 	p.onLoadStart = null;
 
 	/**
 	 * The callback to fire when a file completes.
-	 * @property onFileLoad
-	 * @type Function
-	 * @default null
+	 * @event onFileLoad
 	 */
 	p.onFileLoad = null;
 
 	/**
 	 * The callback to fire when a file progress changes.
-	 * @property onFileProgress
-	 * @type Function
-	 * @default null
+	 * @event onFileProgress
 	 */
-	p.onFileLoad = null;
+	p.onFileProgress = null;
 
 	/**
 	 * The callback to fire when all loading is complete.
-	 * @property onComplete
-	 * @type Function
-	 * @default null
+	 * @event onComplete
 	 */
 	p.onComplete = null;
 
 	/**
-	 * The callback to fire when a file encounters an error.
-	 * @property onFileError
-	 * @type Function
-	 * @default null
+	 * The callback to fire when the loader encounters an error. If the error was encountered
+	 * by a file, the event will contain the required file data, but the target will be the loader.
+	 * @event onFileError
 	 */
-	p.onFileError = null;
+	p.onError = null;
 
 
 	/**
@@ -157,7 +174,7 @@
 		if (this.onError) {
 			if (event == null) { event = {}; }
 			event.target = this;
-			this.onError(event); //!(data instanceof Event) || this); //LM: Almost always returns "true"
+			this.onError(event);
 		}
 	};
 

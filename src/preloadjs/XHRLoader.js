@@ -1,4 +1,32 @@
-/* Copyright */
+/*
+* XHRLoader for PreloadJS
+* Visit http://createjs.com/ for documentation, updates and examples.
+*
+*
+* Copyright (c) 2012 gskinner.com, inc.
+*
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 /**
  * @module PreloadJS
  */
@@ -40,9 +68,7 @@
 	p.getResult = function() {
 		//[SB] When loading XML IE9 does not return .response, instead it returns responseXML.xml
 	    try {
-		    if (this._request.responseXML) {
-		        return this._request.responseXML.xml;
-		    }
+			return this._request.responseText;
 	    } catch (error) {}
 		return this._request.response;
 	}
@@ -75,7 +101,9 @@
 		this._request.onload = PreloadJS.proxy(this.handleLoad, this);
 		this._request.onreadystatechange = PreloadJS.proxy(this.handleReadyStateChange, this);
 
-		this._request.send();
+		try { // Sometimes we get back 404s immediately, particularly when there is a cross origin request.
+			this._request.send();
+		} catch (error) {}
 	};
 
 	p.handleProgress = function(event) {
@@ -107,7 +135,25 @@
 		}
 	}
 
-	p.handleLoad = function(event) {
+    p._checkError = function() {
+        //LM: Probably need additional handlers here.
+        var status = parseInt(this._request.status);
+        switch (status) {
+            case 404:   // Not Found
+            case 0:     // Not Loaded
+                return false;
+        }
+
+        if (this._request.response == null) {
+		    try {
+		        // We have to check this for IE, and other browsers will throw errors, so we have to try/catch it.
+		        if (this._request.responseXML != null) { return true; }
+		    } catch (error) {}
+	        return false; }
+        return true;
+    };
+
+    p.handleLoad = function(event) {
 		if (this.loaded) { return; }
 		this.loaded = true;
 
@@ -120,17 +166,7 @@
 		this._sendComplete();
 	};
 
-	p._checkError = function() {
-		//LM: Probably need additional handlers here.
-		switch (this._request.status) {
-			case "404":
-				return false;
-		}
-		if (this._request.response == null) { //LM: Might need to check the MS equivalent
-			return false;
-		}
-		return true;
-	};
+
 
 	p.handleTimeout = function() {
 		this._clean();

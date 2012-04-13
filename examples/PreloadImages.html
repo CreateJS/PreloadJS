@@ -3,9 +3,9 @@
 <html>
 <head>
     <title>Preload Images example</title>
-    <script src="http://createjs.com/demos/sharedAssets/libs/easel.js"></script>
-    <script src="http://createjs.com/demos/sharedAssets/libs/tween.js"></script>
-    <script src="http://createjs.com/demos/sharedAssets/libs/preload.js"></script>
+    <script src="http://code.createjs.com/easeljs-0.4.1.min.js"></script>
+    <script src="http://code.createjs.com/tweenjs-0.2.0.min.js"></script>
+    <script src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
     <script type="text/javascript">
@@ -26,10 +26,10 @@
         var preload;
 
         function init() {
-	        if (window.top == window) { start(); }
-        }
+        	if (window.top != window) {
+        		document.getElementById("header").style.display = "none";
+        	}
 
-        function start() {
 			manifest = [
 				{src:"./assets/image0.jpg", id:"image0"},
 				{src:"./assets/image1.jpg", id:"image1"},
@@ -187,7 +187,12 @@
 	<link rel="stylesheet" href="./assets/demoStyles.css" />
 </head>
 <body onload="init()">
+
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Image Gallery</h1>
+	    <p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click the image to view the next one.</p>
+	</header>
+
     <canvas id="myCanvas" width="960" height="400"></canvas><br/>
-    <canvas id="loaderCanvas" width="960" height="5"></canvas>
 </body>
 </html>

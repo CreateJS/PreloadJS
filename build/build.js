@@ -5,7 +5,6 @@ CONFIGURATION
 */
 // listing of all source files, with dependencies listed in order:
 var SOURCE_FILES = [
-	"../src/BrowserDetect.js",
 	"../src/preloadjs/AbstractLoader.js",
 	"../src/preloadjs/PreloadJS.js",
 	"../src/preloadjs/TagLoader.js",
