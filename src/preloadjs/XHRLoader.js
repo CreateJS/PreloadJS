@@ -61,7 +61,6 @@
 		this._item = item;
 		if (!this._createXHR(item)) {
 			//TODO: Throw error?
-			PreloadJS.log("Unable to create XHR instance")
 		}
 	};
 
@@ -108,8 +107,7 @@
 
 	p.handleProgress = function(event) {
 		if (event.loaded > 0 && event.total == 0) {
-			this.handleError();
-			return;
+			return; // Sometimes we get no "total", so just ignore the progress event.
 		}
 		this._sendProgress({loaded:event.loaded, total:event.total});
 	};
