@@ -1,8 +1,8 @@
 PRELOADJS LIBRARY:
 
-PreloadJS is a library to make working with the asset preloading easier. It provides a consistent API for loading different file types, composite progress events, and a plugin model to assist with preloading in other libraries, such as SoundJS
+PreloadJS is a library to make working with asset preloading easier. It provides a consistent API for loading different file types, automatic detection of XHR (XMLHttpRequest) availability with a fallback to tag-base loading, composite progress events, and a plugin model to assist with preloading in other libraries such as SoundJS.
 
-The home page for EaselJS can be found at http://preloadjs.com/
+The home page for PreloadJS can be found at http://preloadjs.com/
 
 There is a GitHub repository, which includes downloads, issue tracking, & a wiki at https://github.com/CreateJS/PreloadJS/
 

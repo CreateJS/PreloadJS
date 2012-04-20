@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Multimedia Preload Example</title>
-
-	<script src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
+	<title>PreloadJS: Multimedia Preload Example</title>
+    <script src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
 	<script src="http://code.createjs.com/soundjs-0.2.0.min.js"></script>
 
 	<script>
@@ -12,10 +11,10 @@
 		var preload;
 
 		function init() {
-			if (window.top == window) { start(); }
-		}
+			if (window.top != window) {
+				document.getElementById("header").style.display = "none";
+			}
 
-		function start() {
 			// Create a new queue.
 			preload = new PreloadJS();
 			preload.installPlugin(SoundJS);
@@ -27,14 +26,16 @@
 			if (preload != null) { preload.close(); }
 		}
 
+		// Load a single asset.
 		function loadAsset(target) {
-			var div = window.document.getElementById(target.id);
+			var div = document.getElementById(target.id);
 			div.innerHTML = "<label>Loading...</label>";
 			preload.loadFile(target.id);
 		}
 
+		// Once each file is loaded, show it. Each ID corresponds to the related DIV.
 		function handleFileLoaded(result) {
-			var div = window.document.getElementById(result.id);
+			var div = document.getElementById(result.id);
 			switch (result.type){
 				case PreloadJS.CSS:
 					var head = document.getElementsByTagName('head')[0];
@@ -51,6 +52,11 @@
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
+                case PreloadJS.JSON:
+                    alert(result.result);
+                    div.innerHTML = "<label>Complete :)</label>";
+                    break;
+
 				case PreloadJS.SOUND:
 					document.body.appendChild(result.result);
 					result.result.play();
@@ -60,8 +66,9 @@
 			div.style.backgroundColor = "#222222";
 		}
 
+		// A file failed to load.
 		function handleFileError(result) {
-			var div = window.document.getElementById(result.id);
+			var div = document.getElementById(result.id);
 			div.innerHTML = "<label>Error :(</label>";
 			div.style.backgroundColor = "#992222";
 		}
@@ -94,48 +101,53 @@
 
 <body onload="init()">
 
-<div id="imageGrid">
-	<div id="assets/BlueBird.png" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
-		<label>Image</label>
-	</div>
+	<header id="header" class="PreloadJS">
+		<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Media Grid</h1>
+		<p>PreloadJS can load a variety of media. In this example, click each example to load its related item. Once the item is loaded, it will display (image), play (sound), apply to the document (css), or display an alert (script).</p>
+	</header>
 
-	<div id="assets/bg.css" onclick="loadAsset(this)" class="gridBox">
-		<label>CSS - Color</label>
-	</div>
+	<div id="imageGrid">
+		<div id="assets/BlueBird.png" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
+			<label>Image</label>
+		</div>
 
-   <div id="assets/alert1.js" onclick="loadAsset(this)" class="gridBox">
-		<label>JavaScript 1</label>
-	</div>
+		<div id="assets/bg.css" onclick="loadAsset(this)" class="gridBox">
+			<label>CSS - Background</label>
+		</div>
 
-	<div id="assets/CabinBoy.mp3|assets/CabinBoy.ogg" onclick="loadAsset(this)" class="gridBox">
-		<label>Sound 2</label>
-	</div>
+	   <div id="assets/alert1.js" onclick="loadAsset(this)" class="gridBox">
+			<label>JavaScript</label>
+		</div>
 
-	<div id="assets/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 200px; height: 248px; float: right;">
-		<label>Image</label>
-	</div>
+		<div id="assets/CabinBoy.mp3|assets/CabinBoy.ogg" onclick="loadAsset(this)" class="gridBox">
+			<label>Sound 2</label>
+		</div>
 
-	<div id="assets/alert2.js" onclick="loadAsset(this)" class="gridBox">
-		<label>JavaScript 2</label>
-	</div>
+		<div id="assets/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:248px; float: right;">
+			<label>Image</label>
+		</div>
 
-	<div id="assets/font.css" onclick="loadAsset(this)" class="gridBox">
-		<label>CSS - Font</label>
-	</div>
+		<div id="assets/grant.json" onclick="loadAsset(this)" class="gridBox">
+			<label>JSON</label>
+		</div>
 
-	<div id="assets/Thunder.mp3|assets/Thunder.ogg" onclick="loadAsset(this)" class="gridBox">
-		<label>Sound 1</label>
-	</div>
+		<div id="assets/font.css" onclick="loadAsset(this)" class="gridBox">
+			<label>CSS - Font Color</label>
+		</div>
 
-	<div id="assets/Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width: 454px; height: 150px">
-		<label>Image</label>
-	</div>
+		<div id="assets/Thunder.mp3|assets/Thunder.ogg" onclick="loadAsset(this)" class="gridBox">
+			<label>Sound 1</label>
+		</div>
 
-	<div id="assets/NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height: 150px;">
-		<label>No File Here</label>
-	</div>
+		<div id="assets/Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:150px">
+			<label>Image</label>
+		</div>
 
-</div>
+		<div id="assets/NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:150px;">
+			<label>Intentionally missing file<br/>to generate error.</label>
+		</div>
+
+	</div>
 
 </body>
 </html>

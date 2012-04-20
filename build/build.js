@@ -5,7 +5,6 @@ CONFIGURATION
 */
 // listing of all source files, with dependencies listed in order:
 var SOURCE_FILES = [
-	"../src/BrowserDetect.js",
 	"../src/preloadjs/AbstractLoader.js",
 	"../src/preloadjs/PreloadJS.js",
 	"../src/preloadjs/TagLoader.js",
@@ -38,8 +37,8 @@ var TEMPLATE_DIR_PATH = "template";
 var TMP_DIR_NAME = "tmp";
 
 // paths to tools:
-var GOOGLE_CLOSURE_PATH = "tools/google-closure/compiler.jar";
-var YUI_DOC_PATH = "tools/yuidoc/bin/yuidoc.py";
+var GOOGLE_CLOSURE_PATH = "../tools/google-closure/compiler.jar";
+var YUI_DOC_PATH = "../tools/yuidoc/bin/yuidoc.py";
 
 // yui version being used
 var YUI_VERSION = 2;

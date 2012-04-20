@@ -8,25 +8,49 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript">
 
+		var map = {};
+		var preload;
+		var loader;
+		var manifest;
+		var w = 238; // Item width
+		var h = 170; // Item height
+
 		function init() {
-			if (window.top == window) { start(); }
+			if (window.top != window) {
+				document.getElementById("header").style.display = "none";
+			}
+
+			$("#loadAnotherBtn").click(loadAnother);
+			$("#loadAllBtn").click(loadAll);
+			$("#reloadBtn").click(reload);
+
+			reload();
 		}
 
-		var map;
-		var preload;
-		var manifest;
-		var w = 150; // Item width
-		var h = 100; // Item height
+		// Reset everything
+		function reload() {
+			// If there is an open preload queue, close it.
+			if (preload != null) { preload.close(); }
 
-		function start() {
-			map = {};
+			// Reset the UI
+			$("#reloadBtn").css("display", "none");
+			$(".box").remove();
+			$("#mainProgress .progress").width(0);
 
-			// Populate a manifest with string-based items for preloading.
-			manifest = [];
-			var template = "http://thechive.files.wordpress.com/2012/03/eyegasms-%ID%.jpg"; // Some nice hi-res images
-			for (var i=1, l=18; i<=l; i++) {
-				manifest.push(template.replace("%ID%", i));
-			}
+			$("#loadAnotherBtn").attr("disabled", null);
+			$("#loadAllBtn").attr("disabled", null);
+
+			// Push each item into our manifest
+			manifest = [
+				"assets/image0.jpg",
+				"assets/image1.jpg",
+				"assets/image2.jpg",
+				"assets/image3.jpg",
+				"assets/Autumn.png",
+				"assets/BlueBird.png",
+				"assets/Nepal.jpg",
+				"assets/Texas.jpg"
+			];
 
 			// Create a preloader. There is no manfest added to it up-front, we will add items on-demand.
 			preload = new PreloadJS();
@@ -34,11 +58,7 @@
 			preload.onProgress = handleOverallProgress;
 			preload.onFileProgress = handleFileProgress;
 			preload.onError = handleFileError;
-			preload.setMaxLoads(5);
-
-			// Clicking the "Load Another" button will create a new instance
-			$("#loadAnotherBtn").click(loadAnother);
-			$("#loadAllBtn").click(loadAll);
+			preload.setMaxConnections(5);
 		}
 
 		function stop() {
@@ -52,19 +72,21 @@
 		}
 
 		function loadAnother() {
-			// Get the next manifest item.
+			// Get the next manifest item, and load it
 			var item = manifest.shift();
 			preload.loadFile(item);
 
-			// If we have no more items, disable the button.
+			// If we have no more items, disable the UI.
 			if (manifest.length == 0) {
 				$("#loadAnotherBtn").attr("disabled", "disabled");
 				$("#loadAllBtn").attr("disabled", "disabled");
+				$("#reloadBtn").css("display","inline");
 			}
 
 			// Create a new loader display item
 			var div = $("#template").clone();
 			div.attr("id", ""); // Wipe out the ID
+			div.addClass("box")
 			$("#container").append(div);
 			map[item] = div; // Store a reference to each item by its src
 		}
@@ -74,11 +96,10 @@
 			var div = map[event.src];
 			div.addClass("complete");
 
-			// Get a reference to the loaded image
+			// Get a reference to the loaded image (<img/>)
 			var img = event.result;
 
 			// Resize it to fit inside the item
-
 			var r = img.width/img.height;
 			var ir = w/h
 			if (r > ir) {
@@ -125,8 +146,8 @@
 		#mainProgress LABEL { position: absolute; }
 
 		.item {
-			height: 100px;
-			width: 150px;
+			height: 170px;
+			width: 238px;
 			border: 1px solid #eee;
 			background-color: #ddd;
 			padding: 2px;
@@ -149,9 +170,15 @@
 </head>
 <body onload="init()">
 
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Preload Queue</h1>
+	    <p>Click "load another" to add another image the the overall queue. As images are added, the preload progress reflects the overall loaded progress. Click "load all" to queue everything at once.</p>
+	</header>
+
 	<div id="container" class="content">
-		<input type="button" id="loadAnotherBtn" value="Load Another" />
-		<input type="button" id="loadAllBtn" value="Load All" />
+		<input type="button" id="loadAnotherBtn" value="Load Another" disabled="disabled" />
+		<input type="button" id="loadAllBtn" value="Load All" disabled="disabled" />
+		<input type="button" id="reloadBtn" value="Reset" />
 		<div id="mainProgress" class="item">
 			<label>Overall Progress</label><div class="progress"></div>
 		</div>

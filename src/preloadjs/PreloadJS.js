@@ -1,4 +1,31 @@
-/* Copyright */
+/*
+* PreloadJS
+* Visit http://createjs.com/ for documentation, updates and examples.
+*
+*
+* Copyright (c) 2012 gskinner.com, inc.
+*
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*/
 /**
  * PreloadJS provides a consistent API for preloading content in HTML5.
  * @module PreloadJS
@@ -103,13 +130,13 @@
 	 */
 	p.useXHR = true;
 
-	/**
+	/* //TODO: Implement syncronous behaviour
 	 * Use asynchronous XMLHttpRequests.
 	 * @property async
 	 * @type Boolean
 	 * @default false
-	 */
-	p.async = false;
+	 *
+	p.useAsync = false;*/
 
 	/**
 	 * Stop processing the current queue when an error is encountered.
@@ -135,24 +162,17 @@
 	 */
 	p.next = null;
 
-	/**
-	 * The callback to fire when item progress changes.
-	 * @property onItemProgress
-	 * @type Function
-	 * @default null
-	 */
-	p.onItemProgress = null;
-
 	//Protected properties
 	p.typeHandlers = null;
 	p.extensionHandlers = null;
 
-	p._maxLoads = 1;
+	p._maxConnections = 1;
 	p._currentLoads = null;
 	p._loadQueue = null;
 	p._loadedItemsById = null;
 	p._loadedItemsBySrc = null;
 	p._targetProgress = 0; // Actual Progress
+	//TODO: Progress tweening
 	//p._currentProgress = 0; // Progress to Display when tweening
 	//p._progressInterval = null;
 	p._numItems = 0;
@@ -192,8 +212,8 @@
 	 * @private
 	 */
 	p.determineCapabilities = function() {
-		var BD = BrowserDetect;
-		if (BD == null) { return; }// Throw Error?
+		var BD = PreloadJS.lib.BrowserDetect;
+		if (BD == null) { return; }
 		PreloadJS.TAG_LOAD_OGGS = BD.isFirefox || BD.isOpera;
 			// && (otherCondictions)
 	}
@@ -240,36 +260,67 @@
 	};
 
 	/**
-	 * Set the maximum number of concurrent loads.
-	 * @method setMaxLoads
-	 * @param {Number} value The number of concurrent loads to allow.
+	 * Set the maximum number of concurrent connections.
+	 * @method setMaxConnections
+	 * @param {Number} value The number of concurrent loads to allow. By default, only a single connection is open at any time.
+	 * Note that browsers and servers may have a built-in maximum number of open connections
 	 */
-	p.setMaxLoads = function (value) {
-		this._maxLoads = value;
+	p.setMaxConnections = function (value) {
+		this._maxConnections = value;
 		if (!this._paused) {
 			this._loadNext();
 		}
 	}
 
 	/**
-	 * Load a single file
+	 * Load a single file. Note that calling loadFile appends to the current queue, so it can be used multiple times to
+	 * add files. Use <b>loadManifest()</b> to add multiple files at onces. To clear the queue first use the <b>close()</b> method.
 	 * @method loadFile
-	 * @param {Object | String} file The file object or path to load
-	 * @param {Boolean} loadNow Kick off an immediate load (true) or wait for a load call (false)
+	 * @param {Object | String} file The file object or path to load. A file can be either
+     * <ol>
+     *     <li>a path to a resource (string). Note that this kind of load item will be
+     *     converted to an object (next item) in the background.</li>
+     *     <li>OR an object that contains:<ul>
+     *         <li>src: The source of the file that is being loaded. This property is <b>required</b>. The source can either be a string (recommended), or an HTML tag.</li>
+     *         <li>type: The type of file that will be loaded (image, sound, json, etc).
+     *         PreloadJS does auto-detection of types using the extension. Supported types are defined on PreloadJS, such as PreloadJS.IMAGE.
+	 *         It is recommended that a type is specified when a non-standard file URI (such as a php script) us used.</li>
+     *         <li>id: A string indentifier which can be used to reference the loaded object.</li>
+     *         <li>data: An arbitrary data object, which is included with the loaded object</li>
+     *     </ul>
+     * </ol>
+	 * @param {Boolean} loadNow Kick off an immediate load (true) or wait for a load call (false). The default value is true. If the queue is paused, and this value
+	 * is true, the queue will resume.
 	 */
 	p.loadFile = function(file, loadNow) {
 		this._addItem(file);
 
-		if (loadNow === undefined || loadNow == true) {
+		if (loadNow !== false) {
 			this.setPaused(false);
 		}
 	}
 
 	/**
-	 * Load a manifest, containing a list of files
+	 * Load a manifest. This is a shortcut method to load a group of files. To load a single file, use the loadFile method.
+	 * Note that calling loadManifest appends to the current queue, so it can be used multiple times to add files. To clear
+	 * the queue first, use the <b>close()</b> method.
 	 * @method loadManifest
-	 * @param {Array} manifest The array of files to load
-	 * @param {Boolean} loadNow Kick off an immediate load (true) or wait for a load call (false)
+	 * @param {Array} manifest The list of files to load. Each file can be either
+	 * <ol>
+	 *     <li>a path to a resource (string). Note that this kind of load item will be
+	 *     converted to an object (next item) in the background.</li>
+	 *     <li>OR an object that contains:<ul>
+	 *         <li>src: The source of the file that is being loaded. This property is <b>required</b>.
+	 *         The source can either be a string (recommended), or an HTML tag. </li>
+	 *         <li>type: The type of file that will be loaded (image, sound, json, etc).
+	 *         PreloadJS does auto-detection of types using the extension. Supported types are defined on PreloadJS, such as PreloadJS.IMAGE.
+	 *         It is recommended that a type is specified when a non-standard file URI (such as a php script) us used.</li>
+	 *         <li>id: A string indentifier which can be used to reference the loaded object.</li>
+	 *         <li>data: An arbitrary data object, which is included with the loaded object</li>
+	 *     </ul>
+	 * </ol>
+	 * @param {Boolean} loadNow Kick off an immediate load (true) or wait for a load call (false). The default value is true. If the queue is paused, and this value
+	 * is true, the queue will resume.
 	 */
 	p.loadManifest = function(manifest, loadNow) {
 		var data;
@@ -280,12 +331,11 @@
 			data = [manifest];
 		}
 
-		//Parse it
 		for (var i=0, l=data.length; i<l; i++) {
-			this._addItem(data[i]);
+			this._addItem(data[i], false);
 		}
 
-		if (loadNow != false) {
+		if (loadNow !== false) {
 			this._loadNext();
 		}
 	};
@@ -299,10 +349,24 @@
 	};
 
 	/**
-	 * Get the load result of an item by ID or SRC
+	 * Lookup a loaded item using either the "id" or "src" that was specified when loading it.
 	 * @method getResult
-	 * @param {String} value The ID or SRC of the loaded item.
-	 * @return {Object} The item that was loaded.
+	 * @param {String} value The "id" or "src" of the loaded item.
+	 * @return {Object} A result object containing the contents of the object that was initially requested using loadFile or loadManifest, including:
+     * <ol>
+     *     <li>src: The source of the file that was requested.</li>
+     *     <li>type: The type of file that was loaded. If it was not specified, this is auto-detected by PreloadJS using the file extension.</li>
+     *     <li>id: The id of the loaded object. If it was not specified, the ID will be the same as the "src" property.</li>
+     *     <li>data: Any arbitrary data that was specified, otherwise it will be undefined.
+	 *     <li>result: The loaded object. PreloadJS provides usable tag elements when possible:<ul>
+	 *          <li>An HTMLImageElement tag (&lt;image /&gt;) for images</li>
+	 *          <li>An HTMLAudioElement tag (&lt;audio &gt;) for audio</li>
+	 *          <li>A script tag for JavaScript (&lt;script&gt;&lt;/script&gt;)</li>
+	 *          <li>A style tag for CSS (&lt;style&gt;&lt;/style&gt;)</li>
+	 *          <li>Raw text for JSON or any other kind of loaded item</li>
+	 *     </ul></li>
+     * </ol>
+     * This object is also returned via the "onFileLoad" callback, although a "target" will be included, which is a reference to the PreloadJS instance.
 	 */
 	p.getResult = function(value) {
 		return this._loadedItemsById[value] || this._loadedItemsBySrc[value];
@@ -322,10 +386,13 @@
 	};
 
 	/**
-	 * Close the active queue.
+	 * Close the active queue. Closing a queue completely empties the queue, and prevents any remaining items from starting to
+	 * download. Note that currently there any active loads will remain open, and events may be processed.<br/><br/>
+	 * To stop and restart a queue, use the <b>setPaused(true|false)</b> method instead.
 	 * @method close
 	 */
 	p.close = function() {
+		//TODO: Remove or prevent events fired after this.
 		while (this._currentLoads.length) {
 			this._currentLoads.pop().cancel();
 		}
@@ -363,7 +430,7 @@
 			}
 		}
 
-		while (this._loadQueue.length && this._currentLoads.length < this._maxLoads) {
+		while (this._loadQueue.length && this._currentLoads.length < this._maxConnections) {
 			var loadItem = this._loadQueue.shift();
 
 			loadItem.onProgress = PreloadJS.proxy(this._handleProgress, this);
@@ -524,10 +591,14 @@
 	};
 
 	p._updateProgress = function () {
-		var loaded = this._numItemsLoaded / this._numItems; // Fully Loaded
-		var dif = 1/this._numItems;
-		for (var i=0, l=this._currentLoads.length; i<l; i++) {
-			loaded += this._currentLoads[i].progress * dif;
+		var loaded = this._numItemsLoaded / this._numItems; // Fully Loaded Progress
+		var remaining = this._numItems-this._numItemsLoaded;
+		if (remaining > 0) {
+			var chunk = 0;
+			for (var i=0, l=this._currentLoads.length; i<l; i++) {
+				chunk += this._currentLoads[i].progress;
+			}
+			loaded += (chunk / remaining) * (remaining/this._numItems);
 		}
 		this._sendProgress({loaded:loaded, total:1});
 	}
@@ -700,11 +771,14 @@
 
 // Static methods
 	/**
-	 * Public proxy for SoundJS methods.
+	 * A function proxy for PreloadJS methods. By default, JavaScript methods do not maintain scope, so passing a
+	 * method as a callback will result in the method getting called in the scope of the caller. Using a proxy
+	 * ensures that the method gets called in the correct scope. All internal callbacks in PreloadJS use this approach.
 	 * @method proxy
-	 * @param {Function} method The method name to call
+	 * @param {Function} method The function to call
 	 * @param {Object} scope The scope to call the method name on
 	 * @static
+	 * @private
 	 */
 	s.proxy = function(method, scope) {
 		return function(event) {
@@ -712,20 +786,26 @@
 		};
 	}
 
-	/**
-	 * Debug function wraps console to prevent issues.
-	 * @method log
-	 * @static
-	 */
-	s.log = function() {
-        //var log = Function.prototype.bind.call(console.log, console);
-        //log.apply(console, arguments);
-	}
-
-
 	PreloadJS.lib = {};
 
 	window.PreloadJS = PreloadJS;
+
+
+	/**
+	 * An additional module to detemermine the current browser, version, operating system, and other environment variables.
+	 */
+	function BrowserDetect() {}
+
+	BrowserDetect.init = function() {
+		var agent = navigator.userAgent;
+		BrowserDetect.isFirefox = (agent.indexOf("Firefox")> -1);
+		BrowserDetect.isOpera = (window.opera != null);
+		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
+	}
+
+	BrowserDetect.init();
+
+	PreloadJS.lib.BrowserDetect = BrowserDetect;
 
 }(window));
 
