@@ -421,8 +421,7 @@
 	p._loadNext = function() {
 		if (this._paused) { return; }
 
-		//TODO: Test this.
-		if (this._loadQueue.length == 0) {
+		if (this._numItems == this._numItemsLoaded) {
 			this._sendComplete();
 			if (this.next && this.next.load) {
 				//LM: Do we need to apply here?
@@ -461,25 +460,20 @@
 	};
 
 	p._handleFileComplete = function(event) {
-		this._numItemsLoaded++;
+		var _this = this;
 
 		var loader = event.target;
 		var item = loader.getItem();
-		this._removeLoadItem(loader);
-
 		var resultData = this._createResultData(item);
+
+		this._removeLoadItem(loader);
 
 		//Convert to proper tag ... if we need to.
 		if (loader instanceof PreloadJS.lib.XHRLoader) {
-			resultData.result = this._createResult(item, loader.getResult());
+			resultData.result = this._createResult(item, resultData);
 		} else {
 			resultData.result = item.tag;
 		}
-
-		this._loadedItemsById[item.id] = resultData;
-		this._loadedItemsBySrc[item.src] = resultData;
-
-		var _this = this;
 
 		//TODO: Move tag creation to XHR?
 		switch (item.type) {
@@ -499,6 +493,7 @@
 				}
 				break;
 		}
+
 		this._handleFileTagComplete(item, resultData);
 	};
 
@@ -521,6 +516,13 @@
 	};
 
 	p._handleFileTagComplete = function(item, resultData) {
+		this._numItemsLoaded++;
+
+		var resultData = this._createResultData(item);
+
+		this._loadedItemsById[item.id] = resultData;
+		this._loadedItemsBySrc[item.src] = resultData;
+
 		if (item.completeHandler) {
 			item.completeHandler(resultData);
 		}
