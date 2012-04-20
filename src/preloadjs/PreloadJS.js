@@ -421,7 +421,7 @@
 	p._loadNext = function() {
 		if (this._paused) { return; }
 
-		if (this._numItems == this._numItemsLoaded) {
+		if (this._numItems === this._numItemsLoaded) {
 			this._sendComplete();
 			if (this.next && this.next.load) {
 				//LM: Do we need to apply here?
@@ -470,7 +470,7 @@
 
 		//Convert to proper tag ... if we need to.
 		if (loader instanceof PreloadJS.lib.XHRLoader) {
-			resultData.result = this._createResult(item, resultData);
+			resultData.result = this._createResult(item, loader.getResult());
 		} else {
 			resultData.result = item.tag;
 		}
@@ -518,8 +518,6 @@
 	p._handleFileTagComplete = function(item, resultData) {
 		this._numItemsLoaded++;
 
-		var resultData = this._createResultData(item);
-
 		this._loadedItemsById[item.id] = resultData;
 		this._loadedItemsBySrc[item.src] = resultData;
 
@@ -557,7 +555,7 @@
 			case PreloadJS.XML:
 				if (window.DOMParser) {
 					var parser = new DOMParser();
-					data = parser.parseFromString(data, "text/xml");
+					resultData = parser.parseFromString(data, "text/xml");
 				} else { // Internet Explorer
 					var parser = new ActiveXObject("Microsoft.XMLDOM");
 					parser.async = false;
