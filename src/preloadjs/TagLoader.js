@@ -131,7 +131,7 @@
 		if (this.isAudio) {
 			// Handlers for audio tags
 			tag.onstalled = PreloadJS.proxy(this._handleStalled, this);
-			tag.addEventListener("canplaythrough", this.tagCompleteProxy); //LM: oncanplaythrough callback does not work in Chrome.
+			tag.addEventListener("canplaythrough", this.tagCompleteProxy, true); //LM: oncanplaythrough callback does not work in Chrome.
 		} else {
 			// Handlers for non-audio tags
 			tag.onload = PreloadJS.proxy(this._handleTagLoad, this);
@@ -178,7 +178,7 @@
 		// Delete handlers.
 		var tag = this.getItem().tag;
 		tag.onload = null;
-		tag.removeEventListener("canplaythrough", this.tagCompleteProxy);
+		tag.removeEventListener("canplaythrough", this.tagCompleteProxy, true);
 		tag.onstalled = null;
 		tag.onprogress = null;
 		tag.onerror = null;
