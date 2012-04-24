@@ -166,6 +166,7 @@
 	p.typeHandlers = null;
 	p.extensionHandlers = null;
 
+	p._loadStartWasDispatched = false;
 	p._maxConnections = 1;
 	p._currentLoads = null;
 	p._loadQueue = null;
@@ -201,6 +202,7 @@
 		this._loadedItemsBySrc = {};
 		this.typeHandlers = {};
 		this.extensionHandlers = {};
+		this._loadStartWasDispatched = false;
 
 		this.useXHR = (useXHR != false && window.XMLHttpRequest != null);
 		this.determineCapabilities();
@@ -293,6 +295,10 @@
 	 * is true, the queue will resume.
 	 */
 	p.loadFile = function(file, loadNow) {
+		if (file == null) {
+			this._sendError({text: "File is null."});
+			return;
+		}
 		this._addItem(file);
 
 		if (loadNow !== false) {
@@ -326,8 +332,16 @@
 		var data;
 
 		if (manifest instanceof Array) {
+			if (manifest.length == 0) {
+				this._sendError({text: "Manifest is empty."});
+				return;
+			}
 			data = manifest;
-		} else if (manifest instanceof Object) {
+		} else {
+			if (manifest == null) {
+				this._sendError({text: "Manifest is null."});
+				return;
+			}
 			data = [manifest];
 		}
 
@@ -420,6 +434,11 @@
 
 	p._loadNext = function() {
 		if (this._paused) { return; }
+
+		if (!this._loadStartWasDispatched) {
+			this._sendLoadStart();
+			this._loadStartWasDispatched = true;
+		}
 
 		if (this._numItems == this._numItemsLoaded) {
 			this._sendComplete();
@@ -517,9 +536,6 @@
 
 	p._handleFileTagComplete = function(item, resultData) {
 		this._numItemsLoaded++;
-
-		var resultData = this._createResultData(item);
-
 		this._loadedItemsById[item.id] = resultData;
 		this._loadedItemsBySrc[item.src] = resultData;
 
