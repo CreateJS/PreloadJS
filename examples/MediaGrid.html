@@ -2,12 +2,18 @@
 <html>
 <head>
 	<title>PreloadJS: Multimedia Preload Example</title>
-    <script src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
-	<script src="http://code.createjs.com/soundjs-0.2.0.min.js"></script>
+
+	<script type="text/javascript" src="http://code.createjs.com/soundjs-0.2.0.min.js"></script>
+
+    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+	<script type="text/javascript" src="../src/preloadjs/PreloadJS.js"></script>
+	<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+	<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+
+	<!-- We also provide hosted minified versions of all CreateJS libraries.
+	    http://code.createjs.com -->
 
 	<script>
-
-		// The queue to load the file
 		var preload;
 
 		function init() {
