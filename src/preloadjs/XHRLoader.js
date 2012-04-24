@@ -193,7 +193,8 @@
 			}
 		}
 
-		if (item.type == PreloadJS.TEXT) {
+		//IE9 doesn't suport .overrideMimeType(), so we need to check for it.
+		if (item.type == PreloadJS.TEXT && this._request.overrideMimeType) {
 			this._request.overrideMimeType('text/plain; charset=x-user-defined');
 		}
 
