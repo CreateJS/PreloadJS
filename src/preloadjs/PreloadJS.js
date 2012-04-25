@@ -475,12 +475,13 @@
 	};
 
 	p._createResultData = function(item) {
-		return {id:item.id, result:null, data:item.data, type:item.type, src:item.src};
+		var resultData = {id:item.id, result:null, data:item.data, type:item.type, src:item.src};
+		this._loadedItemsById[item.id] = resultData;
+		this._loadedItemsBySrc[item.src] = resultData;
+		return resultData;
 	};
 
 	p._handleFileComplete = function(event) {
-		var _this = this;
-
 		var loader = event.target;
 		var item = loader.getItem();
 		var resultData = this._createResultData(item);
@@ -498,6 +499,7 @@
 		switch (item.type) {
 			case PreloadJS.IMAGE: //LM: Consider moving this to XHRLoader
 				if(loader instanceof PreloadJS.lib.XHRLoader) {
+					var _this = this; // Use closure workaround to maintain reference to item/result
 					resultData.result.onload = function(event) {
 						_this._handleFileTagComplete(item, resultData);
 					}
@@ -507,7 +509,7 @@
 			case PreloadJS.JAVASCRIPT:
 				if (this.maintainScriptOrder) {
 					this._loadedScripts[this._scriptOrder.indexOf(item)] = item;
-					this._checkScriptLoadOrder();
+					this._checkScriptLoadOrder(loader);
 					return;
 				}
 				break;
@@ -525,10 +527,11 @@
 			if (order === true) { continue; }
 
 			var item = this.getResult(order.src);
-            var resultData = this._createResultData(item);
+            var resultData = this.getResult(order.id);
             resultData.result = item.result;
 			this._handleFileTagComplete(item, resultData);
 			this._loadedScripts[i] = true;
+
 			i--;
 			l--;
 		}
@@ -536,8 +539,6 @@
 
 	p._handleFileTagComplete = function(item, resultData) {
 		this._numItemsLoaded++;
-		this._loadedItemsById[item.id] = resultData;
-		this._loadedItemsBySrc[item.src] = resultData;
 
 		if (item.completeHandler) {
 			item.completeHandler(resultData);
