@@ -490,7 +490,7 @@
 
 		//Convert to proper tag ... if we need to.
 		if (loader instanceof PreloadJS.lib.XHRLoader) {
-			resultData.result = this._createResult(item, resultData);
+			resultData.result = this._createResult(item, loader.getResult());
 		} else {
 			resultData.result = item.tag;
 		}
@@ -574,7 +574,7 @@
 			case PreloadJS.XML:
 				if (window.DOMParser) {
 					var parser = new DOMParser();
-					data = parser.parseFromString(data, "text/xml");
+					resultData = parser.parseFromString(data, "text/xml");
 				} else { // Internet Explorer
 					var parser = new ActiveXObject("Microsoft.XMLDOM");
 					parser.async = false;

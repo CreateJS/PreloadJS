@@ -1,0 +1,10 @@
+<xml>
+	<frames width="200" height="361" numFrames="64" regX="2" regY="2" />
+	<animations>
+		<animation name="run">0,25</animation>
+		<animation name="jump">26,63</animation>
+	</animations>
+	<images>
+		<image>src/runningGrant.png</image>
+	</images>
+</xml>

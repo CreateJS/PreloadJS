@@ -40,32 +40,33 @@
 		}
 
 		// Once each file is loaded, show it. Each ID corresponds to the related DIV.
-		function handleFileLoaded(result) {
-			var div = document.getElementById(result.id);
-			switch (result.type){
+		function handleFileLoaded(event) {
+			var div = document.getElementById(event.id);
+			switch (event.type){
 				case PreloadJS.CSS:
 					var head = document.getElementsByTagName('head')[0];
-					head.appendChild(result.result);
+					head.appendChild(event.result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
 				case PreloadJS.IMAGE:
-					div.innerHTML = "<img src='"+result.id+"' width="+div.clientWidth+" height="+div.clientHeight+"/>";
+					div.innerHTML = "<img src='"+event.id+"' width="+div.clientWidth+" height="+div.clientHeight+"/>";
 					break;
 
 				case PreloadJS.JAVASCRIPT:
-					document.body.appendChild(result.result);
+					document.body.appendChild(event.result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-                case PreloadJS.JSON:
-                    alert(result.result);
-                    div.innerHTML = "<label>Complete :)</label>";
-                    break;
+				case PreloadJS.JSON:
+				case PreloadJS.XML:
+					alert(event.result);
+					div.innerHTML = "<label>Complete :)</label>";
+					break;
 
 				case PreloadJS.SOUND:
-					document.body.appendChild(result.result);
-					result.result.play();
+					document.body.appendChild(event.result);
+					event.result.play();
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 			}
@@ -125,8 +126,8 @@
 			<label>JavaScript</label>
 		</div>
 
-		<div id="assets/CabinBoy.mp3|assets/CabinBoy.ogg" onclick="loadAsset(this)" class="gridBox">
-			<label>Sound 2</label>
+		<div id="assets/grant.xml" onclick="loadAsset(this)" class="gridBox">
+			<label>XML</label>
 		</div>
 
 		<div id="assets/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:248px; float: right;">
@@ -142,7 +143,7 @@
 		</div>
 
 		<div id="assets/Thunder.mp3|assets/Thunder.ogg" onclick="loadAsset(this)" class="gridBox">
-			<label>Sound 1</label>
+			<label>Audio</label>
 		</div>
 
 		<div id="assets/Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:150px">
