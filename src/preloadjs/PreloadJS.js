@@ -441,6 +441,7 @@
 		}
 
 		if (this._numItems == this._numItemsLoaded) {
+			this.loaded = true;
 			this._sendComplete();
 			if (this.next && this.next.load) {
 				//LM: Do we need to apply here?
