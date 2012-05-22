@@ -81,16 +81,20 @@
 
 		xhr.onProgress = PreloadJS.proxy(this._handleProgress, this);
 		xhr.onFileLoad = PreloadJS.proxy(this._handleXHRComplete, this);
-		//xhr.onComplete = PreloadJS.proxy(this._handleXHRComplete, this);
+		xhr.onComplete = PreloadJS.proxy(this._handleXHRComplete, this); //This is needed when loading JS files via XHR.
 		xhr.onFileError = PreloadJS.proxy(this._handleLoadError, this);
 		xhr.load();
 	};
 
-	p._handleXHRComplete = function(loader) {
+	p._handleXHRComplete = function(event) {
 		this._clean();
 
-		var item = loader.getItem();
-		var result = loader.getResult();
+		//Remove complete handlers, to suppress duplicate callbacks.
+		event.target.onFileLoad = null;
+		event.target.onComplete = null;
+
+		var item = event.target.getItem();
+		var result = event.target.getResult();
 
 		//LM: Consider moving this to XHRLoader
 		if (item.type == PreloadJS.IMAGE) {
@@ -164,9 +168,8 @@
 	p._handleTagLoad = function(event) {
 		var tag = this.getItem().tag;
 		clearTimeout(this._loadTimeOutTimeout);
-		if (this.isAudio && tag.readyState !== 4) { return; }
+		if (this.loaded || this.isAudio && tag.readyState !== 4) { return; }
 
-		if (this.loaded) { return; }
 		this.loaded = true;
 		this._clean();
 		this._sendComplete();

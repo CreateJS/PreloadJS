@@ -648,12 +648,11 @@
 		if (!item.type) {
 			item.type = this.getType(item.ext)
 		}
-		//If theres no id, set one now.
+		//If there's no id, set one now.
 		if (item.id == null || item.id == "") {
 			//item.id = this._getNameAfter(item.src, "/");
             item.id = item.src; //[SB] Using the full src is more robust, and more useful from a user perspective.
 		}
-
 
 		// Give plugins a chance to modify the loadItem
 		var customHandler = this.typeHandlers[item.type] || this.extensionHandlers[item.ext];
