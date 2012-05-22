@@ -142,7 +142,8 @@
                 return false;
         }
 
-        if (this._request.response == null) {
+		//wdg:: added check for this._request.responseText ... Android  2.2 uses it.
+		if (this._request.response == null && this._request.responseText == null) {
 		    try {
 		        // We have to check this for IE, and other browsers will throw errors, so we have to try/catch it.
 		        if (this._request.responseXML != null) { return true; }
