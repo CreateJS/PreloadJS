@@ -37,7 +37,7 @@
 	/**
 	 * PreloadJS provides a consistent way to preload content for use in HTML applications.
 	 * @class PreloadJS
-	 * @param Boolean useXHR2 Determines whether the preload instance will use XmlHttpRequests, or fall back on tag loading.
+	 * @param {Boolean} useXHR2 Determines whether the preload instance will use XHR (XML HTTP Requests), or fall back on tag loading.
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
@@ -187,7 +187,9 @@
 	/**
 	 * Initialize a PreloadJS instance
 	 * @method initialize
-	 * @param useXHR Use XHR for loading (vs tag/script loading)
+	 * @param {Boolean} useXHR Use XHR (XML HTTP Requests) for loading. When this is false,
+	 * PreloadJS will use tag loading when possible. Note that Scripts and CSS require
+	 * XHR to load properly.
 	 */
 	p.initialize = function(useXHR) {
 		this._numItems = 0;
