@@ -94,7 +94,6 @@
 		this._request.onabort = PreloadJS.proxy(this.handleAbort, this);
 		this._request.onerror = PreloadJS.proxy(this.handleError, this);
 		this._request.ontimeout = PreloadJS.proxy(this.handleTimeout, this);
-		//this._request.onloadend = PreloadJS.proxy(this.handleLoadEnd, this);
 
 		//LM: Firefox does not get onload. Chrome gets both. Might need onload for other things.
 		this._request.onload = PreloadJS.proxy(this.handleLoad, this);
@@ -102,7 +101,9 @@
 
 		try { // Sometimes we get back 404s immediately, particularly when there is a cross origin request.
 			this._request.send();
-		} catch (error) {}
+		} catch (error) {
+			this._sendError({source:error});
+		}
 	};
 
 	p.handleProgress = function(event) {
@@ -134,23 +135,41 @@
 	}
 
     p._checkError = function() {
-        //LM: Probably need additional handlers here.
+		//LM: Probably need additional handlers here.
         var status = parseInt(this._request.status);
+
         switch (status) {
             case 404:   // Not Found
             case 0:     // Not Loaded
                 return false;
-        }
-
-		//wdg:: added check for this._request.responseText ... Android  2.2 uses it.
-		if (this._request.response == null && this._request.responseText == null) {
-		    try {
-		        // We have to check this for IE, and other browsers will throw errors, so we have to try/catch it.
-		        if (this._request.responseXML != null) { return true; }
-		    } catch (error) {}
-	        return false; }
-        return true;
+		}
+		
+		//wdg:: added check for this._hasTextResponse() ... Android  2.2 uses it.
+		return this._hasResponse() || this._hasTextResponse() || this._hasXMLResponse();
     };
+
+	/*
+	  Validate the response (we need to try/catch some of these, nicer to break them into functions.
+	 */
+	p._hasResponse = function () {
+		return this._request.response != null;
+	};
+
+	p._hasTextResponse = function () {
+		try {
+			return this._request.responseText != null;
+		} catch (e) {
+			return false;
+		}
+	};
+
+	p._hasXMLResponse = function () {
+		try {
+			return this._request.responseXML != null;
+		} catch (e) {
+			return false;
+		}
+	};
 
     p.handleLoad = function(event) {
 		if (this.loaded) { return; }
@@ -165,15 +184,9 @@
 		this._sendComplete();
 	};
 
-
-
 	p.handleTimeout = function() {
 		this._clean();
 		this._sendError();
-	};
-
-	p.handleLoadEnd = function() {
-		this._clean();
 	};
 
 	p._createXHR = function(item) {
@@ -194,7 +207,7 @@
 			}
 		}
 
-		//IE9 doesn't suport .overrideMimeType(), so we need to check for it.
+		//IE9 doesn't support .overrideMimeType(), so we need to check for it.
 		if (item.type == PreloadJS.TEXT && this._request.overrideMimeType) {
 			this._request.overrideMimeType('text/plain; charset=x-user-defined');
 		}

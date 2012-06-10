@@ -97,7 +97,7 @@
 	/**
 	 * The callback to fire when the loader encounters an error. If the error was encountered
 	 * by a file, the event will contain the required file data, but the target will be the loader.
-	 * @event onFileError
+	 * @event onError
 	 */
 	p.onError = null;
 

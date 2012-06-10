@@ -58,6 +58,14 @@
 	 */
 	s.IMAGE = "image";
 
+	/* The preload type for SVG files.
+		 * @property SVG
+		 * @type String
+		 * @default svg
+		 * @static
+		 */
+	s.SVG = "svg";
+
 	/**
 	 * The preload type for sound files, usually mp3, ogg, or wav.
 	 * @property SOUND
@@ -219,7 +227,7 @@
 		var BD = PreloadJS.lib.BrowserDetect;
 		if (BD == null) { return; }
 		PreloadJS.TAG_LOAD_OGGS = BD.isFirefox || BD.isOpera;
-			// && (otherCondictions)
+			// && (otherConditions)
 	}
 
 	/**
@@ -453,24 +461,29 @@
 
 		while (this._loadQueue.length && this._currentLoads.length < this._maxConnections) {
 			var loadItem = this._loadQueue.shift();
-
-			loadItem.onProgress = PreloadJS.proxy(this._handleProgress, this);
-			loadItem.onComplete = PreloadJS.proxy(this._handleFileComplete, this);
-			loadItem.onError = PreloadJS.proxy(this._handleFileError, this);
-
-			this._currentLoads.push(loadItem);
-
-			loadItem.load();
+			this._loadItem(loadItem);
 		}
+	};
+
+	p._loadItem = function(item) {
+		item.onProgress = PreloadJS.proxy(this._handleProgress, this);
+		item.onComplete = PreloadJS.proxy(this._handleFileComplete, this);
+		item.onError = PreloadJS.proxy(this._handleFileError, this);
+
+		this._currentLoads.push(item);
+
+		item.load();
 	};
 
 	p._handleFileError = function(event) {
 		var loader = event.target;
+
 		var resultData = this._createResultData(loader.getItem());
 		this._numItemsLoaded++;
 		this._updateProgress();
 
 		this._sendError(resultData);
+
 		if (!this.stopOnError) {
 			this._removeLoadItem(loader);
 			this._loadNext();
@@ -574,16 +587,13 @@
 				tag = this._createLink(); break;
 			case PreloadJS.JAVASCRIPT:
 				tag = this._createScript(); break;
+			case PreloadJS.SVG:
+				tag = this._createSVG();
+				var svg = this._createXML(data, "image/svg+xml");
+				tag.appendChild(svg);
+				break;
 			case PreloadJS.XML:
-				if (window.DOMParser) {
-					var parser = new DOMParser();
-					resultData = parser.parseFromString(data, "text/xml");
-				} else { // Internet Explorer
-					var parser = new ActiveXObject("Microsoft.XMLDOM");
-					parser.async = false;
-					parser.loadXML(data);
-					resultData = parser;
-				}
+				resultData = this._createXML(data, "text/xml");
 				break;
 			case PreloadJS.JSON:
 			case PreloadJS.TEXT:
@@ -594,7 +604,7 @@
 		if (tag) {
 			if (item.type == PreloadJS.CSS) {
 				tag.href = item.src;
-			} else {
+			} else if (item.type != PreloadJS.SVG) {
 				tag.src = item.src;
 			}
 			return tag;
@@ -602,6 +612,21 @@
 			return resultData;
 		}
 	};
+
+	p._createXML =  function(data, type) {
+		var resultData;
+		if (window.DOMParser) {
+			var parser = new DOMParser();
+			resultData = parser.parseFromString(data, type);
+		} else { // Internet Explorer
+			var parser = new ActiveXObject("Microsoft.XMLDOM");
+			parser.async = false;
+			parser.loadXML(data);
+			resultData = parser;
+		}
+
+		return resultData;
+	}
 
 	// This is item progress!
 	p._handleProgress = function(event) {
@@ -696,39 +721,52 @@
 				break;
 		}
 
+		if (this.useXHR == true && (item.type == PreloadJS.IMAGE || item.type == PreloadJS.SVG)) {
+			var loader = this._createTagItem(item);
+			loader.useXHR = true;
+			return loader;
+		}
+
 		if (useXHR2) {
 			return new PreloadJS.lib.XHRLoader(item);
 		} else if (!item.tag) {
-			var tag;
-			var srcAttr = "src";
-			var useXHR = false;
-
-			//Create TagItem
-			switch(item.type) {
-				case PreloadJS.IMAGE:
-					tag = this._createImage();
-					break;
-				case PreloadJS.SOUND:
-					tag = this._createAudio();
-					break;
-				case PreloadJS.CSS:
-					srcAttr = "href";
-					useXHR = true;
-					tag = this._createLink();
-					break;
-				case PreloadJS.JAVASCRIPT:
-					useXHR = true; //We can't properly get onLoad events from <script /> tags.
-					tag = this._createScript();
-					break;
-				default:
-			}
-
-			item.tag = tag;
-			return new PreloadJS.lib.TagLoader(item, srcAttr, useXHR);
-
+			return this._createTagItem(item);
 		} else {
 			return new PreloadJS.lib.TagLoader(item);
 		}
+	};
+
+	p._createTagItem = function (item) {
+		var tag;
+		var srcAttr = "src";
+		var useXHR = false;
+
+		//Create TagItem
+		switch(item.type) {
+			case PreloadJS.IMAGE:
+				tag = this._createImage();
+				break;
+			case PreloadJS.SOUND:
+				tag = this._createAudio();
+				break;
+			case PreloadJS.CSS:
+				srcAttr = "href";
+				useXHR = true;
+				tag = this._createLink();
+				break;
+			case PreloadJS.JAVASCRIPT:
+				useXHR = true; //We can't properly get onLoad events from <script /> tags.
+				tag = this._createScript();
+				break;
+			case PreloadJS.SVG:
+				srcAttr = "data";
+				tag = this._createSVG();
+				break;
+			default:
+		}
+
+		item.tag = tag;
+		return new PreloadJS.lib.TagLoader(item, srcAttr, useXHR);
 	};
 
 	p.getType = function(ext) {
@@ -750,6 +788,8 @@
 				return PreloadJS.CSS;
 			case "js":
 				return PreloadJS.JAVASCRIPT;
+			case 'svg':
+				return PreloadJS.SVG;
 			default:
 				return PreloadJS.TEXT;
 		}
@@ -764,6 +804,12 @@
 
 	p._createImage = function() {
 		return document.createElement("img");
+	};
+
+	p._createSVG = function() {
+		var tag = document.createElement("object");
+		tag.type = "image/svg+xml";
+		return tag;
 	};
 
 	p._createAudio = function () {
@@ -811,11 +857,10 @@
 
 	window.PreloadJS = PreloadJS;
 
-
 	/**
-	 * An additional module to detemermine the current browser, version, operating system, and other environment variables.
+	 * An additional module to determine the current browser, version, operating system, and other environmental variables.
 	 */
-	function BrowserDetect() {}
+	var BrowserDetect = function() {}
 
 	BrowserDetect.init = function() {
 		var agent = navigator.userAgent;

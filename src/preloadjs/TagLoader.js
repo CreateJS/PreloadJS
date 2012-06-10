@@ -55,7 +55,7 @@
 	p.init = function (item, srcAttr, useXHR) {
 		this._item = item;
 		this._srcAttr = srcAttr || "src";
-		this._useXHR = (useXHR == true);
+		this.useXHR = (useXHR == true);
 		this.isAudio = (item.tag instanceof HTMLAudioElement);
 		this.tagCompleteProxy = PreloadJS.proxy(this._handleTagLoad, this);
 	};
@@ -67,7 +67,7 @@
 	};
 
 	p.load = function() {
-		if (this._useXHR) {
+		if (this.useXHR) {
 			this.loadXHR();
 		} else {
 			this.loadTag();
@@ -82,7 +82,7 @@
 		xhr.onProgress = PreloadJS.proxy(this._handleProgress, this);
 		xhr.onFileLoad = PreloadJS.proxy(this._handleXHRComplete, this);
 		xhr.onComplete = PreloadJS.proxy(this._handleXHRComplete, this); //This is needed when loading JS files via XHR.
-		xhr.onFileError = PreloadJS.proxy(this._handleLoadError, this);
+		xhr.onError = PreloadJS.proxy(this._handleLoadError, this);
 		xhr.load();
 	};
 
@@ -107,10 +107,14 @@
 	};
 
 	p._handleLoadError = function(event) {
-		this._clean();
-		this._sendError(event);
+		 //Security error, try TagLoading now
+		if (event.error && event.error.code == 101) {
+			this.loadTag();
+		} else {
+			this._clean();
+			this._sendError(event);
+		}
 	};
-
 
 // Tag Loading
 	p.loadTag = function() {
@@ -144,6 +148,11 @@
 		// Set the src after the events are all added.
 		tag[this._srcAttr] = item.src;
 
+		//If its SVG, it needs to be on the dom to load (we remove it before sending complete)
+		if (item.type == PreloadJS.SVG) {
+			document.getElementsByTagName('body')[0].appendChild(tag);
+		}
+
 		// We can NOT call load() for OGG in Firefox.
 		var isOgg = (item.type == PreloadJS.SOUND && item.ext == "ogg" && PreloadJS.lib.BrowserDetect.isFirefox);
 		if (tag.load != null && !isOgg) {
@@ -169,6 +178,10 @@
 		var tag = this.getItem().tag;
 		clearTimeout(this._loadTimeOutTimeout);
 		if (this.loaded || this.isAudio && tag.readyState !== 4) { return; }
+
+		if (this.getItem().type == PreloadJS.SVG) {
+			document.getElementsByTagName('body')[0].removeChild(tag);
+		}
 
 		this.loaded = true;
 		this._clean();
