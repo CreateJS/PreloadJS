@@ -56,7 +56,7 @@
 		this._item = item;
 		this._srcAttr = srcAttr || "src";
 		this.useXHR = (useXHR == true);
-		this.isAudio = (item.tag instanceof HTMLAudioElement);
+		this.isAudio = (window.HTMLAudioElement) ? (item.tag instanceof HTMLAudioElement): false;
 		this.tagCompleteProxy = PreloadJS.proxy(this._handleTagLoad, this);
 	};
 
@@ -194,7 +194,7 @@
 		// Delete handlers.
 		var tag = this.getItem().tag;
 		tag.onload = null;
-		tag.removeEventListener("canplaythrough", this.tagCompleteProxy, false);
+		if(tag.removeEventListener) tag.removeEventListener("canplaythrough", this.tagCompleteProxy, false);
 		tag.onstalled = null;
 		tag.onprogress = null;
 		tag.onerror = null;
