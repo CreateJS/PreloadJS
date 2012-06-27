@@ -873,5 +873,29 @@
 
 	PreloadJS.lib.BrowserDetect = BrowserDetect;
 
+    // ES5 15.4.4.14 Shim for IE 7 & 8
+    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
+    if (!Array.prototype.indexOf) {
+        Array.prototype.indexOf = function indexOf(sought /*, fromIndex */ ) {
+            if (this === void 0 || this === null)
+                throw new TypeError();
+            var self = Object(this);
+            var length = self.length >>> 0;
+            if (!length)
+                return -1;
+            var i = 0;
+            if (arguments.length > 1)
+                i = toInteger(arguments[1]);
+            // handle negative indices
+            i = i >= 0 ? i : length - Math.abs(i);
+            for (; i < length; i++) {
+                if (i in self && self[i] === sought) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
 }(window));
 
