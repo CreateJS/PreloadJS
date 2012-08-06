@@ -1,3 +1,12 @@
+Version NEXT [release TBD]
+****************************************************************************************************
+- moved all classes into a configurable createjs namespace
+- added support for preloading SVG files
+- Fixed issues with loading in mobile (Android) browsers
+- Fixed various loading issues throughout
+- added tag-based fallback for images loaded with XHR that fail due to local restrictions
+
+
 Version 0.1.0
 ****************************************************************************************************
 Initial release.
