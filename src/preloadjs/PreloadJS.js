@@ -30,7 +30,7 @@
  * PreloadJS provides a consistent API for preloading content in HTML5.
  * @module PreloadJS
  */
-(function (window) {
+(function (ns) {
 
 	//TODO: Add an API to clear the preloader. Handy if we want to reuse it, and don't want the composite progress.
 
@@ -45,7 +45,7 @@
 		this.initialize(useXHR2);
 	};
 
-	var p = PreloadJS.prototype = new AbstractLoader();
+	var p = PreloadJS.prototype = new ns.AbstractLoader();
 	var s = PreloadJS;
 
 	// Preload Types
@@ -224,9 +224,9 @@
 	 * @private
 	 */
 	p.determineCapabilities = function() {
-		var BD = PreloadJS.lib.BrowserDetect;
+		var BD = ns.BrowserDetect;
 		if (BD == null) { return; }
-		PreloadJS.TAG_LOAD_OGGS = BD.isFirefox || BD.isOpera;
+		ns.PreloadJS.TAG_LOAD_OGGS = BD.isFirefox || BD.isOpera;
 			// && (otherConditions)
 	}
 
@@ -238,8 +238,8 @@
 	 */
 	s.isBinary = function(type) {
 		switch (type) {
-			case PreloadJS.IMAGE:
-			case PreloadJS.SOUND:
+			case ns.PreloadJS.IMAGE:
+			case ns.PreloadJS.SOUND:
 				return true;
 			default:
 				return false;
@@ -435,7 +435,7 @@
 			this._numItems++;
 			this._updateProgress();
 
-			if (loadItem.getItem().type == PreloadJS.JAVASCRIPT) {
+			if (loadItem.getItem().type == ns.PreloadJS.JAVASCRIPT) {
 				this._scriptOrder.push(loadItem.getItem());
 				this._loadedScripts.push(null);
 			}
@@ -466,9 +466,9 @@
 	};
 
 	p._loadItem = function(item) {
-		item.onProgress = PreloadJS.proxy(this._handleProgress, this);
-		item.onComplete = PreloadJS.proxy(this._handleFileComplete, this);
-		item.onError = PreloadJS.proxy(this._handleFileError, this);
+		item.onProgress = ns.PreloadJS.proxy(this._handleProgress, this);
+		item.onComplete = ns.PreloadJS.proxy(this._handleFileComplete, this);
+		item.onError = ns.PreloadJS.proxy(this._handleFileError, this);
 
 		this._currentLoads.push(item);
 
@@ -505,7 +505,7 @@
 		this._removeLoadItem(loader);
 
 		//Convert to proper tag ... if we need to.
-		if (loader instanceof PreloadJS.lib.XHRLoader) {
+		if (loader instanceof ns.XHRLoader) {
 			resultData.result = this._createResult(item, loader.getResult());
 		} else {
 			resultData.result = item.tag;
@@ -513,8 +513,8 @@
 
 		//TODO: Move tag creation to XHR?
 		switch (item.type) {
-			case PreloadJS.IMAGE: //LM: Consider moving this to XHRLoader
-				if(loader instanceof PreloadJS.lib.XHRLoader) {
+			case ns.PreloadJS.IMAGE: //LM: Consider moving this to XHRLoader
+				if(loader instanceof ns.XHRLoader) {
 					var _this = this; // Use closure workaround to maintain reference to item/result
 					resultData.result.onload = function(event) {
 						_this._handleFileTagComplete(item, resultData);
@@ -522,7 +522,7 @@
 					return;
 				}
 				break;
-			case PreloadJS.JAVASCRIPT:
+			case ns.PreloadJS.JAVASCRIPT:
 				if (this.maintainScriptOrder) {
 					this._loadedScripts[this._scriptOrder.indexOf(item)] = item;
 					this._checkScriptLoadOrder(loader);
@@ -579,32 +579,32 @@
 		var tag = null;
 		var resultData;
 		switch (item.type) {
-			case PreloadJS.IMAGE:
+			case ns.PreloadJS.IMAGE:
 				tag = this._createImage(); break;
-			case PreloadJS.SOUND:
+			case ns.PreloadJS.SOUND:
 				tag = item.tag || this._createAudio(); break;
-			case PreloadJS.CSS:
+			case ns.PreloadJS.CSS:
 				tag = this._createLink(); break;
-			case PreloadJS.JAVASCRIPT:
+			case ns.PreloadJS.JAVASCRIPT:
 				tag = this._createScript(); break;
-			case PreloadJS.SVG:
+			case ns.PreloadJS.SVG:
 				tag = this._createSVG();
 				var svg = this._createXML(data, "image/svg+xml");
 				tag.appendChild(svg);
 				break;
-			case PreloadJS.XML:
+			case ns.PreloadJS.XML:
 				resultData = this._createXML(data, "text/xml");
 				break;
-			case PreloadJS.JSON:
-			case PreloadJS.TEXT:
+			case ns.PreloadJS.JSON:
+			case ns.PreloadJS.TEXT:
 				resultData = data;
 		}
 
 		//LM: Might not need to do this with Audio.
 		if (tag) {
-			if (item.type == PreloadJS.CSS) {
+			if (item.type == ns.PreloadJS.CSS) {
 				tag.href = item.src;
-			} else if (item.type != PreloadJS.SVG) {
+			} else if (item.type != ns.PreloadJS.SVG) {
 				tag.src = item.src;
 			}
 			return tag;
@@ -661,7 +661,7 @@
 				if (loadItem instanceof HTMLAudioElement) {
 					item.tag = loadItem;
 					item.src = item.tag.src;
-					item.type = PreloadJS.SOUND;
+					item.type = ns.PreloadJS.SOUND;
 				} else {
 					item = loadItem;
 				}
@@ -709,30 +709,30 @@
 
 		// Determine the XHR2 usage overrides
 		switch (item.type) {
-			case PreloadJS.JSON:
-			case PreloadJS.XML:
-			case PreloadJS.TEXT:
+			case ns.PreloadJS.JSON:
+			case ns.PreloadJS.XML:
+			case ns.PreloadJS.TEXT:
 				useXHR2 = true; // Always use XHR2 with text
 				break;
-			case PreloadJS.SOUND:
-				if (item.ext == "ogg" && PreloadJS.TAG_LOAD_OGGS) {
+			case ns.PreloadJS.SOUND:
+				if (item.ext == "ogg" && ns.PreloadJS.TAG_LOAD_OGGS) {
 					useXHR2 = false; // OGGs do not work well with XHR in Firefox.
 				}
 				break;
 		}
 
-		if (this.useXHR == true && (item.type == PreloadJS.IMAGE || item.type == PreloadJS.SVG)) {
+		if (this.useXHR == true && (item.type == ns.PreloadJS.IMAGE || item.type == ns.PreloadJS.SVG)) {
 			var loader = this._createTagItem(item);
 			loader.useXHR = true;
 			return loader;
 		}
 
 		if (useXHR2) {
-			return new PreloadJS.lib.XHRLoader(item);
+			return new ns.XHRLoader(item);
 		} else if (!item.tag) {
 			return this._createTagItem(item);
 		} else {
-			return new PreloadJS.lib.TagLoader(item);
+			return new ns.TagLoader(item);
 		}
 	};
 
@@ -743,22 +743,22 @@
 
 		//Create TagItem
 		switch(item.type) {
-			case PreloadJS.IMAGE:
+			case ns.PreloadJS.IMAGE:
 				tag = this._createImage();
 				break;
-			case PreloadJS.SOUND:
+			case ns.PreloadJS.SOUND:
 				tag = this._createAudio();
 				break;
-			case PreloadJS.CSS:
+			case ns.PreloadJS.CSS:
 				srcAttr = "href";
 				useXHR = true;
 				tag = this._createLink();
 				break;
-			case PreloadJS.JAVASCRIPT:
+			case ns.PreloadJS.JAVASCRIPT:
 				useXHR = true; //We can't properly get onLoad events from <script /> tags.
 				tag = this._createScript();
 				break;
-			case PreloadJS.SVG:
+			case ns.PreloadJS.SVG:
 				srcAttr = "data";
 				tag = this._createSVG();
 				break;
@@ -766,7 +766,7 @@
 		}
 
 		item.tag = tag;
-		return new PreloadJS.lib.TagLoader(item, srcAttr, useXHR);
+		return new ns.TagLoader(item, srcAttr, useXHR);
 	};
 
 	p.getType = function(ext) {
@@ -775,23 +775,23 @@
 			case "jpg":
 			case "gif":
 			case "png":
-				return PreloadJS.IMAGE;
+				return ns.PreloadJS.IMAGE;
 			case "ogg":
 			case "mp3":
 			case "wav":
-				return PreloadJS.SOUND;
+				return ns.PreloadJS.SOUND;
 			case "json":
-				return PreloadJS.JSON;
+				return ns.PreloadJS.JSON;
 			case "xml":
-				return PreloadJS.XML;
+				return ns.PreloadJS.XML;
 			case "css":
-				return PreloadJS.CSS;
+				return ns.PreloadJS.CSS;
 			case "js":
-				return PreloadJS.JAVASCRIPT;
+				return ns.PreloadJS.JAVASCRIPT;
 			case 'svg':
-				return PreloadJS.SVG;
+				return ns.PreloadJS.SVG;
 			default:
-				return PreloadJS.TEXT;
+				return ns.PreloadJS.TEXT;
 		}
 	};
 
@@ -853,9 +853,7 @@
 		};
 	}
 
-	PreloadJS.lib = {};
-
-	window.PreloadJS = PreloadJS;
+	ns.PreloadJS = PreloadJS;
 
 	/**
 	 * An additional module to determine the current browser, version, operating system, and other environmental variables.
@@ -871,7 +869,8 @@
 
 	BrowserDetect.init();
 
-	PreloadJS.lib.BrowserDetect = BrowserDetect;
+	ns.BrowserDetect = BrowserDetect;
 
-}(window));
+}(createjs||(createjs={})));
+var createjs;
 

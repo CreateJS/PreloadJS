@@ -60,7 +60,7 @@
 			];
 
 			// Create a preloader. There is no manfest added to it up-front, we will add items on-demand.
-			preload = new PreloadJS();
+			preload = new createjs.PreloadJS();
 			preload.onFileLoad = handleFileLoad;
 			preload.onProgress = handleOverallProgress;
 			preload.onFileProgress = handleFileProgress;

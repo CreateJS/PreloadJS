@@ -3,8 +3,8 @@
 <head>
     <title>Preload Images example</title>
 
-    <script src="http://code.createjs.com/easeljs-0.4.2.min.js"></script>
-    <script src="http://code.createjs.com/tweenjs-0.2.0.min.js"></script>
+    <script src="./assets/easeljs-NEXT.min.js"></script>
+    <script src="./assets/tweenjs-NEXT.min.js"></script>
 
 	<script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/PreloadJS.js"></script>
@@ -48,27 +48,27 @@
             canvas = document.getElementById('myCanvas');
             lc = document.getElementById('loaderCanvas');
             update = false;
-            stage = new Stage(canvas);
-            loaderStage = new Stage(lc);
+            stage = new createjs.Stage(canvas);
+            loaderStage = new createjs.Stage(lc);
             totalLoaded = 0;
             borderPadding = 10;
 
             var barHeight = 20;
-            loaderColor = Graphics.getRGB(0,0,0)
-            loaderBar = new Container();
+            loaderColor = createjs.Graphics.getRGB(0,0,0)
+            loaderBar = new createjs.Container();
 
-            bar = new Shape();
+            bar = new createjs.Shape();
             bar.graphics.beginFill(loaderColor);
             bar.graphics.drawRect(0, 0, 1, barHeight);
             bar.graphics.endFill();
 
-            imageContainer = new Container();
+            imageContainer = new createjs.Container();
             imageContainer.x = 430;
             imageContainer.y = 200;
             loaderWidth = 800;
             stage.addChild(imageContainer);
 
-            var bgBar = new Shape();
+            var bgBar = new createjs.Shape();
             var padding = 3
             bgBar.graphics.setStrokeStyle(1);
             bgBar.graphics.beginStroke(loaderColor);
@@ -80,7 +80,7 @@
 
             loaderStage.addChild(loaderBar);
 
-            preload = new PreloadJS();
+            preload = new createjs.PreloadJS();
             preload.onProgress = handleProgress;
             preload.onComplete = handleComplete;
             preload.onFileLoad = handleFileLoad;
@@ -88,12 +88,12 @@
 
             loaderStage.update();
             stage.update();
-            Ticker.setFPS(30);
-            Ticker.addListener(window);
+	        createjs.Ticker.setFPS(30);
+	        createjs.Ticker.addListener(window);
         }
 
         function stop() {
-	        Ticker.removeListener(window);
+	        createjs.Ticker.removeListener(window);
 	        if (preload != null) { preload.close(); }
         }
 
@@ -114,8 +114,8 @@
 
         function handleLoadComplete(event) {
 
-            var movieClip = new Container();
-            var bmp = new Bitmap(this);
+            var movieClip = new createjs.Container();
+            var bmp = new createjs.Bitmap(this);
             var _w = this.width;
             var _h = this.height;
 
@@ -125,8 +125,8 @@
             bmp.onPress = handlePress;
             bmp.rotation = Math.random() * 16 - 8;
 
-            var border = new Shape();
-            border.graphics.beginFill(Graphics.getRGB(255,255,255));
+            var border = new createjs.Shape();
+            border.graphics.beginFill(createjs.Graphics.getRGB(255,255,255));
             border.graphics.drawRect(0, 0, _w+borderPadding, _h+borderPadding);
             border.graphics.endFill();
             border.rotation = bmp.rotation;
@@ -136,7 +136,7 @@
 
             border.scaleX = border.scaleY =  bmp.scaleX;
 
-            border.shadow = new Shadow('#000000', 0, 0, 2.5);
+            border.shadow = new createjs.Shadow('#000000', 0, 0, 2.5);
 
             movieClip.addChild(border);
             movieClip.addChild(bmp);
@@ -158,12 +158,12 @@
         function handlePress(event) {
             currentItem = event.target.parent;
             update = true;
-            var tween = Tween.get(currentItem).to({y:-350}, 200).call(tweenComplete);
+            var tween = createjs.Tween.get(currentItem).to({y:-350}, 200).call(tweenComplete);
         }
 
         function tweenComplete() {
             imageContainer.addChildAt(currentItem, 0);
-            var tween = Tween.get(currentItem).to({y:0}, 500).call(tweenComplete2);
+            var tween = createjs.Tween.get(currentItem).to({y:0}, 500).call(tweenComplete2);
 
         }
 

@@ -3,7 +3,7 @@
 <head>
 	<title>PreloadJS: Multimedia Preload Example</title>
 
-	<script type="text/javascript" src="http://code.createjs.com/soundjs-0.2.0.min.js"></script>
+	<script type="text/javascript" src="./assets/soundjs-NEXT.min.js"></script>
 
     <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/PreloadJS.js"></script>
@@ -22,8 +22,8 @@
 			}
 
 			// Create a new queue.
-			preload = new PreloadJS();
-			preload.installPlugin(SoundJS);
+			preload = new createjs.PreloadJS();
+			preload.installPlugin(createjs.SoundJS);
 			preload.onFileLoad = handleFileLoaded;
 			preload.onError = handleFileError;
 		}
@@ -43,28 +43,28 @@
 		function handleFileLoaded(event) {
 			var div = document.getElementById(event.id);
 			switch (event.type){
-				case PreloadJS.CSS:
+				case createjs.PreloadJS.CSS:
 					var head = document.getElementsByTagName('head')[0];
 					head.appendChild(event.result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-				case PreloadJS.IMAGE:
+				case createjs.PreloadJS.IMAGE:
 					div.innerHTML = "<img src='"+event.id+"' width="+div.clientWidth+" height="+div.clientHeight+"/>";
 					break;
 
-				case PreloadJS.JAVASCRIPT:
+				case createjs.PreloadJS.JAVASCRIPT:
 					document.body.appendChild(event.result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-				case PreloadJS.JSON:
-				case PreloadJS.XML:
+				case createjs.PreloadJS.JSON:
+				case createjs.PreloadJS.XML:
 					alert(event.result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-				case PreloadJS.SOUND:
+				case createjs.PreloadJS.SOUND:
 					document.body.appendChild(event.result);
 					event.result.play();
 					div.innerHTML = "<label>Complete :)</label>";

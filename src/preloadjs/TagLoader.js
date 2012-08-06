@@ -30,7 +30,7 @@
 /**
  * @module PreloadJS
  */
-(function (window) {
+(function (ns) {
 
 	/**
 	 * The loader that handles loading items using a tag-based approach. There is a built-in
@@ -45,7 +45,7 @@
 	var TagLoader = function (item, srcAttr, useXHR) {
 		this.init(item, srcAttr, useXHR);
 	};
-	var p = TagLoader.prototype = new AbstractLoader();
+	var p = TagLoader.prototype = new ns.AbstractLoader();
 
 	//Protected
 	p._srcAttr = null;
@@ -57,7 +57,7 @@
 		this._srcAttr = srcAttr || "src";
 		this.useXHR = (useXHR == true);
 		this.isAudio = (item.tag instanceof HTMLAudioElement);
-		this.tagCompleteProxy = PreloadJS.proxy(this._handleTagLoad, this);
+		this.tagCompleteProxy = ns.PreloadJS.proxy(this._handleTagLoad, this);
 	};
 
 	p.cancel = function() {
@@ -77,12 +77,12 @@
 // XHR Loading
 	p.loadXHR = function() {
 		var item = this.getItem();
-		var xhr = new PreloadJS.lib.XHRLoader(item);
+		var xhr = new ns.XHRLoader(item);
 
-		xhr.onProgress = PreloadJS.proxy(this._handleProgress, this);
-		xhr.onFileLoad = PreloadJS.proxy(this._handleXHRComplete, this);
-		xhr.onComplete = PreloadJS.proxy(this._handleXHRComplete, this); //This is needed when loading JS files via XHR.
-		xhr.onError = PreloadJS.proxy(this._handleLoadError, this);
+		xhr.onProgress = ns.PreloadJS.proxy(this._handleProgress, this);
+		xhr.onFileLoad = ns.PreloadJS.proxy(this._handleXHRComplete, this);
+		xhr.onComplete = ns.PreloadJS.proxy(this._handleXHRComplete, this); //This is needed when loading JS files via XHR.
+		xhr.onError = ns.PreloadJS.proxy(this._handleLoadError, this);
 		xhr.load();
 	};
 
@@ -97,8 +97,8 @@
 		var result = event.target.getResult();
 
 		//LM: Consider moving this to XHRLoader
-		if (item.type == PreloadJS.IMAGE) {
-			item.tag.onload = PreloadJS.proxy(this._sendComplete, this);
+		if (item.type == ns.PreloadJS.IMAGE) {
+			item.tag.onload = ns.PreloadJS.proxy(this._sendComplete, this);
 			item.tag.src = item.src;
 		} else {
 			item.tag[this._srcAttr] = item.src;
@@ -123,7 +123,7 @@
 
 		// In case we don't get any events...
 		clearTimeout(this._loadTimeOutTimeout);
-		this._loadTimeOutTimeout = setTimeout(PreloadJS.proxy(this._handleLoadTimeOut, this), PreloadJS.TIMEOUT_TIME);
+		this._loadTimeOutTimeout = setTimeout(ns.PreloadJS.proxy(this._handleLoadTimeOut, this), ns.PreloadJS.TIMEOUT_TIME);
 
 		if (this.isAudio) {
 			tag.src = null;
@@ -133,28 +133,28 @@
 		}
 
 		// Handlers for all tags
-		tag.onerror = PreloadJS.proxy(this._handleLoadError, this);
-		tag.onprogress = PreloadJS.proxy(this._handleProgress, this);
+		tag.onerror = ns.PreloadJS.proxy(this._handleLoadError, this);
+		tag.onprogress = ns.PreloadJS.proxy(this._handleProgress, this);
 
 		if (this.isAudio) {
 			// Handlers for audio tags
-			tag.onstalled = PreloadJS.proxy(this._handleStalled, this);
+			tag.onstalled = ns.PreloadJS.proxy(this._handleStalled, this);
 			tag.addEventListener("canplaythrough", this.tagCompleteProxy, false); //LM: oncanplaythrough callback does not work in Chrome.
 		} else {
 			// Handlers for non-audio tags
-			tag.onload = PreloadJS.proxy(this._handleTagLoad, this);
+			tag.onload = ns.PreloadJS.proxy(this._handleTagLoad, this);
 		}
 
 		// Set the src after the events are all added.
 		tag[this._srcAttr] = item.src;
 
 		//If its SVG, it needs to be on the dom to load (we remove it before sending complete)
-		if (item.type == PreloadJS.SVG) {
+		if (item.type == ns.PreloadJS.SVG) {
 			document.getElementsByTagName('body')[0].appendChild(tag);
 		}
 
 		// We can NOT call load() for OGG in Firefox.
-		var isOgg = (item.type == PreloadJS.SOUND && item.ext == "ogg" && PreloadJS.lib.BrowserDetect.isFirefox);
+		var isOgg = (item.type == ns.PreloadJS.SOUND && item.ext == "ogg" && ns.BrowserDetect.isFirefox);
 		if (tag.load != null && !isOgg) {
 			tag.load();
 		}
@@ -179,7 +179,7 @@
 		clearTimeout(this._loadTimeOutTimeout);
 		if (this.loaded || this.isAudio && tag.readyState !== 4) { return; }
 
-		if (this.getItem().type == PreloadJS.SVG) {
+		if (this.getItem().type == ns.PreloadJS.SVG) {
 			document.getElementsByTagName('body')[0].removeChild(tag);
 		}
 
@@ -216,6 +216,7 @@
 		return "[PreloadJS TagLoader]";
 	}
 
-	PreloadJS.lib.TagLoader = TagLoader;
+	ns.TagLoader = TagLoader;
 
-}(window))
+}(createjs||(createjs={})));
+var createjs;

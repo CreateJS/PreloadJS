@@ -30,7 +30,7 @@
 /**
  * @module PreloadJS
  */
-(function (window) {
+(function (ns) {
 
 	/**
 	 * The loader that handles XmlHttpRequests.
@@ -43,7 +43,7 @@
 		this.init(file);
 	};
 
-	var p = XHRLoader.prototype = new AbstractLoader();
+	var p = XHRLoader.prototype = new ns.AbstractLoader();
 
 	//Protected
 	p._wasLoaded = false;
@@ -85,19 +85,19 @@
 
 		//Setup timeout if we're not using XHR2
 		if (this._xhrLevel == 1) {
-			this._loadTimeOutTimeout = setTimeout(PreloadJS.proxy(this.handleTimeout, this), PreloadJS.TIMEOUT_TIME);
+			this._loadTimeOutTimeout = setTimeout(ns.PreloadJS.proxy(this.handleTimeout, this), ns.PreloadJS.TIMEOUT_TIME);
 		}
 		
 		//Events
-		this._request.onloadstart = PreloadJS.proxy(this.handleLoadStart, this);
-		this._request.onprogress = PreloadJS.proxy(this.handleProgress, this);
-		this._request.onabort = PreloadJS.proxy(this.handleAbort, this);
-		this._request.onerror = PreloadJS.proxy(this.handleError, this);
-		this._request.ontimeout = PreloadJS.proxy(this.handleTimeout, this);
+		this._request.onloadstart = ns.PreloadJS.proxy(this.handleLoadStart, this);
+		this._request.onprogress = ns.PreloadJS.proxy(this.handleProgress, this);
+		this._request.onabort = ns.PreloadJS.proxy(this.handleAbort, this);
+		this._request.onerror = ns.PreloadJS.proxy(this.handleError, this);
+		this._request.ontimeout = ns.PreloadJS.proxy(this.handleTimeout, this);
 
 		//LM: Firefox does not get onload. Chrome gets both. Might need onload for other things.
-		this._request.onload = PreloadJS.proxy(this.handleLoad, this);
-		this._request.onreadystatechange = PreloadJS.proxy(this.handleReadyStateChange, this);
+		this._request.onload = ns.PreloadJS.proxy(this.handleLoad, this);
+		this._request.onreadystatechange = ns.PreloadJS.proxy(this.handleReadyStateChange, this);
 
 		try { // Sometimes we get back 404s immediately, particularly when there is a cross origin request.
 			this._request.send();
@@ -208,13 +208,13 @@
 		}
 
 		//IE9 doesn't support .overrideMimeType(), so we need to check for it.
-		if (item.type == PreloadJS.TEXT && this._request.overrideMimeType) {
+		if (item.type == ns.PreloadJS.TEXT && this._request.overrideMimeType) {
 			this._request.overrideMimeType('text/plain; charset=x-user-defined');
 		}
 
 		this._request.open('GET', item.src, true);
 
-		if (PreloadJS.isBinary(item.type)) {
+		if (ns.PreloadJS.isBinary(item.type)) {
 			this._request.responseType = 'arraybuffer';
 		}
         return true;
@@ -240,6 +240,7 @@
 		return "[PreloadJS XHRLoader]";
 	}
 
-	PreloadJS.lib.XHRLoader = XHRLoader;
+	ns.XHRLoader = XHRLoader;
 
-}(window));
+}(createjs||(createjs={})));
+var createjs;

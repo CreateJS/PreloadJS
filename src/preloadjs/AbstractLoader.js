@@ -30,7 +30,7 @@
 /**
  * @module PreloadJS
  */
-(function (window) {
+(function (ns) {
 
 	/**
 	 * The base loader, which handles all callbacks. All loaders should extend this class.
@@ -182,7 +182,7 @@
 		return "[PreloadJS AbstractLoader]";
 	};
 
-	// Note: Abstract Loader is initialized before Preload, so it has to live on Window instead of PreloadJS.lib
-	window.AbstractLoader = AbstractLoader;
+	ns.AbstractLoader = AbstractLoader;
 
-}(window));
+}(createjs||(createjs={})));
+var createjs;
