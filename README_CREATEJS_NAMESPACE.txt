@@ -1,10 +1,10 @@
-In the NEXT version of CreateJS class definitions reside in a "createjs" namespace by default.
+In this version of PreloadJS, class definitions reside in a "createjs" namespace by default.
 
-For example, instead of instantiating a Shape like this:
-var foo = new Shape();
+For example, instead of instantiating a preloader like this:
+var foo = new PreloadJS();
 
 You will need to reach into the createjs namespace:
-var bar = new createjs.Shape();
+var bar = new createjs.PreloadJS();
 
 This functionality is configurable though. You can easily shortcut the namespace or get rid of it completely.
 

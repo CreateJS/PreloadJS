@@ -30,7 +30,11 @@
 /**
  * @module PreloadJS
  */
-(function (ns) {
+
+// namespace:
+this.createjs = this.createjs||{};
+
+(function() {
 
 	/**
 	 * The base loader, which handles all callbacks. All loaders should extend this class.
@@ -51,6 +55,16 @@
 	 * @default false
 	 */
 	p.loaded = false;
+
+	/**
+	 * Determine if a preload instance was canceled. Canceled loads will
+	 * not fire complete events. Note that PreloadJS queues should be closed
+	 * instead of canceled.
+	 * @property canceled
+	 * @type {Boolean}
+	 * @default false
+	 */
+	p.canceled = false;
 
 	/**
 	 * The current load progress (percentage) for this item.
@@ -129,12 +143,14 @@
 
 //Callback proxies
 	p._sendLoadStart = function(value) {
+		if (this._isCanceled()) { return; }
 		if (this.onLoadStart) {
 			this.onLoadStart({target:this});
 		}
 	};
 
 	p._sendProgress = function(value) {
+		if (this._isCanceled()) { return; }
 		var event;
 		if (value instanceof Number) {
 			this.progress = value;
@@ -151,6 +167,10 @@
 	};
 
 	p._sendFileProgress = function(event) {
+		if (this._isCanceled()) {
+			this._cleanUp();
+			return;
+		}
 		if (this.onFileProgress) {
 			event.target = this;
 			this.onFileProgress(event);
@@ -158,12 +178,14 @@
 	};
 
 	p._sendComplete = function() {
+		if (this._isCanceled()) { return; }
 		if (this.onComplete) {
 			this.onComplete({target:this});
 		}
 	};
 
 	p._sendFileComplete = function(event) {
+		if (this._isCanceled()) { return; }
 		if (this.onFileLoad) {
 			event.target = this;
 			this.onFileLoad(event);
@@ -171,6 +193,7 @@
 	};
 
 	p._sendError = function(event) {
+		if (this._isCanceled()) { return; }
 		if (this.onError) {
 			if (event == null) { event = {}; }
 			event.target = this;
@@ -178,11 +201,18 @@
 		}
 	};
 
+	p._isCanceled = function(event) {
+		if (window.createjs == null || this.canceled) {
+			return true;
+		} else {
+		}
+		return false;
+	}
+
 	p.toString = function() {
 		return "[PreloadJS AbstractLoader]";
 	};
 
-	ns.AbstractLoader = AbstractLoader;
+	createjs.AbstractLoader = AbstractLoader;
 
-}(createjs||(createjs={})));
-var createjs;
+}());
