@@ -1,10 +1,12 @@
-Version NEXT [release TBD]
+Version 0.2.0 [Aug 24, 2012]
 ****************************************************************************************************
 - moved all classes into a configurable createjs namespace
 - added support for preloading SVG files
 - Fixed issues with loading in mobile (Android) browsers
 - Fixed various loading issues throughout
 - added tag-based fallback for images loaded with XHR that fail due to local restrictions
+- Canceling loads now prevents complete, error, and other callbacks from firing.
+- Unloaded code in IE9/10 will not cause RTE when asynchronous callbacks occur.
 
 
 Version 0.1.0
