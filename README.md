@@ -12,7 +12,7 @@ PreloadJS is a library to make working with asset preloading easier. It provides
 
 
 ## Support and Resources
-* Find examples and more information at the [PreloadJS web site](http://www.prelaodjs.com/)
+* Find examples and more information at the [PreloadJS web site](http://www.preloadjs.com/)
 * You can also ask questions and interact with other users at our [Community](http://community.createjs.com) site.
 * Have a look at the included [examples](https://github.com/CreateJS/PreloadJS/tree/master/examples) and [API documentation](http://createjs.com/Docs/PreloadJS/) for more in-depth information.
 
