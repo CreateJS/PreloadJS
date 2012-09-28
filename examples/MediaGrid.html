@@ -23,6 +23,10 @@
 
 			// Create a new queue.
 			preload = new createjs.PreloadJS();
+
+			// Use this instead to use tag loading
+			//preload = new createjs.PreloadJS(false);
+
 			preload.installPlugin(createjs.SoundJS);
 			preload.onFileLoad = handleFileLoaded;
 			preload.onError = handleFileError;
@@ -110,7 +114,10 @@
 
 	<header id="header" class="PreloadJS">
 		<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Media Grid</h1>
-		<p>PreloadJS can load a variety of media. In this example, click each example to load its related item. Once the item is loaded, it will display (image), play (sound), apply to the document (css), or display an alert (script).</p>
+		<p>PreloadJS can load a variety of media. In this example, click each example to load its related item.
+			Once the item is loaded, it will display (image), play (sound), apply to the document (css), or display an alert (script).
+			Note that when loading images and sounds locally, you need to ensure that PreloadJS uses tag loading to avoid
+			cross-origin errors. Other media types will not load locally.</p>
 	</header>
 
 	<div id="imageGrid">

@@ -59,8 +59,12 @@
 				"assets/Texas.jpg"
 			];
 
-			// Create a preloader. There is no manfest added to it up-front, we will add items on-demand.
+			// Create a preloader. There is no manifest added to it up-front, we will add items on-demand.
 			preload = new createjs.PreloadJS();
+
+			// Use this instead to use tag loading
+			//preload = new createjs.PreloadJS(false);
+
 			preload.onFileLoad = handleFileLoad;
 			preload.onProgress = handleOverallProgress;
 			preload.onFileProgress = handleFileProgress;
@@ -179,7 +183,10 @@
 
 	<header id="header" class="PreloadJS">
 	    <h1><span class="text-product">Preload<strong>JS</strong></span> Preload Queue</h1>
-	    <p>Click "load another" to add another image the the overall queue. As images are added, the preload progress reflects the overall loaded progress. Click "load all" to queue everything at once.</p>
+	    <p>Click "load another" to add another image the the overall queue. As images are added, the preload progress reflects
+		    the overall loaded progress. Click "load all" to queue everything at once.
+		    Note that when loading images and sounds locally, you need to ensure that PreloadJS uses tag loading to avoid
+		    cross-origin errors.</p>
 	</header>
 
 	<div id="container" class="content">

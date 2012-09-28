@@ -81,6 +81,10 @@
             loaderStage.addChild(loaderBar);
 
             preload = new createjs.PreloadJS();
+
+			// Use this instead to use tag loading
+			//preload = new createjs.PreloadJS(false);
+
             preload.onProgress = handleProgress;
             preload.onComplete = handleComplete;
             preload.onFileLoad = handleFileLoad;
@@ -198,7 +202,9 @@
 
 	<header id="header" class="PreloadJS">
 	    <h1><span class="text-product">Preload<strong>JS</strong></span> Image Gallery</h1>
-	    <p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click the image to view the next one.</p>
+	    <p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click the image
+		    to view the next one. Note that when loading images locally, you need to ensure that PreloadJS
+		    uses tag loading to avoid cross-origin errors. Mouse interaction on images may not work locally either.</p>
 	</header>
 
     <canvas id="myCanvas" width="960" height="400"></canvas><br/>
