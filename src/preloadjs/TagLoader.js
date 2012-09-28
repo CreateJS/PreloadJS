@@ -60,7 +60,7 @@ this.createjs = this.createjs||{};
 		this._item = item;
 		this._srcAttr = srcAttr || "src";
 		this.useXHR = (useXHR == true);
-		this.isAudio = (item.tag instanceof HTMLAudioElement);
+		this.isAudio = (window['HTMLAudioElement'] && item.tag instanceof HTMLAudioElement);
 		this.tagCompleteProxy = createjs.PreloadJS.proxy(this._handleTagLoad, this);
 	};
 

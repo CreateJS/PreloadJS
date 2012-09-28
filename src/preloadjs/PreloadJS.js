@@ -36,8 +36,6 @@ this.createjs = this.createjs||{};
 
 (function() {
 
-	//TODO: Add an API to clear the preloader queue. Handy if we want to reuse it, and don't want the composite progress of finished loads.
-
 	/**
 	 * PreloadJS provides a consistent way to preload content for use in HTML applications.
 	 * @class PreloadJS
@@ -62,12 +60,12 @@ this.createjs = this.createjs||{};
 	 */
 	s.IMAGE = "image";
 
-	/* The preload type for SVG files.
-		 * @property SVG
-		 * @type String
-		 * @default svg
-		 * @static
-		 */
+	/** The preload type for SVG files.
+	 * @property SVG
+	 * @type String
+	 * @default svg
+	 * @static
+	 */
 	s.SVG = "svg";
 
 	/**
@@ -210,6 +208,7 @@ this.createjs = this.createjs||{};
 		this._paused = false;
 		this._currentLoads = [];
 		this._loadQueue = [];
+		this._loadQueueBackup = [];
 		this._scriptOrder = [];
 		this._loadedScripts = [];
 		this._loadedItemsById = {};
@@ -220,6 +219,110 @@ this.createjs = this.createjs||{};
 
 		this.useXHR = (useXHR != false && window.XMLHttpRequest != null);
 		this.determineCapabilities();
+	};
+
+	/**
+	 * Stops all queued and loading items, and clears the queue. This also removes
+	 * all internal references to loaded content, and allowed the queue to be used again.
+	 * Items that have not yet started can be kicked off again using the load() method.
+	 * @method removeAll
+	 */
+	p.removeAll = function() {
+		this.remove();
+	};
+
+	/**
+	 * Stops an item from being loaded, and removes it from the queue. If nothing is passed,
+	 * all items are removed. This also removes internal references to loaded item(s).
+	 * @method remove
+	 * @param {String | Array} idsOrUrls The id or ids to remove from this queue. You can pass
+	 *      an item, an array of items, or multiple items as arguments.
+	 */
+	p.remove = function(idsOrUrls) {
+		var args = null;
+
+		if (idsOrUrls && !(idsOrUrls instanceof Array)) {
+			args = [idsOrUrls];
+		} else if (idsOrUrls) {
+			args = idsOrUrls;
+		}
+
+		var itemsWereRemoved = false;
+
+		// Destroy everything
+		if (!args) {
+			this.close();
+
+			for (var n in this._loadedItemsById) {
+				this._disposeItem(this._loadedItemsById[n]);
+			}
+
+			this.initialize(this.useXHR);
+		} else {
+			while (args.length) {
+				var item = args.pop();
+				var r = this.getResult(item);
+
+				//Remove from the main load Queue
+				for (i = this._loadQueue.length-1;i>=0;i--) {
+					loadItem = this._loadQueue[i].getItem();
+					if (loadItem.id == item || loadItem.src == item) {
+						this._loadQueue.splice(i,1)[0].cancel();
+						break;
+					}
+				}
+
+				//Remove from the backup queue
+				for (i = this._loadQueueBackup.length-1;i>=0;i--) {
+					loadItem = this._loadQueueBackup[i].getItem();
+					if (loadItem.id == item || loadItem.src == item) {
+						this._loadQueueBackup.splice(i,1)[0].cancel();
+						break;
+					}
+				}
+
+				if (r) {
+					delete this._loadedItemsById[r.id];
+					delete this._loadedItemsBySrc[r.src];
+					this._disposeItem(r);
+				} else {
+					for (var i=this._currentLoads.length-1;i>=0;i--) {
+						var loadItem = this._currentLoads[i].getItem();
+						if (loadItem.id == item || loadItem.src == item) {
+							this._currentLoads.splice(i,1)[0].cancel();
+							itemsWereRemoved = true;
+							break;
+						}
+					}
+				}
+			}
+
+			// If this was called during a load, try to load the next item.
+			if (itemsWereRemoved) {
+				this._loadNext();
+			}
+		}
+	};
+
+	/**
+	 * Stops all open loads, destroys any loaded items, and resets the queue, so all items can
+	 * be reloaded again by calling <b>load()</b>. Items are not removed from the queue. To remove
+	 * items use the <b>remove()</b> or <b>removeAll()</b> method.
+	 * @method reset
+	 */
+	p.reset = function() {
+		this.close();
+		for (var n in this._loadedItemsById) {
+			this._disposeItem(this._loadedItemsById[n]);
+		}
+
+		//Reset the queue to its start state
+		var a = [];
+		for (i=0,l=this._loadQueueBackup.length;i<l;i++) {
+			a.push(this._loadQueueBackup[i].getItem());
+		}
+
+		this.loadManifest(a, false);
 	};
 
 	/**
@@ -237,7 +340,7 @@ this.createjs = this.createjs||{};
 	/**
 	 * Determine if a specific type should be loaded as a binary file
 	 * @method isBinary
-	 * @param type The type to check
+	 * @param {String} type The type to check
 	 * @private
 	 */
 	s.isBinary = function(type) {
@@ -433,6 +536,7 @@ this.createjs = this.createjs||{};
 		var loadItem = this._createLoadItem(item);
 		if (loadItem != null) {
 			this._loadQueue.push(loadItem);
+			this._loadQueueBackup.push(loadItem);
 
 			this._numItems++;
 			this._updateProgress();
@@ -660,7 +764,7 @@ this.createjs = this.createjs||{};
 			case "string":
 				item.src = loadItem; break;
 			case "object":
-				if (loadItem instanceof HTMLAudioElement) {
+				if (window['HTMLAudioElement'] && loadItem instanceof HTMLAudioElement) {
 					item.tag = loadItem;
 					item.src = item.tag.src;
 					item.type = createjs.PreloadJS.SOUND;
@@ -675,7 +779,7 @@ this.createjs = this.createjs||{};
 		// Get source extension
 		item.ext = this._getNameAfter(item.src, ".");
 		if (!item.type) {
-			item.type = this.getType(item.ext)
+			item.type = this.getType(item.ext);
 		}
 		//If there's no id, set one now.
 		if (item.id == null || item.id == "") {
@@ -798,10 +902,20 @@ this.createjs = this.createjs||{};
 	};
 
 	p._getNameAfter = function(path, token) {
+		if (!path) { return null; }
+
 		var dotIndex = path.lastIndexOf(token);
 		var lastPiece = path.substr(dotIndex+1);
 		var endIndex = lastPiece.lastIndexOf(/[\b|\?|\#|\s]/);
 		return (endIndex == -1) ? lastPiece : lastPiece.substr(0, endIndex);
+	};
+
+	p._disposeItem = function(item) {
+		item.id = null;
+		item.type = null;
+		item.src = null;
+		item.result = null;
+		item.target = null;
 	};
 
 	p._createImage = function() {
@@ -872,6 +986,41 @@ this.createjs = this.createjs||{};
 	BrowserDetect.init();
 
 	createjs.PreloadJS.BrowserDetect = BrowserDetect;
+
+	//Patch for IE7 and 8 that don't have indexOf
+	//Used from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf
+
+	if (!Array.prototype.indexOf) {
+	    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
+	        if (this == null) {
+	            throw new TypeError();
+	        }
+	        var t = Object(this);
+	        var len = t.length >>> 0;
+	        if (len === 0) {
+	            return -1;
+	        }
+	        var n = 0;
+	        if (arguments.length > 1) {
+	            n = Number(arguments[1]);
+	            if (n != n) { // shortcut for verifying if it's NaN
+	                n = 0;
+	            } else if (n != 0 && n != Infinity && n != -Infinity) {
+	                n = (n > 0 || -1) * Math.floor(Math.abs(n));
+	            }
+	        }
+	        if (n >= len) {
+	            return -1;
+	        }
+	        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+	        for (; k < len; k++) {
+	            if (k in t && t[k] === searchElement) {
+	                return k;
+	            }
+	        }
+	        return -1;
+	    }
+	}
 
 }());
 

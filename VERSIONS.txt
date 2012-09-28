@@ -1,3 +1,9 @@
+Version NEXT
+****************************************************************************************************
+- Added indexOf shim and HTMLAudioElement check to provide IE7/8 support
+- Added methods to clear and reset the preload queue (remove, removeAll, and reset)
+
+
 Version 0.2.0 [Aug 24, 2012]
 ****************************************************************************************************
 - moved all classes into a configurable createjs namespace
@@ -9,6 +15,6 @@ Version 0.2.0 [Aug 24, 2012]
 - Unloaded code in IE9/10 will not cause RTE when asynchronous callbacks occur.
 
 
-Version 0.1.0
+Version 0.1.0 [Apr 2, 2012]
 ****************************************************************************************************
 Initial release.
