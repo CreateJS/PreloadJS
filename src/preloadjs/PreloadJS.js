@@ -96,6 +96,16 @@ this.createjs = this.createjs||{};
 	s.JAVASCRIPT = "javascript";
 
 	/**
+	 * The preload type for loading files as a binary array, could be any file extension.
+	 * @property BINARY
+	 * @type String
+	 * @default javascript
+	 * @static
+	 */
+	s.BINARY = "binary";
+    
+
+	/**
 	 * The preload type for css files.
 	 * @property CSS
 	 * @type String
@@ -347,6 +357,7 @@ this.createjs = this.createjs||{};
 		switch (type) {
 			case createjs.PreloadJS.IMAGE:
 			case createjs.PreloadJS.SOUND:
+   			case createjs.PreloadJS.BINARY:
 				return true;
 			default:
 				return false;
@@ -704,6 +715,10 @@ this.createjs = this.createjs||{};
 			case createjs.PreloadJS.JSON:
 			case createjs.PreloadJS.TEXT:
 				resultData = data;
+		    		break;
+    			case createjs.PreloadJS.BINARY:
+				resultData = data;
+		    		break;
 		}
 
 		//LM: Might not need to do this with Audio.
@@ -820,6 +835,9 @@ this.createjs = this.createjs||{};
 			case createjs.PreloadJS.TEXT:
 				useXHR2 = true; // Always use XHR2 with text
 				break;
+			case createjs.PreloadJS.BINARY:
+				useXHR2 = true; // Always use XHR2 with binary
+				break;		    
 			case createjs.PreloadJS.SOUND:
 				if (item.ext == "ogg" && createjs.PreloadJS.TAG_LOAD_OGGS) {
 					useXHR2 = false; // OGGs do not work well with XHR in Firefox.
