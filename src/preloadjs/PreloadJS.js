@@ -906,8 +906,7 @@ this.createjs = this.createjs||{};
 
 		var dotIndex = path.lastIndexOf(token);
 		var lastPiece = path.substr(dotIndex+1);
-		var endIndex = lastPiece.lastIndexOf(/[\b|\?|\#|\s]/);
-		return (endIndex == -1) ? lastPiece : lastPiece.substr(0, endIndex);
+		return lastPiece.replace(/(.*?)([\b|\?|\#|\s].*)?$/, '$1');
 	};
 
 	p._disposeItem = function(item) {
