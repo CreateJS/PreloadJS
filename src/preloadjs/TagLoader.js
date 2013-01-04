@@ -37,24 +37,42 @@ this.createjs = this.createjs||{};
 (function() {
 
 	/**
-	 * The loader that handles loading items using a tag-based approach. There is a built-in
-	 * fallback for XHR loading for tags that do not fire onload events, such as &lt;script&gt; and &lt;style&gt;.
+	 * A preloader that loads items using a tag-based approach. HTML audio and images can use this plugin to load content
+	 * cross-domain without security errors, whereas anything loaded with XHR has issues.
+	 * <br />
+	 * Note that for audio tags, we rely on the <code>canPlayThrough</code> event, which fires when the buffer is full
+	 * enough to play the audio all the way through at the current download speed. This completely preloads most sound
+	 * effects, however longer tracks like background audio will only load a portion before the event is fired. Most
+	 * browsers (all excluding Chrome) will continue to preload once this is fired, so this is considered good enough
+	 * for most cases.
+	 * <br />
+	 * There is a built-in fallback for XHR loading for tags that do not fire onload events, such as &lt;script&gt;
+	 * and &lt;style&gt;. This approach is used so that a proper script or style object is returned to PreloadJS when it
+	 * is loaded.
 	 * @class TagLoader
 	 * @constructor
 	 * @extends AbstractLoader
 	 * @param {String | Object} item The item to load
-	 * @param {String} srcAttr The attribute to use as the "source" param, since some tags use different items, such as <style>
+	 * @param {String} srcAttr The attribute to use as the "source" param, since some tags use different items, such as &lt;style&gt;
 	 * @param {Boolean} useXHR Determine if the content should be loaded via XHR before being put on the tag.
 	 */
 	var TagLoader = function (item, srcAttr, useXHR) {
 		this.init(item, srcAttr, useXHR);
 	};
+
 	var p = TagLoader.prototype = new createjs.AbstractLoader();
 
-	//Protected
+// Protected
+	/**
+	 * The attribute on a tag that sets the source. It is usually "src" or "href".
+	 * @property _srcAttr
+	 * @type {String}
+	 * @private
+	 */
 	p._srcAttr = null;
 	p._loadTimeOutTimeout = null;
 	p.tagCompleteProxy = null;
+	p.xhr = null;
 
 	p.init = function (item, srcAttr, useXHR) {
 		this._item = item;
@@ -66,6 +84,7 @@ this.createjs = this.createjs||{};
 
 	p.cancel = function() {
 		this.canceled = true;
+		if (this.xhr) { this.xhr.cancel(); }
 		this._clean();
 		var item = this.getItem();
 		if (item != null) { item.src = null; }
@@ -82,7 +101,7 @@ this.createjs = this.createjs||{};
 // XHR Loading
 	p.loadXHR = function() {
 		var item = this.getItem();
-		var xhr = new createjs.XHRLoader(item);
+		var xhr = this.xhr = new createjs.XHRLoader(item);
 
 		xhr.onProgress = createjs.PreloadJS.proxy(this._handleProgress, this);
 		xhr.onFileLoad = createjs.PreloadJS.proxy(this._handleXHRComplete, this);
@@ -96,13 +115,13 @@ this.createjs = this.createjs||{};
 		this._clean();
 
 		//Remove complete handlers, to suppress duplicate callbacks.
-		event.target.onFileLoad = null;
-		event.target.onComplete = null;
+		var xhr = this.xhr;
+		xhr.onFileLoad = null;
+		xhr.onComplete = null;
 
-		var item = event.target.getItem();
-		var result = event.target.getResult();
+		var item = xhr.getItem();
+		var result = xhr.getResult();
 
-		//LM: Consider moving this to XHRLoader
 		if (item.type == createjs.PreloadJS.IMAGE) {
 			item.tag.onload = createjs.PreloadJS.proxy(this._sendComplete, this);
 			item.tag.src = item.src;
@@ -135,17 +154,16 @@ this.createjs = this.createjs||{};
 			tag.src = null;
 			//tag.type = "audio/ogg"; // TODO: Set proper types
 			tag.preload = "auto";
-			tag.setAttribute("data-temp", "true"); //LM: Do we need this?
 		}
 
 		// Handlers for all tags
 		tag.onerror = createjs.PreloadJS.proxy(this._handleLoadError, this);
-		tag.onprogress = createjs.PreloadJS.proxy(this._handleProgress, this);
+		//tag.onprogress = createjs.PreloadJS.proxy(this._handleProgress, this); // Note: Progress events for audio tags in Chrome only.
 
 		if (this.isAudio) {
 			// Handlers for audio tags
 			tag.onstalled = createjs.PreloadJS.proxy(this._handleStalled, this);
-			tag.addEventListener("canplaythrough", this.tagCompleteProxy, false); //LM: oncanplaythrough callback does not work in Chrome.
+			tag.addEventListener("canplaythrough", this.tagCompleteProxy, false); //Note that this property isn't helpful.
 		} else {
 			// Handlers for non-audio tags
 			tag.onload = createjs.PreloadJS.proxy(this._handleTagLoad, this);
@@ -159,9 +177,8 @@ this.createjs = this.createjs||{};
 			document.getElementsByTagName('body')[0].appendChild(tag);
 		}
 
-		// We can NOT call load() for OGG in Firefox.
-		var isOgg = (item.type == createjs.PreloadJS.SOUND && item.ext == "ogg" && createjs.PreloadJS.BrowserDetect.isFirefox);
-		if (tag.load != null && !isOgg) {
+		// Note: Previous versions didn't seem to work when we called load() for OGG tags in Firefox. Seems fixed in 15.0.1
+		if (tag.load != null) {
 			tag.load();
 		}
 	}
@@ -205,6 +222,16 @@ this.createjs = this.createjs||{};
 		tag.onstalled = null;
 		tag.onprogress = null;
 		tag.onerror = null;
+
+		// Clean Up XHR
+		var xhr = this.xhr;
+		if (xhr) {
+			xhr.onProgress = null;
+			xhr.onFileLoad = null;
+			xhr.onComplete = null;
+			xhr.onError = null;
+			xhr = null;
+		}
 	};
 
 	p._handleProgress = function(event) {
