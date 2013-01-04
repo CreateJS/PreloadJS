@@ -47,6 +47,17 @@ this.createjs = this.createjs||{};
 
 	AbstractLoader.prototype = {};
 	var p = AbstractLoader.prototype;
+	var s = AbstractLoader;
+
+	/**
+	 * The RegExp pattern to use to parse file URIs. This supports simple file names, as well as full domain URIs with
+	 * query strings. The resulting match is: protocol:$1 domain:$2 path:$3 file:$4 ext:$5 params:$6.
+	 * @property FILE_PATTERN
+	 * @type {RegExp}
+	 * @static
+	 * @protected
+	 */
+	s.FILE_PATTERN = /(\w+:\/{2})?((?:\w+\.){2}\w+)?(\/?[\S]+\/|\/)?([\w\-%]+)(?:\.)(\w+)?(\?\S+)?/i;
 
 	/**
 	 * Determine if this loader has completed already.
@@ -207,7 +218,13 @@ this.createjs = this.createjs||{};
 		} else {
 		}
 		return false;
-	}
+	};
+
+	p._parseURI = function(path) {
+		if (!path) { return null; }
+
+		return path.match(s.FILE_PATTERN);
+	};
 
 	p.toString = function() {
 		return "[PreloadJS AbstractLoader]";
