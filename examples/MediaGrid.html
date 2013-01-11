@@ -5,10 +5,15 @@
 
 	<script type="text/javascript" src="./assets/soundjs-0.3.0.min.js"></script>
 
+    <!--
+	<script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
     <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/PreloadJS.js"></script>
+	<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+
+    -->
+    <script src="../lib/preloadjs-NEXT.min.js"></script>
 
 	<!-- We also provide hosted minified versions of all CreateJS libraries.
 	    http://code.createjs.com -->
@@ -22,14 +27,14 @@
 			}
 
 			// Create a new queue.
-			preload = new createjs.PreloadJS();
+			//preload = new createjs.LoadQueue();
 
-			// Use this instead to use tag loading
-			//preload = new createjs.PreloadJS(false);
+			// Use this instead to favor tag loading
+			preload = new createjs.LoadQueue(true);
 
 			preload.installPlugin(createjs.SoundJS);
-			preload.onFileLoad = handleFileLoaded;
-			preload.onError = handleFileError;
+			preload.addEventListener("fileload", handleFileLoaded);
+            preload.addEventListener("error", handleFileError);
 		}
 
 		function stop() {
@@ -45,41 +50,49 @@
 
 		// Once each file is loaded, show it. Each ID corresponds to the related DIV.
 		function handleFileLoaded(event) {
-			var div = document.getElementById(event.id);
-			switch (event.type){
-				case createjs.PreloadJS.CSS:
-					var head = document.getElementsByTagName('head')[0];
-					head.appendChild(event.result);
+            var item = event.item;
+            var id = item.id;
+            var result = event.result;
+
+			var div = document.getElementById(id);
+			switch (item.type){
+				case createjs.LoadQueue.CSS:
+					(document.head || document.getElementsByTagName("head")[0]).appendChild(result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-				case createjs.PreloadJS.IMAGE:
-					div.innerHTML = "<img src='"+event.id+"' width="+div.clientWidth+" height="+div.clientHeight+"/>";
+				case createjs.LoadQueue.IMAGE:
+					div.innerHTML = "<img src='"+id+"' width='"+div.clientWidth+"' height='"+div.clientHeight+"' />";
 					break;
 
-				case createjs.PreloadJS.JAVASCRIPT:
-					document.body.appendChild(event.result);
+				case createjs.LoadQueue.JAVASCRIPT:
+					document.body.appendChild(result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-				case createjs.PreloadJS.JSON:
-				case createjs.PreloadJS.XML:
-					alert(event.result);
+				case createjs.LoadQueue.JSON:
+				case createjs.LoadQueue.XML:
+					alert(result);
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
 
-				case createjs.PreloadJS.SOUND:
-					document.body.appendChild(event.result);
-					event.result.play();
+				case createjs.LoadQueue.SOUND:
+					document.body.appendChild(result);
+					result.play();
 					div.innerHTML = "<label>Complete :)</label>";
 					break;
+
+                case createjs.LoadQueue.SVG:
+                    div.innerHTML = "";
+                    div.appendChild(result);
+                    break
 			}
 			div.style.backgroundColor = "#222222";
 		}
 
 		// A file failed to load.
-		function handleFileError(result) {
-			var div = document.getElementById(result.id);
+		function handleFileError(event) {
+			var div = document.getElementById(event.item.id);
 			div.innerHTML = "<label>Error :(</label>";
 			div.style.backgroundColor = "#992222";
 		}
@@ -115,13 +128,13 @@
 	<header id="header" class="PreloadJS">
 		<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Media Grid</h1>
 		<p>PreloadJS can load a variety of media. In this example, click each example to load its related item.
-			Once the item is loaded, it will display (image), play (sound), apply to the document (css), or display an alert (script).
-			Note that when loading images and sounds locally, you need to ensure that PreloadJS uses tag loading to avoid
-			cross-origin errors. Other media types will not load locally.</p>
+			Once the item is loaded, it will display (image, svg), play (sound), apply to the document (css), or display
+            an alert (script). Note that when loading images, sounds, css, scripts, or svg locally, you need to ensure
+            that PreloadJS uses tag loading to avoid cross-origin errors. Other media types will not load locally.</p>
 	</header>
 
 	<div id="imageGrid">
-		<div id="assets/BlueBird.png" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
+		<div id="assets/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
 			<label>Image</label>
 		</div>
 
@@ -137,8 +150,8 @@
 			<label>XML</label>
 		</div>
 
-		<div id="assets/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:248px; float: right;">
-			<label>Image</label>
+		<div id="assets/gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:248px; float: right; overflow:hidden">
+			<label>SVG</label>
 		</div>
 
 		<div id="assets/grant.json" onclick="loadAsset(this)" class="gridBox">

@@ -1,7 +1,34 @@
-Version NEXT
+Version NEXT [Jan XX 2013]
 ****************************************************************************************************
+- Class name changed from createjs.PreloadJS to createjs.LoadQueue.
+- Added versions file that is automatically updated via the build process, which provides run-time
+	version information on the new PreloadJS object
+- Migrated to new NodeJS-based doc/build process
+- Added version file, which is updated via the build process, and injects build date and version
+	into the PreloadJS object
+- Added JSDocs to all protected and private methods, and expanded documentation considerably
 - Added indexOf shim and HTMLAudioElement check to provide IE7/8 support
+- Changed internal proxy method to live on createjs namespace, and support additional parameters.
 - Added methods to clear and reset the preload queue (remove, removeAll, and reset)
+- Changed how the XHR level is determined
+- Changed how request responses in XHR are determined
+- Changed XHR loading for SCRIPT and CSS tags to inject into tags, instead of reloading them
+- Added tag-based loading of SCRIPT, SVG, and CSS tags. Note that Scripts can only be loaded one
+	at a time to maintain load order when using tags.
+- Removed XHR-loading of AUDIO tags for use with HTMLAudioElement (can not properly preload)
+- Added BINARY file type and enabled plugin-overriding of types
+- Added better file name parsing via RegExp
+- Added CreateJS EventDispatcher support, and updated demos to use events.
+- Added rawResult, which is the unformatted result loaded via XHR. Update the getResult method toreturn
+	it (optionally).
+- Changed how event objects are constructed. Events now contain an "item" property, which contains
+	the initially requested object. The items contain a "result" property which points
+	to the loaded & parsed content, as well as a "rawResult".
+- Internal reorganization of entire library
+- Much more thorough documentation and examples
+- Moved onFileLoad and onFileProgress event/handlers from AbstractLoader to PreloadJS
+- Added parsing of XML, JSON, and JavaScript files to return formatted results
+- Added setUseXHR method to provide proper xhr setting after a queue is created.
 
 
 Version 0.2.0 [Aug 24, 2012]

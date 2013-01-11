@@ -4,7 +4,7 @@
 	<title>PreloadJS: Queue Example</title>
 
 	<script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/PreloadJS.js"></script>
+	<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
 
@@ -65,10 +65,10 @@
 			// Use this instead to use tag loading
 			//preload = new createjs.PreloadJS(false);
 
-			preload.onFileLoad = handleFileLoad;
-			preload.onProgress = handleOverallProgress;
-			preload.onFileProgress = handleFileProgress;
-			preload.onError = handleFileError;
+			preload.addEventListener("fileload", handleFileLoad);
+			preload.addEventListener("progress", handleOverallProgress);
+			preload.addEventListener("fileprogress", handleFileProgress);
+			preload.addEventListener("error", handleFileError);
 			preload.setMaxConnections(5);
 		}
 

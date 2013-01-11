@@ -1,0 +1,21 @@
+{
+	"config_preloadjs": {
+		"SOURCE_FILES": [
+			"/../src/preloadjs/version.js",
+			"/../src/easeljs/events/EventDispatcher.js",
+            "/../src/preloadjs/AbstractLoader.js",
+            "/../src/preloadjs/LoadQueue.js",
+            "/../src/preloadjs/TagLoader.js",
+            "/../src/preloadjs/XHRLoader.js"
+        ],
+		"JS_FILE_NAME" : "preloadjs-%VERSION%.min.js",
+		"PROJECT_NAME" : "PreloadJS",
+		"PROJECT_URL" : "http://createjs.com/",
+		"DOCS_DIR_NAME" : "_docs-%VERSION%",
+		"DOCS_FILE_NAME": ".zip",
+		"OUTPUT_DIR_NAME" : "/output",
+		"TEMPLATE_DIR_PATH" : "/template",    
+		"TMP_DIR_NAME" : "/tmp",
+		"GOOGLE_CLOSURE_PATH" : "/../tools/google-closure/compiler.jar"      
+	}
+}

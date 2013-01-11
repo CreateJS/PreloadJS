@@ -4,10 +4,9 @@
     <title>Preload Images example</title>
 
     <script src="./assets/easeljs-0.5.0.min.js"></script>
-    <script src="./assets/tweenjs-0.3.0.min.js"></script>
-
+    <script src="./assets/tweenjs-0.3.0.min.js"></script> 
 	<script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/PreloadJS.js"></script>
+	<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
 	<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
 
@@ -20,7 +19,6 @@
 
         var loaderBar;
         var stage;
-        var loaderStage;
         var bar;
         var lc;
         var offset;
@@ -43,57 +41,54 @@
 				{src:"./assets/image1.jpg", id:"image1"},
 				{src:"./assets/image2.jpg", id:"image2"},
 				{src:"./assets/image3.jpg", id:"image3"}
-			];
-
-            canvas = document.getElementById('myCanvas');
-            lc = document.getElementById('loaderCanvas');
+			];   
+			        
+            canvas = document.getElementById('myCanvas'); 
             update = false;
             stage = new createjs.Stage(canvas);
-            loaderStage = new createjs.Stage(lc);
+            
             totalLoaded = 0;
             borderPadding = 10;
 
             var barHeight = 20;
-            loaderColor = createjs.Graphics.getRGB(0,0,0)
+            loaderColor = createjs.Graphics.getRGB(0,0,0);
             loaderBar = new createjs.Container();
 
             bar = new createjs.Shape();
-            bar.graphics.beginFill(loaderColor);
-            bar.graphics.drawRect(0, 0, 1, barHeight);
-            bar.graphics.endFill();
+            bar.graphics.beginFill(loaderColor).drawRect(0, 0, 1, barHeight).endFill();
 
             imageContainer = new createjs.Container();
             imageContainer.x = 430;
-            imageContainer.y = 200;
-            loaderWidth = 800;
+            imageContainer.y = 200;  
+			
+            loaderWidth = 300;
             stage.addChild(imageContainer);
 
             var bgBar = new createjs.Shape();
             var padding = 3
-            bgBar.graphics.setStrokeStyle(1);
-            bgBar.graphics.beginStroke(loaderColor);
-            bgBar.graphics.drawRect(-padding/2, -padding/2, loaderWidth, barHeight+padding);
+            bgBar.graphics.setStrokeStyle(1).beginStroke(loaderColor).drawRect(-padding/2, -padding/2, loaderWidth+padding, barHeight+padding);
 
             loaderBar.addChild(bgBar);
             loaderBar.addChild(bar);
-            loaderBar.x = loaderBar.y = 10;
+            loaderBar.x = canvas.width - loaderWidth>>1;
+			loaderBar.y = canvas.height - barHeight>>1;
 
-            loaderStage.addChild(loaderBar);
+            stage.addChild(loaderBar);
 
-            preload = new createjs.PreloadJS();
+            preload = new createjs.PreloadJS(false);
 
 			// Use this instead to use tag loading
 			//preload = new createjs.PreloadJS(false);
 
-            preload.onProgress = handleProgress;
-            preload.onComplete = handleComplete;
-            preload.onFileLoad = handleFileLoad;
+            preload.addEventListener("progress", handleProgress);
+            preload.addEventListener("complete", handleComplete);
+            preload.addEventListener("fileload", handleFileLoad);
             preload.loadManifest(manifest);
 
-            loaderStage.update();
             stage.update();
-	        createjs.Ticker.setFPS(30);
-	        createjs.Ticker.addListener(window);
+	        
+			createjs.Ticker.setFPS(30);
+	        createjs.Ticker.addListener(stage);
         }
 
         function stop() {
@@ -102,12 +97,7 @@
         }
 
         function handleProgress(event) {
-            bar.scaleX = (event*100)*(loaderWidth/100);
-            loaderStage.update();
-            if (bar.scaleX >= (100*(loaderWidth/100))) {
-                loaderBar.visible = false;
-                loaderStage.update();
-            }
+            bar.scaleX = (event.loaded)*(loaderWidth);
         }
 
         function handleFileLoad(event) {
@@ -130,9 +120,7 @@
             bmp.rotation = Math.random() * 16 - 8;
 
             var border = new createjs.Shape();
-            border.graphics.beginFill(createjs.Graphics.getRGB(255,255,255));
-            border.graphics.drawRect(0, 0, _w+borderPadding, _h+borderPadding);
-            border.graphics.endFill();
+            border.graphics.beginFill("#FFFFFF").drawRect(0, 0, _w+borderPadding, _h+borderPadding).endFill();
             border.rotation = bmp.rotation;
             border.regX = _w/2;
             border.regY = _h/2;
@@ -147,32 +135,27 @@
 
             imageContainer.addChild(movieClip);
             update = true;
-            totalLoaded += 1;
+            totalLoaded += 1; 
+			  
 
             if (totalLoaded == manifest.length) {
                 update = false;
                 stage.update();
             }
-        }
-
-        function tweenComplete1() {
-
-        }
+        }  
 
         function handlePress(event) {
             currentItem = event.target.parent;
             update = true;
-            var tween = createjs.Tween.get(currentItem).to({y:-350}, 200).call(tweenComplete);
+            createjs.Tween.get(currentItem).to({y:-350}, 200).call(tweenUpComplete);
         }
 
-        function tweenComplete() {
+        function tweenUpComplete() {
             imageContainer.addChildAt(currentItem, 0);
-            var tween = createjs.Tween.get(currentItem).to({y:0}, 500).call(tweenComplete2);
-
+            createjs.Tween.get(currentItem).to({y:0}, 500).call(tweenDownComplete);
         }
 
-        function tweenComplete2() {
-
+        function tweenDownComplete() {
             stage.update();
             update = false;
         }
@@ -183,10 +166,8 @@
             stage.update();
         }
 
-        function handleComplete(event) {
-            //console.log('handleComplete', event, totalLoaded);
-
-
+        function handleComplete(event) {                        
+            loaderBar.visible = false;  
         }
 
         function tick() {
@@ -207,6 +188,6 @@
 		    uses tag loading to avoid cross-origin errors. Mouse interaction on images may not work locally either.</p>
 	</header>
 
-    <canvas id="myCanvas" width="960" height="400"></canvas><br/>
+    <canvas id="myCanvas" width="960" height="400"></canvas>  
 </body>
 </html>
