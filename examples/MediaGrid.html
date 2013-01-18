@@ -3,102 +3,6 @@
 <head>
 	<title>PreloadJS: Multimedia Preload Example</title>
 
-	<script type="text/javascript" src="./assets/soundjs-0.3.0.min.js"></script>
-
-    <!--
-	<script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
-
-    -->
-    <script src="../lib/preloadjs-NEXT.min.js"></script>
-
-	<!-- We also provide hosted minified versions of all CreateJS libraries.
-	    http://code.createjs.com -->
-
-	<script>
-		var preload;
-
-		function init() {
-			if (window.top != window) {
-				document.getElementById("header").style.display = "none";
-			}
-
-			// Create a new queue.
-			//preload = new createjs.LoadQueue();
-
-			// Use this instead to favor tag loading
-			preload = new createjs.LoadQueue(true);
-
-			preload.installPlugin(createjs.SoundJS);
-			preload.addEventListener("fileload", handleFileLoaded);
-            preload.addEventListener("error", handleFileError);
-		}
-
-		function stop() {
-			if (preload != null) { preload.close(); }
-		}
-
-		// Load a single asset.
-		function loadAsset(target) {
-			var div = document.getElementById(target.id);
-			div.innerHTML = "<label>Loading...</label>";
-			preload.loadFile(target.id);
-		}
-
-		// Once each file is loaded, show it. Each ID corresponds to the related DIV.
-		function handleFileLoaded(event) {
-            var item = event.item;
-            var id = item.id;
-            var result = event.result;
-
-			var div = document.getElementById(id);
-			switch (item.type){
-				case createjs.LoadQueue.CSS:
-					(document.head || document.getElementsByTagName("head")[0]).appendChild(result);
-					div.innerHTML = "<label>Complete :)</label>";
-					break;
-
-				case createjs.LoadQueue.IMAGE:
-					div.innerHTML = "<img src='"+id+"' width='"+div.clientWidth+"' height='"+div.clientHeight+"' />";
-					break;
-
-				case createjs.LoadQueue.JAVASCRIPT:
-					document.body.appendChild(result);
-					div.innerHTML = "<label>Complete :)</label>";
-					break;
-
-				case createjs.LoadQueue.JSON:
-				case createjs.LoadQueue.XML:
-					alert(result);
-					div.innerHTML = "<label>Complete :)</label>";
-					break;
-
-				case createjs.LoadQueue.SOUND:
-					document.body.appendChild(result);
-					result.play();
-					div.innerHTML = "<label>Complete :)</label>";
-					break;
-
-                case createjs.LoadQueue.SVG:
-                    div.innerHTML = "";
-                    div.appendChild(result);
-                    break
-			}
-			div.style.backgroundColor = "#222222";
-		}
-
-		// A file failed to load.
-		function handleFileError(event) {
-			var div = document.getElementById(event.item.id);
-			div.innerHTML = "<label>Error :(</label>";
-			div.style.backgroundColor = "#992222";
-		}
-
-	</script>
-
 	<link rel="stylesheet" type="text/css" href="./assets/demoStyles.css" />
 	<style>
 	   .gridBox {
@@ -175,6 +79,102 @@
 		</div>
 
 	</div>
+
+    <script type="text/javascript" src="./assets/soundjs-0.4.0.min.js"></script>
+
+    <script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+
+    <!--
+    <script src="../lib/preloadjs-NEXT.min.js"></script>
+    -->
+
+    <!-- We also provide hosted minified versions of all CreateJS libraries.
+        http://code.createjs.com -->
+
+    <script>
+        var preload;
+
+        function init() {
+            if (window.top != window) {
+                document.getElementById("header").style.display = "none";
+            }
+
+            // Create a new queue.
+            //preload = new createjs.LoadQueue();
+
+            // Use this instead to favor tag loading
+            preload = new createjs.LoadQueue(true);
+            createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
+            preload.installPlugin(createjs.Sound);
+            preload.addEventListener("fileload", handleFileLoaded);
+            preload.addEventListener("error", handleFileError);
+        }
+
+        function stop() {
+            if (preload != null) { preload.close(); }
+        }
+
+        // Load a single asset.
+        function loadAsset(target) {
+            var div = document.getElementById(target.id);
+            div.innerHTML = "<label>Loading...</label>";
+            preload.loadFile(target.id);
+        }
+
+        // Once each file is loaded, show it. Each ID corresponds to the related DIV.
+        function handleFileLoaded(event) {
+            var item = event.item;
+            var id = item.id;
+            var result = event.result;
+
+            var div = document.getElementById(id);
+            switch (item.type){
+                case createjs.LoadQueue.CSS:
+                    (document.head || document.getElementsByTagName("head")[0]).appendChild(result);
+                    div.innerHTML = "<label>Complete :)</label>";
+                    break;
+
+                case createjs.LoadQueue.IMAGE:
+                    div.innerHTML = "<img src='"+id+"' width='"+div.clientWidth+"' height='"+div.clientHeight+"' />";
+                    break;
+
+                case createjs.LoadQueue.JAVASCRIPT:
+                    document.body.appendChild(result);
+                    div.innerHTML = "<label>Complete :)</label>";
+                    break;
+
+                case createjs.LoadQueue.JSON:
+                case createjs.LoadQueue.XML:
+                    alert(result);
+                    div.innerHTML = "<label>Complete :)</label>";
+                    break;
+
+                case createjs.LoadQueue.SOUND:
+                    document.body.appendChild(result);
+                    result.play();
+                    div.innerHTML = "<label>Complete :)</label>";
+                    break;
+
+                case createjs.LoadQueue.SVG:
+                    div.innerHTML = "";
+                    div.appendChild(result);
+                    break
+            }
+            div.style.backgroundColor = "#222222";
+        }
+
+        // A file failed to load.
+        function handleFileError(event) {
+            var div = document.getElementById(event.item.id);
+            div.innerHTML = "<label>Error :(</label>";
+            div.style.backgroundColor = "#992222";
+        }
+
+    </script>
 
 </body>
 </html>

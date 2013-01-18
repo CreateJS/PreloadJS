@@ -34,7 +34,7 @@ this.createjs = this.createjs||{};
 /**
  * Log provides a centralized system for outputting errors. By default it will attempt to use console.log
  * to output messages, but this can be changed by setting the out property.
- * @class Log
+ * #class Log
  * @constructor
  **/
 var Log = {};
@@ -42,7 +42,7 @@ var Log = {};
 /**
  * Read-only. Output no messages.
  * @type Number
- * @property NONE
+ * #property NONE
  * @default 0
  * @static
  **/
@@ -51,7 +51,7 @@ Log.NONE = 0;
 /**
  * Read-only. Error messages.
  * @type Number
- * @property ERROR
+ * #property ERROR
  * @default 1
  * @static
  **/
@@ -60,7 +60,7 @@ Log.ERROR = 1;
 /**
  * Read-only. Warning messages.
  * @type Number
- * @property WARNING
+ * #property WARNING
  * @default 2
  * @static
  **/
@@ -69,7 +69,7 @@ Log.WARNING = 2;
 /**
  * Read-only. Trace messages.
  * @type Number
- * @property TRACE
+ * #property TRACE
  * @default 3
  * @static
  **/
@@ -78,7 +78,7 @@ Log.TRACE = 3;
 /**
  * Read-only. Output all messages.
  * @type Number
- * @property ALL
+ * #property ALL
  * @default 255
  * @static
  **/
@@ -94,7 +94,7 @@ Log.ALL = 255;
  * appropriately. This is to allow, for example, functions that log all messages to a server, but only display
  * messages under the current level in the UI.
  * @type Function
- * @property out
+ * #property out
  * @static
  **/
 Log.out = function(message, details, level) {
@@ -108,14 +108,14 @@ Log.out = function(message, details, level) {
  * Specifies the level of messages to output. For example, if you set <code>Log.level = Log.WARNING</code>, then any 
  * messages with a level of 2 (Log.WARNING) or less (ex. Log.ERROR) will be output. Defaults to Log.ALL.
  * @type Function
- * @property out
+ * #property out
  * @default 255
  * @static
  **/
 Log.level = 255;
 
 /**
- * @property _keys
+ * #property _keys
  * @static
  * @type Array
  * @protected
@@ -130,7 +130,7 @@ Log._keys = [];
  * Log.error( "MY_ERROR" , 5 ); // outputs "This is a description of my error [5]"
  * @param {Object} keys The generic object defining the keys and messages.
  * @static
- * @method addKeys
+ * #method addKeys
  **/
 Log.addKeys = function(keys) {
 	Log._keys.unshift(keys);
@@ -143,7 +143,7 @@ Log.addKeys = function(keys) {
  * @param {String} details Any details associated with this message.
  * @param {Number} level A number between 1 and 254 specifying the severity of this message. See Log.level for details.
  * @static
- * @method error
+ * #method error
  **/
 Log.log = function(message, details, level) {
 	var out = Log.out;

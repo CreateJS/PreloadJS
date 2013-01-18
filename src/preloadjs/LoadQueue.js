@@ -31,11 +31,11 @@
  * HTML tags, as well as XHR. By default, PreloadJS will try and load content using XHR, since it provides better
  * support for progress and completion events, however due to cross-domain issues, it may still be preferable to use
  * tag-based loading instead. Note that some content requires XHR to work (plain text, web audio), and some requires
- * tags (HTML audio).
+ * tags (HTML audio).  Note this is handled automatically where possible.
  *
  * PreloadJS currently supports all modern browsers, and we have done our best to include support for most older
- * browsers is included. If you find an issue with any specific OS/browser combination, please visit
- * http://community.createjs.com/ and report it.
+ * browsers. If you find an issue with any specific OS/browser combination, please visit http://community.createjs.com/
+ * and report it.
  *
  * <h4>Getting Started</h4>
  * To get started, check out the {{#crossLink "LoadQueue"}}{{/crossLink}} class, which includes a quick overview of how
@@ -45,7 +45,7 @@
  *      var queue = new createjs.LoadQueue();
  *      queue.installPlugin(createjs.SoundJS);
  *      queue.addEventListener("complete", handleComplete);
- *      queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});</code>
+ *      queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
  *      queue.loadManifest([
  *          {id: "myImage", src:"path/to/myImage.jpg"}
  *      ]);
@@ -90,7 +90,7 @@ TODO: WINDOWS ISSUES
 	 *
 	 * <b>Creating a Queue</b><br />
 	 * To use LoadQueue, create a LoadQueue instance. If you want to force tag loading where possible, set the useXHR
-	 * argument to true.
+	 * argument to false.
 	 *
 	 *      var queue = new LoadQueue(true);
 	 *
@@ -191,16 +191,16 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * Time in milliseconds to assume a load has failed.
-	 * @property TIMEOUT_TIME
+	 * @property LOAD_TIMEOUT
 	 * @type {Number}
 	 * @default 8000
 	 * @static
 	 */
-	s.TIMEOUT_TIME = 8000;
+	s.LOAD_TIMEOUT = 8000;
 
 // Preload Types
 	/**
-	 * The preload type for generic binary types. Note that images and sound files are also treated as binary.
+	 * The preload type for generic binary types. Note that images and sound files are treated as binary.
 	 * @property BINARY
 	 * @type {String}
 	 * @default binary
@@ -238,7 +238,7 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
-	 * SCRIPT tag.
+	 * JavaScript object.
 	 * @property JSON
 	 * @type {String}
 	 * @default json
@@ -255,7 +255,8 @@ TODO: WINDOWS ISSUES
 	 */
 	s.SOUND = "sound";
 
-	/** The preload type for SVG files.
+	/**
+     * The preload type for SVG files.
 	 * @property SVG
 	 * @type {String}
 	 * @default svg
@@ -299,7 +300,7 @@ TODO: WINDOWS ISSUES
 	p.useXHR = true;
 
 	/**
-	 * Stop processing the current queue when an error is encountered.
+	 * Does LoadQueue stop processing the current queue when an error is encountered.
 	 * @property stopOnError
 	 * @type {Boolean}
 	 * @default false
@@ -358,7 +359,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Object} item The file item which was specified in the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
 	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}} call. If only a string path or tag was specified, the
 	 * object will contain that value as a property.
-	 * @param {Number} loaded The number of bytes that have been loaded. Note that this may just be the a percentage of 1.
+	 * @param {Number} loaded The number of bytes that have been loaded. Note that this may just be a percentage of 1.
 	 * @param {Number} total The total number of bytes. If it is unknown, the value is 1.
 	 * @param {Number} percent The percentage that has been loaded. This will be a number between 0 and 1.
 	 * @since 0.3.0
@@ -374,7 +375,7 @@ TODO: WINDOWS ISSUES
 	p.onFileLoad = null;
 
 	/**
-	 * The callback that is fired when an individual file progress changes.
+	 * The callback that is fired when an individual files progress changes.
 	 * @property onFileProgress
 	 * @type {Function}
 	 * @deprecated In favour of the "fileprogress" event. Will be removed in a future version.
@@ -567,7 +568,7 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * Stops all queued and loading items, and clears the queue. This also removes all internal references to loaded
-	 * content, and allowed the queue to be used again. Items that have not yet started can be kicked off again using
+	 * content, and allows the queue to be used again. Items that have not yet started can be kicked off again using
 	 * the {{#crossLink "AbstractLoader/load"}}{{/crossLink}} method.
 	 * @method removeAll
 	 * @since 0.3.0
@@ -700,8 +701,10 @@ TODO: WINDOWS ISSUES
 	 * (png, mp3, etc). Currently, only one plugin can exist per type/extension. Plugins must return an object containing:
 	 *  <ul><li>callback: The function to call</li>
 	 *      <li>types: An array of types to handle</li>
-	 *      <li>extensions: An array of extensions to handle. This is overriden by type handlers.</li></ul>
-	 * Note that even though a plugin might match both a type and extension handler, only one of them is fired.
+	 *      <li>extensions: An array of extensions to handle. This only fires if an applicable type handler has not fired.</li></ul>
+	 * Note that even though a plugin might match both a type and extension handler, the type handler takes priority and
+     * is the only one that gets fired.  For example if you have a handler for type=sound, and a handler for extension=mp3,
+     * only the type handler would fire when an mp3 file is loaded.
 	 * @method installPlugin
 	 * @param {Function} plugin The plugin to install
 	 */
@@ -722,8 +725,8 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * Set the maximum number of concurrent connections. Note that browsers and servers may have a built-in maximum
-	 * number of open connections, so any additional connections may stay remain in a pending state until the browser
-	 * opens the connection. Note that when loading scripts using tags, and <code>maintainScriptOrder=true</code>, only
+	 * number of open connections, so any additional connections may remain in a pending state until the browser
+	 * opens the connection. Note that when loading scripts using tags, with <code>maintainScriptOrder=true</code>, only
 	 * one script is loaded at a time due to browser limitations.
 	 * @method setMaxConnections
 	 * @param {Number} value The number of concurrent loads to allow. By default, only a single connection per LoadQueue
@@ -746,7 +749,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Object | String} file The file object or path to load. A file can be either
      * <ol>
      *     <li>a path to a resource (string). Note that this kind of load item will be
-     *     converted to an object (next item) in the background.</li>
+     *     converted to an object (see below) in the background.</li>
      *     <li>OR an object that contains:<ul>
      *         <li>src: The source of the file that is being loaded. This property is <b>required</b>. The source can
 	 *         either be a string (recommended), or an HTML tag.</li>

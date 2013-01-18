@@ -155,12 +155,12 @@ this.createjs = this.createjs||{};
 		this._request.ontimeout = createjs.proxy(this._handleTimeout,  this);
 		// Set up a timeout if we don't have XHR2
 		if (this._xhrLevel == 1) {
-			this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout,  this), createjs.PreloadJS.TIMEOUT_TIME);
+			this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout,  this), createjs.LoadQueue.LOAD_TIMEOUT);
 		}
 
 		// Note: We don't get onload in all browsers (earlier FF and IE). onReadyStateChange handles these.
 		this._request.onload = createjs.proxy(this._handleLoad,  this);
-		this._request.onreadystatechange = this._handleReadyStateChange(this);
+		this._request.onreadystatechange = this._handleReadyStateChange(this);  // OJR this is breaking in IE8 and 7, SCRIPT16385: Not implemented
 
 		try { // Sometimes we get back 404s immediately, particularly when there is a cross origin request.
 			this._request.send();
@@ -486,7 +486,7 @@ this.createjs = this.createjs||{};
 		var xml;
 		if (window.DOMParser) {
 			var parser = new DOMParser();
-			xml = parser.parseFromString(text, type);
+			xml = parser.parseFromString(text, type);  // OJR Opera throws DOMException: NOT_SUPPORTED_ERR  // potential solution https://gist.github.com/1129031
 		} else { // IE
 			xml = new ActiveXObject("Microsoft.XMLDOM");
 			xml.async = false;

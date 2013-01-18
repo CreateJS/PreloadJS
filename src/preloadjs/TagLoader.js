@@ -41,7 +41,7 @@ this.createjs = this.createjs||{};
 	 * content cross-domain without security errors, whereas anything loaded with XHR has potential issues with cross-
 	 * domain requests.
 	 *
-	 * Note that for audio tags, TagLoader relies on the <code>canPlayThrough</code> event, which fires when the buffer
+	 * Note for audio tags, TagLoader relies on the <code>canPlayThrough</code> event, which fires when the buffer
 	 * is full enough to play the audio all the way through at the current download speed. This completely preloads most
 	 * sound effects, however longer tracks like background audio will only load a portion before the event is fired.
 	 * Most browsers (all excluding Chrome) will continue to preload once this is fired, so this is considered good
@@ -60,7 +60,7 @@ this.createjs = this.createjs||{};
 
 // Protected
 	/**
-	 * The timeout that is fired if nothing is loaded after a certain delay. See the <code>LoadQueue.TIMEOUT_TIME</code>
+	 * The timeout that is fired if nothing is loaded after a certain delay. See the <code>LoadQueue.LOAD_TIMEOUT</code>
 	 * for the timeout duration.
 	 * @property _loadTimeout
 	 * @type {Number}
@@ -78,8 +78,7 @@ this.createjs = this.createjs||{};
 	p._tagCompleteProxy = null;
 
 	/**
-	 * Determines if the load item is an audio tag, since there is some specific approaches we need to take to properly
-	 * load audio.
+	 * Determines if the load item is an audio tag, since we take some specific approaches to properly load audio.
 	 * @property _isAudio
 	 * @type {Boolean}
 	 * @default false
@@ -128,7 +127,7 @@ this.createjs = this.createjs||{};
 
 		// In case we don't get any events.
 		clearTimeout(this._loadTimeout); // Clear out any existing timeout
-		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), createjs.LoadQueue.TIMEOUT_TIME);
+		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), createjs.LoadQueue.LOAD_TIMEOUT);
 
 		if (this._isAudio) {
 			tag.src = null; // Unset the source so we can set the preload type to "auto" without kicking off a load. This is only necessary for audio tags passed in by the developer.

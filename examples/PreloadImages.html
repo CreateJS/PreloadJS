@@ -3,15 +3,29 @@
 <head>
     <title>Preload Images example</title>
 
-    <script src="./assets/easeljs-0.5.0.min.js"></script>
-    <script src="./assets/tweenjs-0.3.0.min.js"></script> 
-	<script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
-	<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+	<link rel="stylesheet" href="./assets/demoStyles.css" />
+</head>
+<body onload="init()">
 
-	<!-- We also provide hosted minified versions of all CreateJS libraries.
-	  http://code.createjs.com -->
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Image Gallery</h1>
+	    <p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click the image
+		    to view the next one. Note that when loading images locally, you need to ensure that PreloadJS
+		    uses tag loading to avoid cross-origin errors. Mouse interaction on images may not work locally either.</p>
+	</header>
+
+    <canvas id="myCanvas" width="960" height="400"></canvas>
+
+    <script src="./assets/easeljs-0.5.0.min.js"></script>
+    <script src="./assets/tweenjs-0.3.0.min.js"></script>
+    <script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+
+    <!-- We also provide hosted minified versions of all CreateJS libraries.
+      http://code.createjs.com -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
@@ -32,21 +46,21 @@
         var preload;
 
         function init() {
-        	if (window.top != window) {
-        		document.getElementById("header").style.display = "none";
-        	}
+            if (window.top != window) {
+                document.getElementById("header").style.display = "none";
+            }
 
-			manifest = [
-				{src:"./assets/image0.jpg", id:"image0"},
-				{src:"./assets/image1.jpg", id:"image1"},
-				{src:"./assets/image2.jpg", id:"image2"},
-				{src:"./assets/image3.jpg", id:"image3"}
-			];   
-			        
-            canvas = document.getElementById('myCanvas'); 
+            manifest = [
+                {src:"./assets/image0.jpg", id:"image0"},
+                {src:"./assets/image1.jpg", id:"image1"},
+                {src:"./assets/image2.jpg", id:"image2"},
+                {src:"./assets/image3.jpg", id:"image3"}
+            ];
+
+            canvas = document.getElementById('myCanvas');
             update = false;
             stage = new createjs.Stage(canvas);
-            
+
             totalLoaded = 0;
             borderPadding = 10;
 
@@ -59,8 +73,8 @@
 
             imageContainer = new createjs.Container();
             imageContainer.x = 430;
-            imageContainer.y = 200;  
-			
+            imageContainer.y = 200;
+
             loaderWidth = 300;
             stage.addChild(imageContainer);
 
@@ -71,14 +85,14 @@
             loaderBar.addChild(bgBar);
             loaderBar.addChild(bar);
             loaderBar.x = canvas.width - loaderWidth>>1;
-			loaderBar.y = canvas.height - barHeight>>1;
+            loaderBar.y = canvas.height - barHeight>>1;
 
             stage.addChild(loaderBar);
 
-            preload = new createjs.PreloadJS(false);
+            preload = new createjs.LoadQueue(false);
 
-			// Use this instead to use tag loading
-			//preload = new createjs.PreloadJS(false);
+            // Use this instead to use tag loading
+            //preload = new createjs.PreloadJS(false);
 
             preload.addEventListener("progress", handleProgress);
             preload.addEventListener("complete", handleComplete);
@@ -86,14 +100,14 @@
             preload.loadManifest(manifest);
 
             stage.update();
-	        
-			createjs.Ticker.setFPS(30);
-	        createjs.Ticker.addListener(stage);
+
+            createjs.Ticker.setFPS(30);
+            createjs.Ticker.addListener(stage);
         }
 
         function stop() {
-	        createjs.Ticker.removeListener(window);
-	        if (preload != null) { preload.close(); }
+            createjs.Ticker.removeListener(window);
+            if (preload != null) { preload.close(); }
         }
 
         function handleProgress(event) {
@@ -102,8 +116,8 @@
 
         function handleFileLoad(event) {
             var img = new Image();
-            img.src = event.src;
             img.onload = handleLoadComplete;
+            img.src = event.item.src;
         }
 
         function handleLoadComplete(event) {
@@ -135,14 +149,14 @@
 
             imageContainer.addChild(movieClip);
             update = true;
-            totalLoaded += 1; 
-			  
+            totalLoaded += 1;
+
 
             if (totalLoaded == manifest.length) {
                 update = false;
                 stage.update();
             }
-        }  
+        }
 
         function handlePress(event) {
             currentItem = event.target.parent;
@@ -166,8 +180,8 @@
             stage.update();
         }
 
-        function handleComplete(event) {                        
-            loaderBar.visible = false;  
+        function handleComplete(event) {
+            loaderBar.visible = false;
         }
 
         function tick() {
@@ -177,17 +191,6 @@
         }
 
     </script>
-	<link rel="stylesheet" href="./assets/demoStyles.css" />
-</head>
-<body onload="init()">
 
-	<header id="header" class="PreloadJS">
-	    <h1><span class="text-product">Preload<strong>JS</strong></span> Image Gallery</h1>
-	    <p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click the image
-		    to view the next one. Note that when loading images locally, you need to ensure that PreloadJS
-		    uses tag loading to avoid cross-origin errors. Mouse interaction on images may not work locally either.</p>
-	</header>
-
-    <canvas id="myCanvas" width="960" height="400"></canvas>  
 </body>
 </html>
