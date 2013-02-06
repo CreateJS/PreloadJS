@@ -160,9 +160,10 @@ this.createjs = this.createjs||{};
 
 		// Note: We don't get onload in all browsers (earlier FF and IE). onReadyStateChange handles these.
 		this._request.onload = createjs.proxy(this._handleLoad,  this);
-		this._request.onreadystatechange = this._handleReadyStateChange(this);  // OJR this is breaking in IE8 and 7, SCRIPT16385: Not implemented
+		if(this._request.onreadystatechange) {this._request.onreadystatechange = this._handleReadyStateChange(this);}  
 
-		try { // Sometimes we get back 404s immediately, particularly when there is a cross origin request.
+        // Sometimes we get back 404s immediately, particularly when there is a cross origin request.  // note this does not catch in Chrome
+		try {
 			this._request.send();
 		} catch (error) {
 			this._sendError({source:error});
@@ -261,7 +262,7 @@ this.createjs = this.createjs||{};
 	 */
 	p._handleTimeout = function(event) {
 		this._clean();
-		this._sendError();
+		this._sendError({reason:"PRELOAD_TIMEOUT"});
 	};
 
 
@@ -339,7 +340,7 @@ this.createjs = this.createjs||{};
         var crossdomain = (target.hostname != "") && (target.port != host.port || target.protocol != host.protocol || target.hostname != host.hostname);
 
 		// Create the request. Fall back to whatever support we have.
-        var req;
+        var req = null;
         if (crossdomain && window.XDomainRequest) {
             req = new XDomainRequest(); // Note: IE9 will fail if this is not actually cross-domain.
         } else if (window.XMLHttpRequest) { // Old IE versions use a different approach
@@ -483,7 +484,7 @@ this.createjs = this.createjs||{};
 	 * @private
 	 */
 	p._parseXML = function(text, type) {
-		var xml;
+		var xml = null;
 		if (window.DOMParser) {
 			var parser = new DOMParser();
 			xml = parser.parseFromString(text, type);  // OJR Opera throws DOMException: NOT_SUPPORTED_ERR  // potential solution https://gist.github.com/1129031

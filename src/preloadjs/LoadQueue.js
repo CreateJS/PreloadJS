@@ -28,10 +28,12 @@
 */
 /**
  * PreloadJS provides a consistent way to preload content for use in HTML applications. Preloading can be done using
- * HTML tags, as well as XHR. By default, PreloadJS will try and load content using XHR, since it provides better
- * support for progress and completion events, however due to cross-domain issues, it may still be preferable to use
- * tag-based loading instead. Note that some content requires XHR to work (plain text, web audio), and some requires
- * tags (HTML audio).  Note this is handled automatically where possible.
+ * HTML tags, as well as XHR.
+ *
+ * By default, PreloadJS will try and load content using XHR, since it provides better support for progress and
+ * completion events, <b>however due to cross-domain issues, it may still be preferable to use tag-based loading
+ * instead</b>. Note that some content requires XHR to work (plain text, web audio), and some requires tags (HTML audio).
+ * Note this is handled automatically where possible.
  *
  * PreloadJS currently supports all modern browsers, and we have done our best to include support for most older
  * browsers. If you find an issue with any specific OS/browser combination, please visit http://community.createjs.com/
@@ -43,14 +45,14 @@
  *
  * <h4>Example</h4>
  *      var queue = new createjs.LoadQueue();
- *      queue.installPlugin(createjs.SoundJS);
+ *      queue.installPlugin(createjs.Sound);
  *      queue.addEventListener("complete", handleComplete);
  *      queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
  *      queue.loadManifest([
  *          {id: "myImage", src:"path/to/myImage.jpg"}
  *      ]);
  *      function handleComplete() {
- *          createjs.Sound.play("mySound");
+ *          createjs.Sound.play("sound");
  *          var image = queue.getResult("myImage");
  *          document.body.appendChild(image);
  *      }
@@ -72,7 +74,6 @@ this.createjs = this.createjs||{};
 /*
 TODO: WINDOWS ISSUES
 	* No error for HTML audio in IE 678
-	* SVG in IE678 TAGS adds null object to stage. (LM: Should be resolved)
 	* SVG no failure error in IE 67 (maybe 8) TAGS AND XHR
 	* No script complete handler in IE 67 TAGS (XHR is fine)
 	* No XML/JSON in IE6 TAGS
@@ -92,7 +93,7 @@ TODO: WINDOWS ISSUES
 	 * To use LoadQueue, create a LoadQueue instance. If you want to force tag loading where possible, set the useXHR
 	 * argument to false.
 	 *
-	 *      var queue = new LoadQueue(true);
+	 *      var queue = new createjs.LoadQueue(true);
 	 *
 	 * <b>Listening for Events</b><br />
 	 * Add any listeners you want to the queue. Since PreloadJS 0.3.0, the {{#crossLink "EventDispatcher"}}{{/crossLink}}
@@ -804,7 +805,7 @@ TODO: WINDOWS ISSUES
 	 * true, the queue will resume automatically.
 	 */
 	p.loadManifest = function(manifest, loadNow) {
-		var data;
+		var data = null;
 
 		if (manifest instanceof Array) {
 			if (manifest.length == 0) {
@@ -821,7 +822,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		for (var i=0, l=data.length; i<l; i++) {
-			this._addItem(data[i], false);
+			this._addItem(data[i]);
 		}
 
 		if (loadNow !== false) {
@@ -946,7 +947,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._createLoadItem = function(value) {
-		var item;
+		var item = null;
 
 		// Create/modify a load item
 		switch(typeof(value)) {
@@ -969,8 +970,6 @@ TODO: WINDOWS ISSUES
 				break;
 		}
 
-		// Once its loaded, the item will contain a result.
-		item.result = null;
 		var match = this._parseURI(item.src);
 		if (match != null) { item.ext = match[5]; }
 		if (item.type == null) {
@@ -1043,7 +1042,7 @@ TODO: WINDOWS ISSUES
 				useXHR = true; // Always use XHR2 with text/XML
 				break;
 			case createjs.LoadQueue.SOUND:
-				useXHR = false; // Never load audio using XHR. WebAudio will be loaded as a BINARY type.
+				useXHR = false; // Never load audio using XHR. WebAudio will provide its own loader.
 				break;
 			// Note: IMAGE, CSS, SCRIPT, SVG can all use TAGS or XHR.
 		}
@@ -1095,8 +1094,8 @@ TODO: WINDOWS ISSUES
 				this._currentlyLoadingScript = true;
 			}
 			this._loadQueue.splice(i, 1);
-			this._loadItem(loader);
-			i--; l--;
+            this._loadItem(loader);
+  			i--; l--;
 		}
 	};
 
@@ -1283,7 +1282,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._createTag = function(type) {
-		var tag;
+		var tag = null;
 		switch (type) {
 			case createjs.LoadQueue.IMAGE:
 				return document.createElement("img");

@@ -164,7 +164,8 @@ this.createjs = this.createjs||{};
 		// It is important that this happens AFTER setting the src/data.
 		if (item.type == createjs.LoadQueue.SVG || item.type == createjs.LoadQueue.JAVASCRIPT || item.type == createjs.LoadQueue.CSS) {
 			(document.body || document.getElementsByTagName("body")[0]).appendChild(tag);
-			//TODO: Move SVG off-screen.
+			//TODO: Move SVG off-screen.  // OJR perhaps just make invisible until load completes  tag.style.display = "none"; did not work
+			// OJR tag.style.visibility = "hidden"; worked, but didn't appear necessary  remember to add "visible" to _handleLoad
 		}
 
 		// Note: Previous versions didn't seem to work when we called load() for OGG tags in Firefox. Seems fixed in 15.0.1
