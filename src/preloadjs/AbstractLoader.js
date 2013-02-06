@@ -247,8 +247,8 @@ this.createjs = this.createjs||{};
 	 */
 	p._sendProgress = function(value) {
 		if (this._isCanceled()) { return; }
-		var event;
-		if (value instanceof Number) {
+		var event = null;
+		if (typeof(value) == "number") {
 			this.progress = value;
 			event = {loaded:this.progress, total:1};
 		} else {
