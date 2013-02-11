@@ -22,7 +22,7 @@
 		<canvas id="testCanvas" width="960" height="400"></canvas>
 	</div>
 
-    <script src="./assets/easeljs-0.5.0.min.js"></script>
+    <script src="./assets/easeljs-0.6.0.min.js"></script>
 
     <!-- We also provide hosted minified versions of all CreateJS libraries.
     	  http://code.createjs.com -->
@@ -154,7 +154,7 @@
             stage.onMouseDown = handleJumpStart;
 
             createjs.Ticker.setFPS(40);
-            createjs.Ticker.addListener(window);
+            createjs.Ticker.addEventListener("tick", tick);
         }
 
         function handleJumpStart() {

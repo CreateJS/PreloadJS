@@ -16,8 +16,8 @@
 
     <canvas id="myCanvas" width="960" height="400"></canvas>
 
-    <script src="./assets/easeljs-0.5.0.min.js"></script>
-    <script src="./assets/tweenjs-0.3.0.min.js"></script>
+    <script src="./assets/easeljs-0.6.0.min.js"></script>
+    <script src="./assets/tweenjs-0.4.0.min.js"></script>
     <script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
     <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
     <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
@@ -33,17 +33,14 @@
 
         var loaderBar;
         var stage;
-        var bar;
-        var lc;
-        var offset;
+        var bar;   
         var imageContainer;
         var currentImage;
-        var update;
-        var borderPadding;
         var loaderWidth;
         var loaderColor;
-        var totalLoaded;
+  		var borderPadding;
         var preload;
+		var oldItem;
 
         function init() {
             if (window.top != window) {
@@ -58,14 +55,13 @@
             ];
 
             canvas = document.getElementById('myCanvas');
-            update = false;
             stage = new createjs.Stage(canvas);
-
-            totalLoaded = 0;
+			stage.enableMouseOver(10);
+   
             borderPadding = 10;
 
             var barHeight = 20;
-            loaderColor = createjs.Graphics.getRGB(0,0,0);
+            loaderColor = createjs.Graphics.getRGB(247,247,247);
             loaderBar = new createjs.Container();
 
             bar = new createjs.Shape();
@@ -82,10 +78,9 @@
             var padding = 3
             bgBar.graphics.setStrokeStyle(1).beginStroke(loaderColor).drawRect(-padding/2, -padding/2, loaderWidth+padding, barHeight+padding);
 
-            loaderBar.addChild(bgBar);
-            loaderBar.addChild(bar);
             loaderBar.x = canvas.width - loaderWidth>>1;
-            loaderBar.y = canvas.height - barHeight>>1;
+            loaderBar.y = canvas.height - barHeight>>1; 
+			loaderBar.addChild(bar, bgBar);    
 
             stage.addChild(loaderBar);
 
@@ -99,14 +94,11 @@
             preload.addEventListener("fileload", handleFileLoad);
             preload.loadManifest(manifest);
 
-            stage.update();
-
             createjs.Ticker.setFPS(30);
-            createjs.Ticker.addListener(stage);
         }
 
         function stop() {
-            createjs.Ticker.removeListener(window);
+            createjs.Ticker.removeEventListener("tick", tick);
             if (preload != null) { preload.close(); }
         }
 
@@ -121,73 +113,51 @@
         }
 
         function handleLoadComplete(event) {
-
             var movieClip = new createjs.Container();
-            var bmp = new createjs.Bitmap(this);
             var _w = this.width;
             var _h = this.height;
-
+			
+			var bmp = new createjs.Bitmap(this);
             bmp.scaleX = bmp.scaleY = .75;
             bmp.regX = _w/2;
             bmp.regY = _h/2;
-            bmp.onPress = handlePress;
+            bmp.addEventListener("click", handleClick);
             bmp.rotation = Math.random() * 16 - 8;
+			bmp.cursor = "pointer";
 
             var border = new createjs.Shape();
-            border.graphics.beginFill("#FFFFFF").drawRect(0, 0, _w+borderPadding, _h+borderPadding).endFill();
+            border.graphics.beginFill("#FFFFFF").drawRect(0, 0, _w + borderPadding, _h + borderPadding).endFill();
             border.rotation = bmp.rotation;
             border.regX = _w/2;
             border.regY = _h/2;
-            bmp.x = bmp.y = (borderPadding/2) * bmp.scaleX;
+            
+			bmp.x = bmp.y = (borderPadding/2) * bmp.scaleX;
 
             border.scaleX = border.scaleY =  bmp.scaleX;
-
             border.shadow = new createjs.Shadow('#000000', 0, 0, 2.5);
 
-            movieClip.addChild(border);
-            movieClip.addChild(bmp);
+            movieClip.addChild(border, bmp);
 
-            imageContainer.addChild(movieClip);
-            update = true;
-            totalLoaded += 1;
-
-
-            if (totalLoaded == manifest.length) {
-                update = false;
-                stage.update();
-            }
+            imageContainer.addChild(movieClip); 
+			stage.update();     
         }
 
-        function handlePress(event) {
-            currentItem = event.target.parent;
-            update = true;
-            createjs.Tween.get(currentItem).to({y:-350}, 200).call(tweenUpComplete);
-        }
+        function handleClick(event) {
+           	currentItem = event.target.parent;
+            var tween = createjs.Tween.get(currentItem, {override:true}).to({y:-350}, 200).call(tweenUpComplete).to({y:0}, 500);
+			tween.addEventListener("change", handleTweenChange);
+        }        
+		
+		function handleTweenChange(tween) {
+			stage.update();           
+		}
 
         function tweenUpComplete() {
             imageContainer.addChildAt(currentItem, 0);
-            createjs.Tween.get(currentItem).to({y:0}, 500).call(tweenDownComplete);
-        }
-
-        function tweenDownComplete() {
-            stage.update();
-            update = false;
-        }
-
-        function handleMove(event) {
-            currentItem.x = event.stageX+offset.x;
-            currentItem.y = event.stageY+offset.y;
-            stage.update();
         }
 
         function handleComplete(event) {
             loaderBar.visible = false;
-        }
-
-        function tick() {
-            if (update) {
-                stage.update();
-            }
         }
 
     </script>
