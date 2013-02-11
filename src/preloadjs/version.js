@@ -17,7 +17,7 @@ o = (o.PreloadJS = o.PreloadJS||{});
  * @type String
  * @static
  **/
-o.version = /*version*/"NEXT"; // injected by build process
+o.version = /*version*/"0.3.0"; // injected by build process
 
 /**
  * The build date for this release in UTC format.
@@ -25,6 +25,6 @@ o.version = /*version*/"NEXT"; // injected by build process
  * @type String
  * @static
  **/
-o.buildDate = /*date*/"Wed, 06 Feb 2013 18:50:05 GMT"; // injected by build process
+o.buildDate = /*date*/"Mon, 11 Feb 2013 22:31:39 GMT"; // injected by build process
 
 })();
