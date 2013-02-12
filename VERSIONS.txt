@@ -1,4 +1,4 @@
-Version NEXT [Jan XX 2013]
+Version NEXT [Feb 13, 2013]
 ****************************************************************************************************
 - Class name changed from createjs.PreloadJS to createjs.LoadQueue.
 - Added versions file that is automatically updated via the build process, which provides run-time
