@@ -1335,6 +1335,8 @@ TODO: WINDOWS ISSUES
 				return createjs.LoadQueue.IMAGE;
 			case "ogg":
 			case "mp3":
+			case "m4a":
+			case "aac":
 			case "wav":
 				return createjs.LoadQueue.SOUND;
 			case "json":
