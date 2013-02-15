@@ -857,7 +857,6 @@ TODO: WINDOWS ISSUES
 	 * @return {Object} A result object containing the content that was loaded, such as:
      * <ul>
 	 *      <li>An image tag (&lt;image /&gt;) for images</li>
-	 *      <li>An audio tag (&lt;audio &gt;) for audio</li>
 	 *      <li>A script tag for JavaScript (&lt;script /&gt;). Note that scripts loaded with tags may be added to the
 	 *      HTML head.</li>
 	 *      <li>A style tag for CSS (&lt;style /&gt;)</li>
@@ -865,6 +864,9 @@ TODO: WINDOWS ISSUES
 	 *      <li>A formatted JavaScript object defined by JSON</li>
 	 *      <li>An XML document</li>
 	 *      <li>An binary arraybuffer loaded by XHR</li>
+	 *      <li>An audio tag (&lt;audio &gt;) for HTML audio. Note that it is recommended to use SoundJS APIs to play
+	 *      loaded audio. Specifically, audio loaded by Flash and WebAudio will return a loader object using this method
+	 *      which can not be used to play audio back.</li>
 	 * </ul>
      * This object is also returned via the "fileload" event as the "item" parameter. Note that if a raw result is
 	 * requested, but not found, the result will be returned instead.
