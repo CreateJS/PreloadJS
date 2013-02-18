@@ -1,0 +1,5 @@
+SetEnvIf Request_URI "/assets/" is_static_asset
+Header set Access-Control-Allow-Origin "*" env=is_static_asset
+Header set Access-Control-Allow-Headers "*" env=is_static_asset
+Header set Access-Control-Allow-Methods "GET" env=is_static_asset
+
