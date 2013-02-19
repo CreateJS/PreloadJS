@@ -605,7 +605,7 @@ TODO: WINDOWS ISSUES
 				this._disposeItem(this._loadItemsById[n]);
 			}
 
-			this.initialize(this.useXHR);
+			this.init(this.useXHR);
 
 		// Remove specific items
 		} else {

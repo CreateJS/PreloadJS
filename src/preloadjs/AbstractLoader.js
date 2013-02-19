@@ -197,7 +197,7 @@ this.createjs = this.createjs||{};
 
 	/**
 	 * Initialize the loader. This is called by the constructor.
-	 * @method initialize
+	 * @method init
 	 * @private
 	 */
 	p.init = function () {};
