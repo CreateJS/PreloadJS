@@ -1,4 +1,8 @@
-Version NEXT [Feb 13, 2013]
+Version NEXT [Not Released]
+****************************************************************************************************
+- Fix for removeAll method
+
+Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************
 - Class name changed from createjs.PreloadJS to createjs.LoadQueue.
 - Added versions file that is automatically updated via the build process, which provides run-time
