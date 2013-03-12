@@ -1,6 +1,11 @@
 Version NEXT [Not Released]
 ****************************************************************************************************
 - Fix for removeAll method
+- Updated file validation RegExp. Supports double-byte characters, prevents partial matches, better
+	support for relative paths, improved matching of domains, and modified the "file name" match to
+	include the extension (file.mp3 instead of file). The match arguments have not changed otherwise.
+	Also used the "extended" argument to make the pattern more readable.
+- Extension comparisons are now case-insensitive
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************

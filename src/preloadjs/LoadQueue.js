@@ -973,7 +973,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		var match = this._parseURI(item.src);
-		if (match != null) { item.ext = match[5]; }
+		if (match != null) { item.ext = match[5].toLowerCase(); }
 		if (item.type == null) {
 			item.type = this._getTypeByExtension(item.ext);
 		}
@@ -1327,7 +1327,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._getTypeByExtension = function(extension) {
-		switch (extension) {
+		switch (extension.toLowerCase()) {
 			case "jpeg":
 			case "jpg":
 			case "gif":
