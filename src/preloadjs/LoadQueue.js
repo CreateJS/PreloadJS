@@ -973,7 +973,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		var match = this._parseURI(item.src);
-		if (match != null) { item.ext = match[5].toLowerCase(); }
+		if (match != null) { item.ext = match[5]; }
 		if (item.type == null) {
 			item.type = this._getTypeByExtension(item.ext);
 		}
@@ -1015,7 +1015,7 @@ TODO: WINDOWS ISSUES
 
 			// Update the extension in case the type changed:
 			match = this._parseURI(item.src);
-			if (match != null) { item.ext = match[5]; }
+			if (match != null && match[5] != null) { item.ext = match[5].toLowerCase(); }
 		}
 
 		// Store the item for lookup. This also helps clean-up later.
