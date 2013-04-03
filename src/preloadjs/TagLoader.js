@@ -95,6 +95,14 @@ this.createjs = this.createjs||{};
 	 */
 	p._tag = null;
 
+	/**
+	 * When loading a JSONP request this will be the parsed JSON result.
+	 *
+	 * @type {Object}
+	 * @private
+	 */
+	p._jsonResult = null;
+
 	// Overrides abstract method in AbstractLoader
 	p.init = function (item) {
 		this._item = item;
@@ -107,10 +115,14 @@ this.createjs = this.createjs||{};
 	 * Get the loaded content. This is usually an HTML tag or other tag-style object that has been fully loaded. If the
 	 * loader is not complete, this will be null.
 	 * @method getResult
-	 * @return {HTMLImageElement | HTMLAudioElement} The loaded and parsed content.
+	 * @return {HTMLImageElement | HTMLAudioElement | Object} The loaded and parsed content.
 	 */
 	p.getResult = function() {
-		return this._tag;
+		if (this._item.type == createjs.LoadQueue.JSONP) {
+			return this._jsonResult;
+		} else {
+			return this._tag;
+		}
 	};
 
 	// Overrides abstract method in AbstractLoader
@@ -148,6 +160,10 @@ this.createjs = this.createjs||{};
 			tag.onreadystatechange = createjs.proxy(this._handleReadyStateChange,  this);
 		}
 
+		if (item.values) {
+			item.src = this._mergeGET(item.src, item.values);
+		}
+
 		// Set the src after the events are all added.
 		switch(item.type) {
 			case createjs.LoadQueue.CSS:
@@ -160,9 +176,26 @@ this.createjs = this.createjs||{};
 				tag.src = item.src;
 		}
 
+		// If we're loading JSONP, we need to add our callback now.
+		if (item.type == createjs.LoadQueue.JSONP) {
+			if (item.callback == null) {
+				throw new Error('callback is required for loading JSONP requests.');
+			}
+
+			if (window[item.callback] != null) {
+				throw new Error('JSONP callback "' + item.callback + '" already exists on window. You need to specify a different callback. Or re-name the current one.');
+			}
+
+			window[item.callback] = createjs.proxy(this._handleJSONPLoad, this);
+		}
+
 		// If its SVG, it needs to be on the DOM to load (we remove it before sending complete).
 		// It is important that this happens AFTER setting the src/data.
-		if (item.type == createjs.LoadQueue.SVG || item.type == createjs.LoadQueue.JAVASCRIPT || item.type == createjs.LoadQueue.CSS) {
+		if (item.type == createjs.LoadQueue.SVG ||
+			item.type == createjs.LoadQueue.JSONP ||
+			item.type == createjs.LoadQueue.JSON ||
+			item.type == createjs.LoadQueue.JAVASCRIPT ||
+			item.type == createjs.LoadQueue.CSS) {
 			(document.body || document.getElementsByTagName("body")[0]).appendChild(tag);
 			//TODO: Move SVG off-screen.  // OJR perhaps just make invisible until load completes  tag.style.display = "none"; did not work
 			// OJR tag.style.visibility = "hidden"; worked, but didn't appear necessary  remember to add "visible" to _handleLoad
@@ -172,6 +205,10 @@ this.createjs = this.createjs||{};
 		if (tag.load != null) {
 			tag.load();
 		}
+	};
+
+	p._handleJSONPLoad = function(data) {
+		this._jsonResult = data;
 	};
 
 	/**
@@ -237,9 +274,14 @@ this.createjs = this.createjs||{};
 		this.loaded = true;
 
 		// Remove from the DOM
-		if (item.type == createjs.LoadQueue.SVG) { // item.type == createjs.LoadQueue.CSS) {
-			//LM: We may need to remove CSS tags loaded using a LINK
-			(document.body || document.getElementsByTagName("body")[0]).removeChild(tag);
+		switch (item.type) {
+			case createjs.LoadQueue.SVG:
+			case createjs.LoadQueue.JSONP:
+				// case createjs.LoadQueue.CSS:
+				//LM: We may need to remove CSS tags loaded using a LINK
+				(document.body || document.getElementsByTagName("body")[0]).removeChild(tag);
+			break;
+			default:
 		}
 
 		this._clean();
@@ -247,7 +289,8 @@ this.createjs = this.createjs||{};
 	};
 
 	/**
-	 * Clean up the loader. This stops any timers and removes references to prevent errant callbacks and clean up memory.
+	 * Clean up the loader.
+	 * This stops any timers and removes references to prevent errant callbacks and clean up memory.
 	 * @method _clean
 	 * @private
 	 */
@@ -265,6 +308,11 @@ this.createjs = this.createjs||{};
 		//TODO: Test this
 		if (tag.parentNode) {
 			tag.parentNode.removeChild(tag);
+		}
+
+		var item = this.getItem();
+		if (item.type == createjs.LoadQueue.JSONP) {
+			window[item.callback] = null;
 		}
 	};
 

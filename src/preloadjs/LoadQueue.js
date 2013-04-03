@@ -68,7 +68,6 @@
 // namespace:
 this.createjs = this.createjs||{};
 
-//TODO: JSONP support?
 //TODO: addHeadTags support
 
 /*
@@ -248,6 +247,16 @@ TODO: WINDOWS ISSUES
 	s.JSON = "json";
 
 	/**
+	 * The preload type for jsonp files, usually with the "json" file extension.
+	 * You are required to pass a callback parameter when loading jsonp.
+	 * @property JSON
+	 * @type {String}
+	 * @default json
+	 * @static
+	 */
+	s.JSONP = "jsonp";
+
+	/**
 	 * The preload type for sound files, usually mp3, ogg, or wav. Audio is loaded into an AUDIO tag.
 	 * @property SOUND
 	 * @type {String}
@@ -283,6 +292,20 @@ TODO: WINDOWS ISSUES
 	 * @static
 	 */
 	s.XML = "xml";
+
+	/**
+	 * Defines a POST request, use for a method value when loading data.
+	 *
+	 * @type {string}
+	 */
+	s.POST = 'POST';
+
+	/**
+	 * Defines a GET request, use for a method value when loading data.
+	 *
+	 * @type {string}
+	 */
+	s.GET = 'GET';
 
 
 // Prototype
@@ -735,7 +758,7 @@ TODO: WINDOWS ISSUES
 	 */
 	p.setMaxConnections = function (value) {
 		this._maxConnections = value;
-		if (!this._paused) {
+		if (!this._paused && this._loadQueue.length > 0) {
 			this._loadNext();
 		}
 	}
@@ -757,10 +780,14 @@ TODO: WINDOWS ISSUES
      *         <li>type: The type of file that will be loaded (image, sound, json, etc). PreloadJS does auto-detection
 	 *         of types using the extension. Supported types are defined on LoadQueue, such as <code>LoadQueue.IMAGE</code>.
 	 *         It is recommended that a type is specified when a non-standard file URI (such as a php script) us used.</li>
-     *         <li>id: A string indentifier which can be used to reference the loaded object.</li>
+     *         <li>id: A string identifier which can be used to reference the loaded object.</li>
+	 *         <li>callback: Optional, used for JSONP requests, to define what method to call when the JSONP is loaded.</li>
      *         <li>data: An arbitrary data object, which is included with the loaded object</li>
+	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. Default; GET</li>
+	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
      *     </ul>
      * </ol>
+	 *
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
 	 * true, the queue will resume automatically.
@@ -978,6 +1005,14 @@ TODO: WINDOWS ISSUES
 			item.type = this._getTypeByExtension(item.ext);
 		}
 
+		if (item.type == createjs.LoadQueue.JSON && item.callback != null) {
+			item.type = createjs.LoadQueue.JSONP;
+		}
+
+		if (item.type == createjs.LoadQueue.JSONP && item.callback == null) {
+			throw new Error('callback is required for loading JSONP requests.');
+		}
+
 		// Create a tag for the item. This ensures there is something to either load with or populate when finished.
 		if (item.tag == null) {
 			item.tag = this._createTag(item.type);
@@ -1044,6 +1079,7 @@ TODO: WINDOWS ISSUES
 				useXHR = true; // Always use XHR2 with text/XML
 				break;
 			case createjs.LoadQueue.SOUND:
+			case createjs.LoadQueue.JSONP:
 				useXHR = false; // Never load audio using XHR. WebAudio will provide its own loader.
 				break;
 			// Note: IMAGE, CSS, SCRIPT, SVG can all use TAGS or XHR.
@@ -1169,15 +1205,15 @@ TODO: WINDOWS ISSUES
 			}
 		}
 
-		this._processFinishedLoad(item);
+		this._processFinishedLoad(item, loader);
 	}
 
-	p._processFinishedLoad = function(item) {
+	p._processFinishedLoad = function(item, loader) {
 		// Old handleFileTagComplete follows here.
 		this._numItemsLoaded++;
 
 		this._updateProgress();
-		this._sendFileComplete(item);
+		this._sendFileComplete(item, loader);
 
 		this._loadNext();
 	};
@@ -1293,6 +1329,7 @@ TODO: WINDOWS ISSUES
 				tag.autoplay = false;
 				// Note: The type property doesn't seem necessary.
 				return tag;
+			case createjs.LoadQueue.JSONP:
 			case createjs.LoadQueue.JAVASCRIPT:
 				tag = document.createElement("script");
 				tag.type = "text/javascript";
@@ -1384,13 +1421,15 @@ TODO: WINDOWS ISSUES
 	 * details on the event payload.
 	 * @method _sendFileComplete
 	 * @param {Object} item The item that is being loaded.
+	 * @param {TagLoader | XHRLoader}
 	 * @protected
 	 */
-	p._sendFileComplete = function(item) {
+	p._sendFileComplete = function(item, loader) {
 		if (this._isCanceled()) { return; }
 		var event = {
 			target: this,
 			type: "fileload",
+			loader: loader,
 			item: item,
 			result: this._loadedResults[item.id],
 			rawResult: this._loadedRawResults[item.id]

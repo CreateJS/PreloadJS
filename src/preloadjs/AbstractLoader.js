@@ -318,6 +318,58 @@ this.createjs = this.createjs||{};
 	};
 
 	/**
+	 * Formats an object into a query string for either a POST or GET request.
+	 *
+	 * @param data {Object} The data to convert to a query string.
+	 * @param query [Optional] {Array} Existing name/value pairs to append on to this query.
+	 * @private
+	 */
+	p._formatQueryString = function(data, query) {
+		if (data == null) {
+			throw new Error('You must specify data.');
+		}
+
+		var params = [];
+		for (var n in data) {
+			params.push(n+'='+escape(data[n]));
+		}
+
+		if (query) {
+			params = params.concat(query);
+		}
+
+		if  (params.length > 1) {
+			return params.join('&');
+		} else {
+			return params[0];
+		}
+	};
+
+	/**
+	 * Takes an existing path and appends on new data, while preserving any existing parameter's.
+	 *
+	 * @param src The source path to add values to.
+	 * @param data Object used to append values to this request.
+	 * @returns {string}
+	 * @private
+	 */
+	p._mergeGET = function(src, data) {
+		var query = [];
+		var idx = src.indexOf('?');
+
+		if (idx != -1) {
+			var q = src.slice(idx+1);
+			query = query.concat(q.split('&'));
+		}
+
+		if (idx != -1) {
+			return src.slice(0, idx) + '?' + this._formatQueryString(data, query);
+		} else {
+			return src + '?' + this._formatQueryString(data, query);
+		}
+	};
+
+	/**
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 */

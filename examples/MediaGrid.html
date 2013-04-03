@@ -54,7 +54,7 @@
 			<label>XML</label>
 		</div>
 
-		<div id="assets/gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:248px; float: right; overflow:hidden">
+		<div id="assets/gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:241px; float: right; overflow:hidden">
 			<label>SVG</label>
 		</div>
 
@@ -70,14 +70,17 @@
 			<label>Audio</label>
 		</div>
 
+        <div id="http://gskinner.com/assets/createjs/mapsJSONP.json" type="jsonp" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:55px; float: right; overflow:hidden">
+            <label>JSONP<br />(loaded from gskinner.com)</label>
+        </div>
+
 		<div id="assets/Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:150px">
 			<label>Image</label>
 		</div>
 
-		<div id="assets/NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:150px;">
+		<div id="assets/NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:100px;">
 			<label>Intentionally missing file<br/>to generate error.</label>
 		</div>
-
 	</div>
 
     <script type="text/javascript" src="./assets/soundjs-0.4.0.min.js"></script>
@@ -118,7 +121,14 @@
         function loadAsset(target) {
             var div = document.getElementById(target.id);
             div.innerHTML = "<label>Loading...</label>";
-            preload.loadFile(target.id);
+
+            var type = target.attributes.getNamedItem('type');
+
+            if (!type) {
+                preload.loadFile(target.id);
+            } else {
+                preload.loadFile({src:target.id, type:type.nodeValue, callback:'maps'});
+            }
         }
 
         // Once each file is loaded, show it. Each ID corresponds to the related DIV.
@@ -144,6 +154,7 @@
                     break;
 
                 case createjs.LoadQueue.JSON:
+                case createjs.LoadQueue.JSONP:
                 case createjs.LoadQueue.XML:
                     alert(result);
                     div.innerHTML = "<label>Complete :)</label>";
