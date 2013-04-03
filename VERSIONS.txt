@@ -6,6 +6,12 @@ Version NEXT [Not Released]
 	include the extension (file.mp3 instead of file). The match arguments have not changed otherwise.
 	Also used the "extended" argument to make the pattern more readable.
 - Extension comparisons are now case-insensitive
+- Added getAllResponseHeaders() and getResponseHeader() to XHRLoader
+- Added loader parameter to LoadQueue's fileload event.
+- Added support for JSONP
+- Changed; Now setting the result object to any JSON parse errors that occur.
+- Now allowing GET and POST requests. Pass a new values option when loading a file to send that data as a GET.  Or for a POST request set the new method value to POST.
+- Fixed an issue where setting max connections on an empty queue would trigger a complete event.
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************
