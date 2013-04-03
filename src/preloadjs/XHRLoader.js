@@ -168,9 +168,29 @@ this.createjs = this.createjs || {};
 
 		// Sometimes we get back 404s immediately, particularly when there is a cross origin request.  // note this does not catch in Chrome
 		try {
-			this._request.send();
+			if (!this._item.values || this._item.method == createjs.LoadQueue.GET) {
+				this._request.send();
+			} else if (this._item.method == createjs.LoadQueue.POST) {
+				this._request.send(this._formatQueryString(this._item.values));
+			}
 		} catch (error) {
 			this._sendError({source:error});
+		}
+	};
+
+	p.getAllResponseHeaders = function () {
+		if  (this._request.getAllResponseHeaders instanceof Function) {
+			return this._request.getAllResponseHeaders();
+		} else {
+			return null;
+		}
+	};
+
+	p.getResponseHeader = function (header) {
+		if (this._request.getResponseHeader instanceof Function) {
+			return this._request.getResponseHeader(header);
+		} else {
+			return null;
 		}
 	};
 
@@ -343,9 +363,14 @@ this.createjs = this.createjs || {};
 		// Check for cross-domain loads. We can't fully support them, but we can try.
 		var target = document.createElement("a");
 		target.href = item.src;
+
 		var host = document.createElement("a");
 		host.href = location.href;
-		var crossdomain = (target.hostname != "") && (target.port != host.port || target.protocol != host.protocol || target.hostname != host.hostname);
+
+		var crossdomain = (target.hostname != "") &&
+						 	(target.port != host.port ||
+							 target.protocol != host.protocol ||
+							 target.hostname != host.hostname);
 
 		// Create the request. Fall back to whatever support we have.
 		var req = null;
@@ -377,11 +402,21 @@ this.createjs = this.createjs || {};
 		// Determine the XHR level
 		this._xhrLevel = (typeof req.responseType === "string") ? 2 : 1;
 
+		if (item.values && item.method == createjs.LoadQueue.GET) {
+			item.src = this._mergeGET(item.src, item.values);
+		}
+
 		// Open the request.  Set cross-domain flags if it is supported (XHR level 1 only)
-		req.open("GET", item.src, true);
+		req.open(item.method || createjs.LoadQueue.GET, item.src, true);
+
 		if (crossdomain && req instanceof XMLHttpRequest && this._xhrLevel == 1) {
 			req.setRequestHeader("Origin", location.origin);
 		}
+
+		// To send data we need to set the Content-type header)
+		 if (item.values && item.method == createjs.LoadQueue.POST) {
+			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		 }
 
 		// Binary files are loaded differently.
 		if (createjs.LoadQueue.isBinary(item.type)) {
@@ -474,8 +509,7 @@ this.createjs = this.createjs || {};
 				try {
 					json = JSON.parse(this._response);
 				} catch (error) {
-					// Log error?
-					json = null;
+					json = error;
 				}
 
 				this._rawResponse = this._response;
