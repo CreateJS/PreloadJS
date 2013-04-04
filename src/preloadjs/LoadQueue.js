@@ -1148,6 +1148,7 @@ TODO: WINDOWS ISSUES
 		loader.addEventListener("complete", createjs.proxy(this._handleFileComplete, this));
 		loader.addEventListener("error", createjs.proxy(this._handleFileError, this));
 		this._currentLoads.push(loader);
+		this._sendFileStart(loader);
 		loader.load();
 	};
 
@@ -1390,6 +1391,22 @@ TODO: WINDOWS ISSUES
 				return createjs.LoadQueue.TEXT;
 		}
 	};
+	
+	/**
+	 * Dispatch a filestart event
+	 * @method _sendFileStart
+	 * @param {TagLoader | XHRLoader}
+	 * @protected
+	 */
+	p._sendFileStart = function(loader){
+		var event = {
+			target: this,
+			type: "filestart",
+			loader: loader
+		}
+		
+		this.dispatchEvent(event);
+	}
 
 	/**
 	 * Dispatch a fileprogress event (and onFileProgress callback). Please see the <code>LoadQueue.fileprogress</code>
