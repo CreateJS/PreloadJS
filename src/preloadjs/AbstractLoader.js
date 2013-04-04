@@ -110,11 +110,19 @@ this.createjs = this.createjs||{};
 	 */
 
 	/**
-	 * The event that is fired when a load starts.
+	 * The event that is fired when a load starts. This event has been deprecated in favour of the "loadstart" event.
 	 * @event loadStart
 	 * @param {Object} target The object that dispatched the event.
 	 * @param {String} type The event type.
 	 * @since 0.3.0
+	 * @deprecated in favour of the "loadstart" event.
+	 */
+	/**
+	 * The event that is fired when a load starts.
+	 * @event loadstart
+	 * @param {Object} target The object that dispatched the event.
+	 * @param {String} type The event type.
+	 * @since 0.3.1
 	 */
 
 	/**
@@ -226,7 +234,7 @@ this.createjs = this.createjs||{};
 
 //Callback proxies
 	/**
-	 * Dispatch a loadStart event (and onLoadStart callback). Please see the <code>AbstractLoader.loadStart</code> event
+	 * Dispatch a loadstart event (and onLoadStart callback). Please see the <code>AbstractLoader.loadstart</code> event
 	 * for details on the event payload.
 	 * @method _sendLoadStart
 	 * @protected
@@ -234,7 +242,8 @@ this.createjs = this.createjs||{};
 	p._sendLoadStart = function() {
 		if (this._isCanceled()) { return; }
 		this.onLoadStart && this.onLoadStart({target:this});
-		this.dispatchEvent("loadStart");
+		this.dispatchEvent("loadStart"); // DEPRECATED
+		this.dispatchEvent("loadstart");
 	};
 
 	/**

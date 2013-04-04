@@ -79,7 +79,6 @@ TODO: WINDOWS ISSUES
 	* Need to hide loading SVG in Opera TAGS
 	* No CSS onload/readystatechange in Safari or Android TAGS (requires rule checking)
 	* SVG no load or failure in Opera XHR
-	*
  */
 
 (function() {
@@ -387,6 +386,16 @@ TODO: WINDOWS ISSUES
 	 * @param {Number} total The total number of bytes. If it is unknown, the value is 1.
 	 * @param {Number} percent The percentage that has been loaded. This will be a number between 0 and 1.
 	 * @since 0.3.0
+	 */
+
+	/**
+	 * This event is fired when an individual file starts to load.
+	 * @event filestart
+	 * @param {Object} The object that dispatched the event.
+	 * @param {String} type The event type.
+	 * @param {Object} item The file item which was specified in the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
+	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}} call. If only a string path or tag was specified, the
+	 * object will contain that value as a property.
 	 */
 
 // Callbacks (deprecated)
@@ -1104,7 +1113,7 @@ TODO: WINDOWS ISSUES
 	p._loadNext = function() {
 		if (this._paused) { return; }
 
-		// Only dispatch loadStart event when the first file is loaded.
+		// Only dispatch loadstart event when the first file is loaded.
 		if (!this._loadStartWasDispatched) {
 			this._sendLoadStart();
 			this._loadStartWasDispatched = true;
@@ -1148,6 +1157,7 @@ TODO: WINDOWS ISSUES
 		loader.addEventListener("complete", createjs.proxy(this._handleFileComplete, this));
 		loader.addEventListener("error", createjs.proxy(this._handleFileError, this));
 		this._currentLoads.push(loader);
+		this._sendFileStart(loader.getItem());
 		loader.load();
 	};
 
@@ -1421,7 +1431,7 @@ TODO: WINDOWS ISSUES
 	 * details on the event payload.
 	 * @method _sendFileComplete
 	 * @param {Object} item The item that is being loaded.
-	 * @param {TagLoader | XHRLoader}
+	 * @param {TagLoader | XHRLoader} loader
 	 * @protected
 	 */
 	p._sendFileComplete = function(item, loader) {
@@ -1443,6 +1453,23 @@ TODO: WINDOWS ISSUES
         this.onFileLoad && this.onFileLoad(event);
 		this.dispatchEvent(event)
 	};
+
+	/**
+	 * Dispatch a filestart event immediately before a file has started to load. Please see the <code>LoadQueue.filestart</code>
+	 * event for details on the event payload.
+	 * @method _sendFileStart
+	 * @param {TagLoader | XHRLoader} loader
+	 * @protected
+	 */
+	p._sendFileStart = function(item){
+	  var event = {
+	    target: this,
+	    type: "filestart",
+		item: item
+	  }
+
+	  this.dispatchEvent(event);
+	}
 
 	p.toString = function() {
 		return "[PreloadJS LoadQueue]";
