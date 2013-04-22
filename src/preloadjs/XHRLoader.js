@@ -44,12 +44,12 @@ this.createjs = this.createjs || {};
 	 * cross-domain loading.
 	 * @class XHRLoader
 	 * @constructor
-	 * @param {Object} file The object that defines the file to load. Please see the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
+	 * @param {Object} item The object that defines the file to load. Please see the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
 	 * for an overview of supported file properties.
 	 * @extends AbstractLoader
 	 */
-	var XHRLoader = function (file) {
-		this.init(file);
+	var XHRLoader = function (item, basePath) {
+		this.init(item, basePath);
 	};
 
 	var p = XHRLoader.prototype = new createjs.AbstractLoader();
@@ -102,8 +102,9 @@ this.createjs = this.createjs || {};
 	p._rawResponse = null;
 
 	// Overrides abstract method in AbstractLoader
-	p.init = function (item) {
+	p.init = function (item, basePath) {
 		this._item = item;
+		this._basePath = basePath;
 		if (!this._createXHR(item)) {
 			//TODO: Throw error?
 		}
@@ -383,7 +384,7 @@ this.createjs = this.createjs || {};
 	p._createXHR = function (item) {
 		// Check for cross-domain loads. We can't fully support them, but we can try.
 		var target = document.createElement("a");
-		target.href = item.src;
+		target.href = this.buildPath(item.src, this._basePath);
 
 		var host = document.createElement("a");
 		host.href = location.href;
@@ -423,12 +424,15 @@ this.createjs = this.createjs || {};
 		// Determine the XHR level
 		this._xhrLevel = (typeof req.responseType === "string") ? 2 : 1;
 
-		if (item.values && item.method == createjs.LoadQueue.GET) {
-			item.src = this._mergeGET(item.src, item.values);
+		var src = null;
+		if (item.method == createjs.LoadQueue.GET) {
+			src = this.buildPath(item.src, this._basePath, item.values);
+		} else {
+			src = this.buildPath(item.src, this._basePath);
 		}
 
 		// Open the request.  Set cross-domain flags if it is supported (XHR level 1 only)
-		req.open(item.method || createjs.LoadQueue.GET, item.src, true);
+		req.open(item.method || createjs.LoadQueue.GET, src, true);
 
 		if (crossdomain && req instanceof XMLHttpRequest && this._xhrLevel == 1) {
 			req.setRequestHeader("Origin", location.origin);
@@ -483,7 +487,7 @@ this.createjs = this.createjs || {};
 			// Note: Images need to wait for onload, but do use the cache.
 			case createjs.LoadQueue.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
-				tag.src = this._item.src;
+				tag.src = this.buildPath(this._item.src, this._basePath, this._item.values);
 
 				this._rawResponse = this._response;
 				this._response = tag;

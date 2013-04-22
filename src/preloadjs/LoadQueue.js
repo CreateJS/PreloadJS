@@ -178,11 +178,14 @@ TODO: WINDOWS ISSUES
 	 * @param {Boolean} [useXHR=true] Determines whether the preload instance will favor loading with XHR (XML HTTP Requests),
 	 * or HTML tags. When this is <code>false</code>, LoadQueue will use tag loading when possible, and fall back on XHR
 	 * when necessary.
+	 * @param {String} basePath A path that will be prepended on to the source parameter of all items in the queue
+	 * before they are loaded. Note that a basePath provided to any loadFile or loadManifest call will override the
+	 * basePath specified on the LoadQueue constructor.
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
-	var LoadQueue = function(useXHR) {
-		this.init(useXHR);
+	var LoadQueue = function(useXHR, basePath) {
+		this.init(useXHR, basePath);
 	};
 
 	var p = LoadQueue.prototype = new createjs.AbstractLoader();
@@ -562,7 +565,7 @@ TODO: WINDOWS ISSUES
 	p._loadedScripts = null;
 
 	// Overrides abstract method in AbstractLoader
-	p.init = function(useXHR) {
+	p.init = function(useXHR, basePath) {
 		this._numItems = this._numItemsLoaded = 0;
 		this._paused = false;
 		this._loadStartWasDispatched = false;
@@ -581,6 +584,7 @@ TODO: WINDOWS ISSUES
 		this._typeCallbacks = {};
 		this._extensionCallbacks = {};
 
+		this._basePath = basePath;
 		this.setUseXHR(useXHR);
 	};
 
@@ -796,17 +800,18 @@ TODO: WINDOWS ISSUES
 	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
      *     </ul>
      * </ol>
-	 *
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
 	 * true, the queue will resume automatically.
+	 * @param {String} [basePath] An optional base path prepended to the file source when the file is loaded. The load
+	 * item will not be modified.
 	 */
-	p.loadFile = function(file, loadNow) {
+	p.loadFile = function(file, loadNow, basePath) {
 		if (file == null) {
 			this._sendError({text: "PRELOAD_NO_FILE"});
 			return;
 		}
-		this._addItem(file);
+		this._addItem(file, basePath);
 
 		if (loadNow !== false) {
 			this.setPaused(false);
@@ -839,8 +844,10 @@ TODO: WINDOWS ISSUES
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} and this value is
 	 * true, the queue will resume automatically.
+	 * @param {String} [basePath] An optional base path prepended to each of the files' source when the file is loaded.
+	 * The load items will not be modified.
 	 */
-	p.loadManifest = function(manifest, loadNow) {
+	p.loadManifest = function(manifest, loadNow, basePath) {
 		var data = null;
 
 		if (manifest instanceof Array) {
@@ -858,7 +865,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		for (var i=0, l=data.length; i<l; i++) {
-			this._addItem(data[i]);
+			this._addItem(data[i], basePath);
 		}
 
 		if (loadNow !== false) {
@@ -949,12 +956,13 @@ TODO: WINDOWS ISSUES
 	 * method.
 	 * @method _addItem
 	 * @param {String|Object} value The item to add to the queue.
+	 * @param {String} basePath A path to prepend to the item's source.
 	 * @private
 	 */
-	p._addItem = function(value) {
+	p._addItem = function(value, basePath) {
 		var item = this._createLoadItem(value);
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
-		var loader = this._createLoader(item);
+		var loader = this._createLoader(item, basePath);
 		if (loader != null) {
 			this._loadQueue.push(loader);
 			this._loadQueueBackup.push(loader);
@@ -1008,6 +1016,7 @@ TODO: WINDOWS ISSUES
 				break;
 		}
 
+		// Note: This does NOT account for basePath. It should be fine.
 		var match = this._parseURI(item.src);
 		if (match != null) { item.ext = match[5]; }
 		if (item.type == null) {
@@ -1076,7 +1085,7 @@ TODO: WINDOWS ISSUES
 	 * @return {AbstractLoader} A loader that can be used to load content.
 	 * @private
 	 */
-	p._createLoader = function(item) {
+	p._createLoader = function(item, basePath) {
 		// Initially, try and use the provided/supported XHR mode:
 		var useXHR = this.useXHR;
 
@@ -1094,10 +1103,13 @@ TODO: WINDOWS ISSUES
 			// Note: IMAGE, CSS, SCRIPT, SVG can all use TAGS or XHR.
 		}
 
+		// If no basepath was provided here (from _addItem), then use the LoadQueue._basePath instead.
+		if (basePath == null) { basePath = this._basePath; }
+
 		if (useXHR) {
-			return new createjs.XHRLoader(item);
+			return new createjs.XHRLoader(item, basePath);
 		} else {
-			return new createjs.TagLoader(item);
+			return new createjs.TagLoader(item, basePath);
 		}
 	};
 
@@ -1187,7 +1199,7 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * An item has finished loading. We can assume that it is totally loaded, has been parsed for immediate use, and
-	 * is available as the "result" property on the load item. The raw text result for a parsed item (such as JSON, XML, 
+	 * is available as the "result" property on the load item. The raw text result for a parsed item (such as JSON, XML,
 	 * CSS, JavaScript, etc) is available as the "rawResult" event, and can also be looked up using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}.
 	 * @method _handleFileComplete
 	 * @param {Object} event The event object from the loader.

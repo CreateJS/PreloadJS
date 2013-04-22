@@ -52,13 +52,14 @@ this.createjs = this.createjs||{};
 	 * @param {Object} item The item to load. Please see {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} for
 	 * information on load items.
 	 */
-	var TagLoader = function (item) {
-		this.init(item);
+	var TagLoader = function (item, basePath) {
+		this.init(item, basePath);
 	};
 
 	var p = TagLoader.prototype = new createjs.AbstractLoader();
 
 // Protected
+
 	/**
 	 * The timeout that is fired if nothing is loaded after a certain delay. See the <code>LoadQueue.LOAD_TIMEOUT</code>
 	 * for the timeout duration.
@@ -104,8 +105,9 @@ this.createjs = this.createjs||{};
 	p._jsonResult = null;
 
 	// Overrides abstract method in AbstractLoader
-	p.init = function (item) {
+	p.init = function (item, basePath) {
 		this._item = item;
+		this._basePath = basePath;
 		this._tag = item.tag;
 		this._isAudio = (window.HTMLAudioElement && item.tag instanceof HTMLAudioElement);
 		this._tagCompleteProxy = createjs.proxy(this._handleLoad, this);
@@ -160,20 +162,18 @@ this.createjs = this.createjs||{};
 			tag.onreadystatechange = createjs.proxy(this._handleReadyStateChange,  this);
 		}
 
-		if (item.values) {
-			item.src = this._mergeGET(item.src, item.values);
-		}
+		var src = this.buildPath(item.src, this._basePath, item.values);
 
 		// Set the src after the events are all added.
 		switch(item.type) {
 			case createjs.LoadQueue.CSS:
-				tag.href = item.src;
+				tag.href = src;
 				break;
 			case createjs.LoadQueue.SVG:
-				tag.data = item.src;
+				tag.data = src;
 				break;
 			default:
-				tag.src = item.src;
+				tag.src = src;
 		}
 
 		// If we're loading JSONP, we need to add our callback now.

@@ -96,6 +96,15 @@ this.createjs = this.createjs||{};
 	 */
 	p._item = null;
 
+	/**
+	 * A path that will be prepended on to the item's source parameter before it is loaded.
+	 * @property _basePath
+	 * @type {String}
+	 * @private
+	 * @since 0.3.1
+	 */
+	p._basePath = null;
+
 // Events
 	/**
 	 * The event that is fired when the overall progress changes.
@@ -328,41 +337,49 @@ this.createjs = this.createjs||{};
 
 	/**
 	 * Formats an object into a query string for either a POST or GET request.
-	 *
-	 * @param data {Object} The data to convert to a query string.
-	 * @param query [Optional] {Array} Existing name/value pairs to append on to this query.
+	 * @method _formatQueryString
+	 * @param {Object} data The data to convert to a query string.
+	 * @param {Array} [query] Existing name/value pairs to append on to this query.
 	 * @private
 	 */
 	p._formatQueryString = function(data, query) {
 		if (data == null) {
 			throw new Error('You must specify data.');
 		}
-
 		var params = [];
 		for (var n in data) {
 			params.push(n+'='+escape(data[n]));
 		}
-
 		if (query) {
 			params = params.concat(query);
 		}
-
-		if  (params.length > 1) {
-			return params.join('&');
-		} else {
-			return params[0];
-		}
+		return params.join('&');
 	};
 
 	/**
-	 * Takes an existing path and appends on new data, while preserving any existing parameter's.
-	 *
-	 * @param src The source path to add values to.
-	 * @param data Object used to append values to this request.
-	 * @returns {string}
-	 * @private
+	 * A utility method that builds a file path using a source, a basePath, and a data object, and formats it into a new
+	 * path. All of the loaders in PreloadJS use this method to compile paths when loading.
+	 * @method buildPath
+	 * @param {String} src The source path to add values to.
+	 * @param {String} [basePath] A string to prepend to the file path. Sources beginning with http:// or similar will
+	 * not receive a base path.
+	 * @param {Object} [data] Object used to append values to this request as a query string. Existing parameters on the
+	 * path will be preserved.
+	 * @returns {string} A formatted string that contains the path and the supplied parameters.
+	 * @since 0.3.1
 	 */
-	p._mergeGET = function(src, data) {
+	p.buildPath = function(src, _basePath, data) {
+		if (_basePath != null) {
+			var match = this._parseURI(src);
+			// IE 7,8 Return empty string here.
+			if (match[1] == null || match[1] == '') {
+				src = _basePath + src;
+			}
+		}
+		if (data == null) {
+			return src;
+		}
+
 		var query = [];
 		var idx = src.indexOf('?');
 
