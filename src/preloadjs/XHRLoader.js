@@ -163,9 +163,8 @@ this.createjs = this.createjs || {};
 
 		// Note: We don't get onload in all browsers (earlier FF and IE). onReadyStateChange handles these.
 		this._request.onload = createjs.proxy(this._handleLoad, this);
-		if (this._request.onreadystatechange) {
-			this._request.onreadystatechange = this._handleReadyStateChange(this);
-		}
+
+		this._request.onreadystatechange = createjs.proxy(this._handleReadyStateChange, this);
 
 		// Sometimes we get back 404s immediately, particularly when there is a cross origin request.  // note this does not catch in Chrome
 		try {
@@ -525,8 +524,12 @@ this.createjs = this.createjs || {};
 			case createjs.LoadQueue.SVG:
 				var xml = this._parseXML(this._response, "image/svg+xml");
 				this._rawResponse = this._response;
-				tag.appendChild(xml.documentElement);
-				this._response = tag;
+				if (xml.documentElement != null) {
+					tag.appendChild(xml.documentElement);
+					this._response = tag;
+				} else { // For browsers that don't support SVG, just give them the XML. (IE 9-8)
+					this._response = xml;
+				}
 				return true;
 
 			case createjs.LoadQueue.JSON:

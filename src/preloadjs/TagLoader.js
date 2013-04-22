@@ -196,9 +196,9 @@ this.createjs = this.createjs||{};
 			item.type == createjs.LoadQueue.JSON ||
 			item.type == createjs.LoadQueue.JAVASCRIPT ||
 			item.type == createjs.LoadQueue.CSS) {
-			(document.body || document.getElementsByTagName("body")[0]).appendChild(tag);
-			//TODO: Move SVG off-screen.  // OJR perhaps just make invisible until load completes  tag.style.display = "none"; did not work
-			// OJR tag.style.visibility = "hidden"; worked, but didn't appear necessary  remember to add "visible" to _handleLoad
+				this._startTagVisibility = tag.style.visibility;
+				tag.style.visibility = "hidden";
+				(document.body || document.getElementsByTagName("body")[0]).appendChild(tag);
 		}
 
 		// Note: Previous versions didn't seem to work when we called load() for OGG tags in Firefox. Seems fixed in 15.0.1
@@ -252,7 +252,9 @@ this.createjs = this.createjs||{};
 		clearTimeout(this._loadTimeout);
 		// This is strictly for tags in browsers that do not support onload.
 		var tag = this.getItem().tag;
-		if (tag.readyState == "loaded") {
+
+		// Complete is for old IE support.
+		if (tag.readyState == "loaded" || tag.readyState == "complete") {
 			this._handleLoad();
 		}
 	};
@@ -279,6 +281,7 @@ this.createjs = this.createjs||{};
 			case createjs.LoadQueue.JSONP:
 				// case createjs.LoadQueue.CSS:
 				//LM: We may need to remove CSS tags loaded using a LINK
+				tag.style.visibility = this._startTagVisibility;
 				(document.body || document.getElementsByTagName("body")[0]).removeChild(tag);
 			break;
 			default:
