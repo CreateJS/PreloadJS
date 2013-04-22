@@ -10,10 +10,18 @@ Version NEXT [Not Released]
 - Added loader parameter to LoadQueue's fileload event.
 - Added support for JSONP
 - Changed; Now setting the result object to any JSON parse errors that occur.
-- Now allowing GET and POST requests. Pass a new values option when loading a file to send that data as a GET.  Or for a POST request set the new method value to POST.
+- Now allowing GET and POST requests. Pass a new values option when loading a file to send that data
+	as a GET. For a POST request set the new method value to POST.
 - Fixed an issue where setting max connections on an empty queue would trigger a complete event.
 - Added a "filestart" event (thanks zvxy)
 - Fixed naming of the "loadstart" event (used to be "loadStart")
+- Added support for a "basePath" parameter on LoadQueue constructor, and loadFile and loadManifest
+	methods, which will prepend a path onto all file loads without modifying the load item. Updated
+	all demos to use the new approach. Note that paths with a protocol (http://) will ignore basePath.
+- Added a public method "buildPath" to AbstractLoader, which compiles a full source path using a path,
+	basePath, and query object
+- Fixed documentation on progress and fileprogress to display the right property name for progress
+- Fixed IE7/8/9 support for SVG, XML, and other load events.
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************
