@@ -1,5 +1,5 @@
 /*
-* PreloadJS
+* LoadQueue
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
 *
@@ -79,6 +79,7 @@ TODO: WINDOWS ISSUES
 	* Need to hide loading SVG in Opera TAGS
 	* No CSS onload/readystatechange in Safari or Android TAGS (requires rule checking)
 	* SVG no load or failure in Opera XHR
+	* Reported issues with IE7/8
  */
 
 (function() {
@@ -387,7 +388,7 @@ TODO: WINDOWS ISSUES
 	 * object will contain that value as a property.
 	 * @param {Number} loaded The number of bytes that have been loaded. Note that this may just be a percentage of 1.
 	 * @param {Number} total The total number of bytes. If it is unknown, the value is 1.
-	 * @param {Number} percent The percentage that has been loaded. This will be a number between 0 and 1.
+	 * @param {Number} progress The percentage that has been loaded. This will be a number between 0 and 1.
 	 * @since 0.3.0
 	 */
 
@@ -1131,12 +1132,14 @@ TODO: WINDOWS ISSUES
 			this._loadStartWasDispatched = true;
 		}
 
+		// The queue has completed.
 		if (this._numItems == this._numItemsLoaded) {
 			this.loaded = true;
 			this._sendComplete();
+
+			// Load the next queue, if it has been defined.
 			if (this.next && this.next.load) {
 				this.next.load();
-				//TODO: Test. This was changed from a load.apply
 			}
 		}
 
