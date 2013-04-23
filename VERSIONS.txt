@@ -21,6 +21,7 @@ Version NEXT [Not Released]
 - Added a public method "buildPath" to AbstractLoader, which compiles a full source path using a path,
 	basePath, and query object
 - Fixed documentation on progress and fileprogress to display the right property name for progress
+- Fixed AbstractLoader progress event to include the progress property.
 - Fixed IE7/8/9 support for SVG, XML, and other load events.
 
 Version 0.3.0 [Feb 12, 2013]

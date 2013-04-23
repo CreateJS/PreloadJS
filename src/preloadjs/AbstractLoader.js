@@ -276,6 +276,7 @@ this.createjs = this.createjs||{};
 		}
 		event.target = this;
 		event.type = "progress";
+		event.progress = this.progress;
 		this.onProgress && this.onProgress(event);
 		this.dispatchEvent(event);
 	};
