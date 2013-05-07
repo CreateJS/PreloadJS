@@ -1161,8 +1161,8 @@ TODO: WINDOWS ISSUES
 				this._currentlyLoadingScript = true;
 			}
 			this._loadQueue.splice(i, 1);
-            this._loadItem(loader);
   			i--; l--;
+            this._loadItem(loader);
 		}
 	};
 
@@ -1505,7 +1505,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 * @deprecated In favour of the createjs.proxy method (see LoadQueue source).
 	 */
-	createjs.proxy = function(method, scope) {
+	s.proxy = function(method, scope) {
 		return function() {
 			return method.apply(scope, arguments);
 		};

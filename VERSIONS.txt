@@ -1,6 +1,6 @@
 Version NEXT [Not Released]
 ****************************************************************************************************
-- Fix for removeAll method
+- Fix for removeAll method error
 - Updated file validation RegExp. Supports double-byte characters, prevents partial matches, better
 	support for relative paths, improved matching of domains, and modified the "file name" match to
 	include the extension (file.mp3 instead of file). The match arguments have not changed otherwise.
@@ -8,8 +8,8 @@ Version NEXT [Not Released]
 - Extension comparisons are now case-insensitive
 - Added getAllResponseHeaders() and getResponseHeader() to XHRLoader
 - Added loader parameter to LoadQueue's fileload event.
-- Added support for JSONP
-- Changed; Now setting the result object to any JSON parse errors that occur.
+- Added support for JSONP. Requires a "callback" parameter on the load item that maps to the JSONP callback
+- Now setting the result object to any JSON parse errors that occur.
 - Now allowing GET and POST requests. Pass a new values option when loading a file to send that data
 	as a GET. For a POST request set the new method value to POST.
 - Fixed an issue where setting max connections on an empty queue would trigger a complete event.
@@ -23,6 +23,10 @@ Version NEXT [Not Released]
 - Fixed documentation on progress and fileprogress to display the right property name for progress
 - Fixed AbstractLoader progress event to include the progress property.
 - Fixed IE7/8/9 support for SVG, XML, and other load events.
+- Fixed proxy so deprecated method doesn't override the global one.
+- Fixed several IE 6-8 bugs.
+- Fixed svg flickering while loading on Opera.
+- Fixed issue where operations such as setMaxConnections would unpause a queue
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************
