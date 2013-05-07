@@ -816,6 +816,8 @@ TODO: WINDOWS ISSUES
 
 		if (loadNow !== false) {
 			this.setPaused(false);
+		} else {
+			this.setPaused(true);
 		}
 	}
 
@@ -871,7 +873,10 @@ TODO: WINDOWS ISSUES
 
 		if (loadNow !== false) {
 			this.setPaused(false);
+		} else {
+			this.setPaused(true);
 		}
+
 	};
 
 	// Overrides abstract method in AbstractLoader
