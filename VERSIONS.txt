@@ -27,6 +27,7 @@ Version NEXT [Not Released]
 - Fixed several IE 6-8 bugs.
 - Fixed svg flickering while loading on Opera.
 - Fixed issue where operations such as setMaxConnections would unpause a queue
+- Updated code samples in documentation.
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************

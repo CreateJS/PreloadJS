@@ -16,8 +16,8 @@
 
     <canvas id="myCanvas" width="960" height="400"></canvas>
 
-    <script src="./assets/easeljs-0.6.0.min.js"></script>
-    <script src="./assets/tweenjs-0.4.0.min.js"></script>
+    <script src="./assets/easeljs-NEXT.min.js"></script>
+    <script src="./assets/tweenjs-NEXT.min.js"></script>
     <script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
     <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
     <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
@@ -47,14 +47,7 @@
                 document.getElementById("header").style.display = "none";
             }
 
-            manifest = [
-                {src:"./assets/image0.jpg", id:"image0"},
-                {src:"./assets/image1.jpg", id:"image1"},
-                {src:"./assets/image2.jpg", id:"image2"},
-                {src:"./assets/image3.jpg", id:"image3"}
-            ];
-
-            canvas = document.getElementById('myCanvas');
+            canvas = document.getElementById("myCanvas");
             stage = new createjs.Stage(canvas);
 			stage.enableMouseOver(10);
    
@@ -84,7 +77,15 @@
 
             stage.addChild(loaderBar);
 
-            preload = new createjs.LoadQueue(false);
+
+            manifest = [
+                {src:"image0.jpg", id:"image0"},
+                {src:"image1.jpg", id:"image1"},
+                {src:"image2.jpg", id:"image2"},
+                {src:"image3.jpg", id:"image3"}
+            ];
+
+            preload = new createjs.LoadQueue(true, "assets/");
 
             // Use this instead to use tag loading
             //preload = new createjs.PreloadJS(false);
@@ -102,41 +103,40 @@
         }
 
         function handleProgress(event) {
-            bar.scaleX = (event.loaded)*(loaderWidth);
+            bar.scaleX = event.loaded * loaderWidth;
         }
 
         function handleFileLoad(event) {
-            var img = new Image();
-            img.onload = handleLoadComplete;
-            img.src = event.item.src;
-        }
-
-        function handleLoadComplete(event) {
-            var movieClip = new createjs.Container();
-            var _w = this.width;
-            var _h = this.height;
+            var image = event.result;
+            var w = image.width;
+            var h = image.height;
 			
-			var bmp = new createjs.Bitmap(this);
-            bmp.scaleX = bmp.scaleY = .75;
-            bmp.regX = _w/2;
-            bmp.regY = _h/2;
+			var bmp = new createjs.Bitmap(image).set({
+                scaleX: 0.75,
+                scaleY: 0.75,
+                regX: w/2,
+                regY: h/2,
+                rotation: Math.random() * 16 - 8,
+                cursor: "pointer",
+                x: borderPadding/2 * 0.75,
+                y: borderPadding/2 * 0.75
+            });
             bmp.addEventListener("click", handleClick);
-            bmp.rotation = Math.random() * 16 - 8;
-			bmp.cursor = "pointer";
 
-            var border = new createjs.Shape();
-            border.graphics.beginFill("#FFFFFF").drawRect(0, 0, _w + borderPadding, _h + borderPadding).endFill();
-            border.rotation = bmp.rotation;
-            border.regX = _w/2;
-            border.regY = _h/2;
-            
-			bmp.x = bmp.y = (borderPadding/2) * bmp.scaleX;
 
-            border.scaleX = border.scaleY =  bmp.scaleX;
-            border.shadow = new createjs.Shadow('#000000', 0, 0, 2.5);
+            var border = new createjs.Shape(
+                new createjs.Graphics().beginFill("#FFFFFF").drawRect(0, 0, w + borderPadding, h + borderPadding).endFill()
+            ).set({
+                rotation: bmp.rotation,
+                regX: w/2,
+                regY: h/2,
+                scaleX: bmp.scaleX,
+                scaleY: bmp.scaleY,
+                shadow: new createjs.Shadow("#000000", 0, 0, 2.5)
+            });
 
+            var movieClip = new createjs.Container();
             movieClip.addChild(border, bmp);
-
             imageContainer.addChild(movieClip); 
 			stage.update();     
         }
@@ -157,6 +157,7 @@
 
         function handleComplete(event) {
             loaderBar.visible = false;
+            stage.update();
         }
 
     </script>

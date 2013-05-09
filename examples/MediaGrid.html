@@ -38,35 +38,35 @@
 	</header>
 
 	<div id="imageGrid">
-		<div id="assets/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
+		<div id="Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
 			<label>Image</label>
 		</div>
 
-		<div id="assets/bg.css" onclick="loadAsset(this)" class="gridBox">
+		<div id="bg.css" onclick="loadAsset(this)" class="gridBox">
 			<label>CSS - Background</label>
 		</div>
 
-	   <div id="assets/alert1.js" onclick="loadAsset(this)" class="gridBox">
+	   <div id="alert1.js" onclick="loadAsset(this)" class="gridBox">
 			<label>JavaScript</label>
 		</div>
 
-		<div id="assets/grant.xml" onclick="loadAsset(this)" class="gridBox">
+		<div id="grant.xml" onclick="loadAsset(this)" class="gridBox">
 			<label>XML</label>
 		</div>
 
-		<div id="assets/gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:241px; float: right; overflow:hidden">
+		<div id="gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:241px; float: right; overflow:hidden">
 			<label>SVG</label>
 		</div>
 
-		<div id="assets/grant.json" onclick="loadAsset(this)" class="gridBox">
+		<div id="grant.json" onclick="loadAsset(this)" class="gridBox">
 			<label>JSON</label>
 		</div>
 
-		<div id="assets/font.css" onclick="loadAsset(this)" class="gridBox">
+		<div id="font.css" onclick="loadAsset(this)" class="gridBox">
 			<label>CSS - Font Color</label>
 		</div>
 
-		<div id="assets/Thunder.mp3|assets/Thunder.ogg" onclick="loadAsset(this)" class="gridBox">
+		<div id="Thunder.mp3|Thunder.ogg" onclick="loadAsset(this)" class="gridBox">
 			<label>Audio</label>
 		</div>
 
@@ -74,16 +74,16 @@
             <label>JSONP<br />(loaded from gskinner.com)</label>
         </div>
 
-		<div id="assets/Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:150px">
+		<div id="Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:150px">
 			<label>Image</label>
 		</div>
 
-		<div id="assets/NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:100px;">
+		<div id="NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:100px;">
 			<label>Intentionally missing file<br/>to generate error.</label>
 		</div>
 	</div>
 
-    <script type="text/javascript" src="./assets/soundjs-0.4.0.min.js"></script>
+    <script type="text/javascript" src="./assets/soundjs-NEXT.min.js"></script>
 
     <script type="text/javascript" src="../src/easeljs/events/EventDispatcher.js"></script>
     <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
@@ -106,7 +106,7 @@
             //preload = new createjs.LoadQueue();
 
             // Use this instead to favor tag loading
-            preload = new createjs.LoadQueue(true);
+            preload = new createjs.LoadQueue(true, "assets/");
             createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
             preload.installPlugin(createjs.Sound);
             preload.addEventListener("fileload", handleFileLoaded);
@@ -145,7 +145,11 @@
                     break;
 
                 case createjs.LoadQueue.IMAGE:
-                    div.innerHTML = "<img src='"+id+"' width='"+div.clientWidth+"' height='"+div.clientHeight+"' />";
+                    div.innerText = "";
+                    result.width = div.clientWidth;
+                    result.height = div.clientHeight;
+                    div.appendChild(result)
+                    //div.innerHTML = "<img src='"+id+"' width='"+div.clientWidth+"' height='"+div.clientHeight+"' />";
                     break;
 
                 case createjs.LoadQueue.JAVASCRIPT:
