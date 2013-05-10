@@ -1,4 +1,4 @@
-Version NEXT [Not Released]
+Version 0.3.1 [May 10, 2013]
 ****************************************************************************************************
 - Fix for removeAll method error
 - Updated file validation RegExp. Supports double-byte characters, prevents partial matches, better
@@ -27,7 +27,6 @@ Version NEXT [Not Released]
 - Fixed several IE 6-8 bugs.
 - Fixed svg flickering while loading on Opera.
 - Fixed issue where operations such as setMaxConnections would unpause a queue
-- Updated code samples in documentation.
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************
