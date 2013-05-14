@@ -61,6 +61,16 @@
  * they will not be processed, even if the load has not actually kicked off yet. Plugin functionality is handled when
  * the items are added to the LoadQueue.
  *
+ * <h4>Browser Support</h4>
+ * PreloadJS is partially supported in all browsers, and fully supported in all modern browsers. Known exceptions:
+ * <ul><li>XHR loading of any content will not work in many older browsers (See a matrix here: <a href="http://caniuse.com/xhr2">http://caniuse.com/xhr2</a>).
+ *      In many cases, you can fall back on tag loading (images, audio, CSS, scripts, SVG, and JSONP). Text and
+ *      WebAudio will only work with XHR.</li>
+ *      <li>Some formats have poor support for complete events in IE 6, 7, and 8 (SVG, tag loading of scripts, XML/JSON)</li>
+ *      <li>Opera has poor support for SVG loading with XHR</li>
+ *      <li>CSS loading in Android and Safari will not work with tags (currently, a workaround is in progress)</li>
+ * </li>
+ *
  * @module PreloadJS
  * @main PreloadJS
  */
