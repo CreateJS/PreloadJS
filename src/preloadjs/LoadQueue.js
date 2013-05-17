@@ -398,7 +398,7 @@ TODO: WINDOWS ISSUES
 	 * object will contain that value as a property.
 	 * @param {Number} loaded The number of bytes that have been loaded. Note that this may just be a percentage of 1.
 	 * @param {Number} total The total number of bytes. If it is unknown, the value is 1.
-	 * @param {Number} progress The percentage that has been loaded. This will be a number between 0 and 1.
+	 * @param {Number} progress The amount that has been loaded between 0 and 1.
 	 * @since 0.3.0
 	 */
 

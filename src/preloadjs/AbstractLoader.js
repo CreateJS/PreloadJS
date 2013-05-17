@@ -114,7 +114,7 @@ this.createjs = this.createjs||{};
 	 * @param {Number} loaded The amount that has been loaded so far. Note that this is may just be a percentage of 1,
 	 * since file sizes can not be determined before a load is kicked off, if at all.
 	 * @param {Number} total The total number of bytes. Note that this may just be 1.
-	 * @param {Number} progress The percentage that has been loaded. This will be a number between 0 and 1.
+	 * @param {Number} progress The ratio that has been loaded between 0 and 1.
 	 * @since 0.3.0
 	 */
 
