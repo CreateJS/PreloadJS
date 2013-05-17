@@ -1,3 +1,8 @@
+Version NEXT [Not Yet Relesed]
+****************************************************************************************************
+- Fixed issue where a null parameter would cause remove() to reset a queue (removeAll)
+
+
 Version 0.3.1 [May 10, 2013]
 ****************************************************************************************************
 - Fix for removeAll method error

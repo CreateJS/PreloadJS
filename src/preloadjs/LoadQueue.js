@@ -640,6 +640,8 @@ TODO: WINDOWS ISSUES
 			args = [idsOrUrls];
 		} else if (idsOrUrls) {
 			args = idsOrUrls;
+		} else if (arguments.length > 0) {
+			return;
 		}
 
 		var itemsWereRemoved = false;
