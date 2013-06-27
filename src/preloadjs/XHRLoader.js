@@ -222,7 +222,7 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._handleProgress = function (event) {
-		if (event.loaded > 0 && event.total == 0) {
+		if (!event || event.loaded > 0 && event.total == 0) {
 			return; // Sometimes we get no "total", so just ignore the progress event.
 		}
 		this._sendProgress({loaded:event.loaded, total:event.total});
