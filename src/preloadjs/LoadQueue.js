@@ -354,15 +354,26 @@ TODO: WINDOWS ISSUES
 	 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
 	 * on the requirements for a media type. For example, HTML audio can not be loaded with XHR, and WebAudio can not be
 	 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
+	 * Note this uses a getter setter, which is not supported by Firefox versions 3.6 or lower and Opera versions 11.50 or lower
 	 *
-	 * <b>Note: This property is read-only.</b> To change it, please use the {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
-	 * method.
 	 * @property useXHR
 	 * @type {Boolean}
 	 * @readOnly
 	 * @default true
 	 */
-	p.useXHR = true;
+	p._useXHR = true;
+
+	Object.defineProperty(p, "useXHR", {
+		get: function() {
+			return this._useXHR;
+
+		},
+		set: function(value) {
+			// Determine if we can use XHR. XHR defaults to TRUE, but the browser may not support it.
+			//TODO: Should we be checking for the other XHR types? Might have to do a try/catch on the different types similar to createXHR.
+			this._useXHR = (value != false && window.XMLHttpRequest != null);
+		}
+	});
 
 	/**
 	 * Does LoadQueue stop processing the current queue when an error is encountered.
@@ -634,6 +645,7 @@ TODO: WINDOWS ISSUES
 	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
 	 * the provided value argument was true.
 	 * @since 0.3.0
+	 * @deprecated in favor of getter/setter
 	 */
 	p.setUseXHR = function(value) {
 		// Determine if we can use XHR. XHR defaults to TRUE, but the browser may not support it.
@@ -1190,6 +1202,8 @@ TODO: WINDOWS ISSUES
 			if (this.next && this.next.load) {
 				this.next.load();
 			}
+		} else {
+			this.loaded = false;
 		}
 
 		// Must iterate forwards to load in the right order.

@@ -3,6 +3,7 @@ Version NEXT [Not Yet Relesed]
 - Fixed issue where a null parameter would cause remove() to reset a queue (removeAll)
 - Fixed documentation where JSONP was doc'd as a second JSON
 - Added description about file types to main LoadQueue description, including example.
+- Changed useXHR to behave as a getter/setter. Deprecated setUseXHR()
 
 Version 0.3.1 [May 10, 2013]
 ****************************************************************************************************
