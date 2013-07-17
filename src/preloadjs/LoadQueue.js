@@ -1074,7 +1074,7 @@ TODO: WINDOWS ISSUES
 				}
 				break;
 			default:
-				break;
+				return null;
 		}
 
 		// Note: This does NOT account for basePath. It should be fine.
@@ -1207,7 +1207,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		// Must iterate forwards to load in the right order.
-		for (var i=0, l=this._loadQueue.length; i<l; i++) {
+		for (var i=0; i<this._loadQueue.length; i++) {
 			if (this._currentLoads.length >= this._maxConnections) { break; }
 			var loader = this._loadQueue[i];
 
@@ -1219,7 +1219,7 @@ TODO: WINDOWS ISSUES
 				this._currentlyLoadingScript = true;
 			}
 			this._loadQueue.splice(i, 1);
-  			i--; l--;
+  			i--;
             this._loadItem(loader);
 		}
 	};
