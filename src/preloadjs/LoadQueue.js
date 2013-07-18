@@ -1443,7 +1443,9 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._getTypeByExtension = function(extension) {
-		if (extension == null) { return null; }
+		if (extension == null) {
+			return createjs.LoadQueue.TEXT;
+		}
 		switch (extension.toLowerCase()) {
 			case "jpeg":
 			case "jpg":
