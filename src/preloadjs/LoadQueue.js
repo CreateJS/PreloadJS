@@ -1151,6 +1151,8 @@ TODO: WINDOWS ISSUES
 			case createjs.LoadQueue.JSONP:
 				useXHR = false; // Never load audio using XHR. WebAudio will provide its own loader.
 				break;
+			case null:
+				return null;
 			// Note: IMAGE, CSS, SCRIPT, SVG can all use TAGS or XHR.
 		}
 
@@ -1441,6 +1443,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._getTypeByExtension = function(extension) {
+		if (extension == null) { return null; }
 		switch (extension.toLowerCase()) {
 			case "jpeg":
 			case "jpg":

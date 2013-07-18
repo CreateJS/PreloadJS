@@ -1,8 +1,10 @@
-Version NEXT [Not Yet Relesed]
+Version NEXT [Not Yet Released]
 ****************************************************************************************************
 - Fixed issue where a null parameter would cause remove() to reset a queue (removeAll)
 - Fixed documentation where JSONP was doc'd as a second JSON
 - Added description about file types to main LoadQueue description, including example.
+- Fixed edge case where an unmatched file pattern would cause errors
+- Handled cases with no extension
 
 Version 0.3.1 [May 10, 2013]
 ****************************************************************************************************

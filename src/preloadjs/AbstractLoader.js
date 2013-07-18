@@ -373,7 +373,7 @@ this.createjs = this.createjs||{};
 		if (_basePath != null) {
 			var match = this._parseURI(src);
 			// IE 7,8 Return empty string here.
-			if (match[1] == null || match[1] == '') {
+			if (match == null || match[1] == null || match[1] == '') {
 				src = _basePath + src;
 			}
 		}
