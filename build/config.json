@@ -2,6 +2,7 @@
 	"config_preloadjs": {
 		"SOURCE_FILES": [
 			"/../src/preloadjs/version.js",
+			"/../src/easeljs/events/Event.js",
 			"/../src/easeljs/events/EventDispatcher.js",
             "/../src/preloadjs/AbstractLoader.js",
             "/../src/preloadjs/LoadQueue.js",

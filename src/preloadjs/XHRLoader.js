@@ -174,7 +174,9 @@ this.createjs = this.createjs || {};
 				this._request.send(this._formatQueryString(this._item.values));
 			}
 		} catch (error) {
-			this._sendError({source:error});
+			var event = new createjs.Event("error");
+			event.error = error;
+			this._sendError(event);
 		}
 	};
 
@@ -225,7 +227,11 @@ this.createjs = this.createjs || {};
 		if (!event || event.loaded > 0 && event.total == 0) {
 			return; // Sometimes we get no "total", so just ignore the progress event.
 		}
-		this._sendProgress({loaded:event.loaded, total:event.total});
+
+		var newEvent = new createjs.Event("progress");
+		newEvent.loaded = event.loaded;
+		newEvent.total = event.total;
+		this._sendProgress(newEvent);
 	};
 
 	/**
@@ -247,7 +253,9 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleAbort = function (event) {
 		this._clean();
-		this._sendError();
+		var event = new createjs.Event("error");
+		event.text = "XHR_ABORTED";
+		this._sendError(event);
 	};
 
 	/**
@@ -258,7 +266,9 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleError = function (event) {
 		this._clean();
-		this._sendError();
+		var newEvent = new createjs.Event("error");
+		//TODO: Propagate event error
+		this._sendError(newEvent);
 	};
 
 	/**
@@ -309,7 +319,10 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleTimeout = function (event) {
 		this._clean();
-		this._sendError({reason:"PRELOAD_TIMEOUT"});
+		var newEvent = new createjs.Event("error");
+		newEvent.text = "PRELOAD_TIMEOUT";
+		//TODO: Propagate actual event error
+		this._sendError(event);
 	};
 
 

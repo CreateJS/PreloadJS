@@ -119,14 +119,6 @@ this.createjs = this.createjs||{};
 	 */
 
 	/**
-	 * The event that is fired when a load starts. This event has been deprecated in favour of the "loadstart" event.
-	 * @event loadStart
-	 * @param {Object} target The object that dispatched the event.
-	 * @param {String} type The event type.
-	 * @since 0.3.0
-	 * @deprecated in favour of the "loadstart" event.
-	 */
-	/**
 	 * The event that is fired when a load starts.
 	 * @event loadstart
 	 * @param {Object} target The object that dispatched the event.
@@ -156,38 +148,35 @@ this.createjs = this.createjs||{};
 	 * @since 0.3.0
 	 */
 
-// Callbacks (deprecated)
+	//TODO: Deprecated
 	/**
-	 * The callback that is fired when the overall progress changes.
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/progress:event"}}{{/crossLink}}
+	 * event.
 	 * @property onProgress
 	 * @type {Function}
-	 * @deprecated In favour of the "progress" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "progress" event.
 	 */
-	p.onProgress = null;
-
 	/**
-	 * The callback that is fired when a load starts.
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}}
+	 * event.
 	 * @property onLoadStart
 	 * @type {Function}
-	 * @deprecated In favour of the "loadStart" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "loadstart" event.
 	 */
-	p.onLoadStart = null;
-
 	/**
-	 * The callback that is fired when the loader's content has been entirely loaded.
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}}
+	 * event.
 	 * @property onComplete
 	 * @type {Function}
-	 * @deprecated In favour of the "complete" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "complete" event.
 	 */
-	p.onComplete = null;
-
 	/**
-	 * The callback that is fired when the loader encounters an error.
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
+	 * event.
 	 * @property onError
 	 * @type {Function}
-	 * @deprecated In favour of the "error" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "error" event.
 	 */
-	p.onError = null;
 
 
 // mix-ins:
@@ -243,21 +232,19 @@ this.createjs = this.createjs||{};
 
 //Callback proxies
 	/**
-	 * Dispatch a loadstart event (and onLoadStart callback). Please see the <code>AbstractLoader.loadstart</code> event
+	 * Dispatch a loadstart event. Please see the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}} event
 	 * for details on the event payload.
 	 * @method _sendLoadStart
 	 * @protected
 	 */
 	p._sendLoadStart = function() {
 		if (this._isCanceled()) { return; }
-		this.onLoadStart && this.onLoadStart({target:this});
-		this.dispatchEvent("loadStart"); // DEPRECATED
 		this.dispatchEvent("loadstart");
 	};
 
 	/**
-	 * Dispatch a progress event (and onProgress callback). Please see the <code>AbstractLoader.progress</code> event
-	 * for details on the event payload.
+	 * Dispatch a progress event. Please see the {{#crossLink "AbstractLoader/progress:event"}}{{/crossLink}} event for
+	 * details on the event payload.
 	 * @method _sendProgress
 	 * @param {Number | Object} value The progress of the loaded item, or an object containing <code>loaded</code>
 	 * and <code>total</code> properties.
@@ -268,44 +255,41 @@ this.createjs = this.createjs||{};
 		var event = null;
 		if (typeof(value) == "number") {
 			this.progress = value;
-			event = {loaded:this.progress, total:1};
+			event = new createjs.Event("progress");
+			event.loaded = this.progress;
+			event.total = 1;
 		} else {
 			event = value;
 			this.progress = value.loaded / value.total;
 			if (isNaN(this.progress) || this.progress == Infinity) { this.progress = 0; }
 		}
-		event.target = this;
-		event.type = "progress";
 		event.progress = this.progress;
-		this.onProgress && this.onProgress(event);
-		this.dispatchEvent(event);
+		this.hasEventListener("progress") && this.dispatchEvent(event);
 	};
 
 	/**
-	 * Dispatch a complete event (and onComplete callback). Please see the <code>AbstractLoader.complete</code> event
+	 * Dispatch a complete event. Please see the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}} event
 	 * for details on the event payload.
 	 * @method _sendComplete
 	 * @protected
 	 */
 	p._sendComplete = function() {
 		if (this._isCanceled()) { return; }
-		this.onComplete && this.onComplete({target:this});
 		this.dispatchEvent("complete");
 	};
 
 	/**
-	 * Dispatch an error event (and onError callback). Please see the <code>AbstractLoader.error</code> event for
+	 * Dispatch an error event. Please see the {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}} event for
 	 * details on the event payload.
 	 * @method _sendError
 	 * @param {Object} event The event object containing specific error properties.
 	 * @protected
 	 */
 	p._sendError = function(event) {
-		if (this._isCanceled()) { return; }
-		if (event == null) { event = {}; }
-		event.target = this;
-		event.type = "error";
-		this.onError && this.onError(event);
+		if (this._isCanceled() || !this.hasEventListener("error")) { return; }
+		if (event == null) {
+			event = new createjs.Event("error");
+		}
 		this.dispatchEvent(event);
 	};
 

@@ -219,7 +219,9 @@ this.createjs = this.createjs||{};
 	 */
 	p._handleTimeout = function() {
 		this._clean();
-		this._sendError({reason:"PRELOAD_TIMEOUT"}); //TODO: Evaluate a reason prop
+		var event = new createjs.Event("error");
+		event.text = "PRELOAD_TIMEOUT";
+		this._sendError(event);
 	};
 
 	/**
@@ -237,9 +239,12 @@ this.createjs = this.createjs||{};
 	 * @method _handleError
 	 * @private
 	 */
-	p._handleError = function() {
+	p._handleError = function(event) {
 		this._clean();
-		this._sendError(); //TODO: Reason or error?
+
+		var newEvent = new createjs.Event("error");
+		//TODO: Propagate actual event error?
+		this._sendError(newEvent);
 	};
 
 	/**

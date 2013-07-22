@@ -1,5 +1,10 @@
-Version NEXT [Not Yet Released]
-****************************************************************************************************
+Version NEXT [Not Released]
+************************************************************************************************************************
+CRITICAL (may break existing content):
+- removed all onEvent handlers (ex. onClick, onTick, onAnimationEnd, etc)
+- updated EventDispatcher with latest bubbling model, and the Event class
+
+****
 - Fixed issue where a null parameter would cause remove() to reset a queue (removeAll)
 - Fixed documentation where JSONP was doc'd as a second JSON
 - Added description about file types to main LoadQueue description, including example.

@@ -441,22 +441,21 @@ TODO: WINDOWS ISSUES
 	 * object will contain that value as a property.
 	 */
 
-// Callbacks (deprecated)
+	//TODO: Deprecated
 	/**
-	 * The callback that is fired when an individual file is loaded.
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}
+	 * event.
 	 * @property onFileLoad
 	 * @type {Function}
-	 * @deprecated In favour of the "fileload" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "fileload" event.
 	 */
-	p.onFileLoad = null;
-
 	/**
-	 * The callback that is fired when an individual files progress changes.
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "LoadQueue/fileprogress:event"}}{{/crossLink}}
+	 * event.
 	 * @property onFileProgress
 	 * @type {Function}
-	 * @deprecated In favour of the "fileprogress" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "fileprogress" event.
 	 */
-	p.onFileProgress = null;
 
 
 // Protected
@@ -851,7 +850,9 @@ TODO: WINDOWS ISSUES
 	 */
 	p.loadFile = function(file, loadNow, basePath) {
 		if (file == null) {
-			this._sendError({text: "PRELOAD_NO_FILE"});
+			var event = new createjs.Event("error");
+			event.text = "PRELOAD_NO_FILE";
+			this._sendError(event);
 			return;
 		}
 		this._addItem(file, basePath);
@@ -898,13 +899,17 @@ TODO: WINDOWS ISSUES
 
 		if (manifest instanceof Array) {
 			if (manifest.length == 0) {
-				this._sendError({text: "PRELOAD_MANIFEST_EMPTY"});
+				var event = new createjs.Event("error");
+				event.text = "PRELOAD_MANIFEST_EMPTY";
+				this._sendError(event);
 				return;
 			}
 			data = manifest;
 		} else {
 			if (manifest == null) {
-				this._sendError({text: "PRELOAD_MANIFEST_NULL"});
+				var event = new createjs.Event("error");
+				event.text = "PRELOAD_MANIFEST_NULL";
+				this._sendError(event);
 				return;
 			}
 			data = [manifest];
@@ -1231,8 +1236,8 @@ TODO: WINDOWS ISSUES
 	};
 
 	/**
-	 * The callback that is fired when a loader encounters an error. The queue will continue loading unless
-	 * <code>stopOnError</code> is set to <code>true</code>.
+	 * The callback that is fired when a loader encounters an error. The queue will continue loading unless {{#crossLink "LoadQueue/stopOnError:property"}}{{/crossLink}}
+	 * is set to `true`.
 	 * @method _handleFileError
 	 * @param {Object} event The error event, containing relevant error information.
 	 * @private
@@ -1242,10 +1247,11 @@ TODO: WINDOWS ISSUES
 		this._numItemsLoaded++;
 		this._updateProgress();
 
-		var event = {
-			//TODO: Add error text?
-			item: loader.getItem()
-		};
+		var event = new createjs.Event("error");
+		event.text = "FILE_LOAD_ERROR";
+		event.item = loader.getItem();
+		// TOOD: Propagate actual error message.
+
 		this._sendError(event);
 
 		if (!this.stopOnError) {
@@ -1486,20 +1492,19 @@ TODO: WINDOWS ISSUES
 			this._cleanUp();
 			return;
 		}
-		var event = {
-			target: this,
-			type: "fileprogress",
-			progress: progress,
-			loaded: progress,
-			total: 1,
-			item: item
-		};
-		this.onFileProgress && this.onFileProgress(event);
+		if (!this.hasEventListener("fileprogress")) { return; }
+
+		var event = new createjs.Event("fileprogress");
+		event.progress = progress;
+		event.loaded = progress;
+		event.total = 1;
+		event.item = item;
+
 		this.dispatchEvent(event);
 	};
 
 	/**
-	 * Dispatch a fileload event (and onFileLoad callback). Please see the <code>LoadQueue.fileload</code> event for
+	 * Dispatch a fileload event. Please see the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event for
 	 * details on the event payload.
 	 * @method _sendFileComplete
 	 * @param {Object} item The item that is being loaded.
@@ -1508,44 +1513,38 @@ TODO: WINDOWS ISSUES
 	 */
 	p._sendFileComplete = function(item, loader) {
 		if (this._isCanceled()) { return; }
-		var event = {
-			target: this,
-			type: "fileload",
-			loader: loader,
-			item: item,
-			result: this._loadedResults[item.id],
-			rawResult: this._loadedRawResults[item.id]
-		};
+
+		var event = new createjs.Event("fileload");
+		event.loader = loader;
+		event.item = item;
+		event.result = this._loadedResults[item.id];
+		event.rawResult = this._loadedRawResults[item.id];
 
         // This calls a handler specified on the actual load item. Currently, the SoundJS plugin uses this.
         if (item.completeHandler) {
             item.completeHandler(event);
         }
 
-        this.onFileLoad && this.onFileLoad(event);
-		this.dispatchEvent(event)
+		this.hasEventListener("fileload") && this.dispatchEvent(event)
 	};
 
 	/**
-	 * Dispatch a filestart event immediately before a file has started to load. Please see the <code>LoadQueue.filestart</code>
+	 * Dispatch a filestart event immediately before a file starts to load. Please see the {{#crossLink "LoadQueue/filestart:event"}}{{/crossLink}}
 	 * event for details on the event payload.
 	 * @method _sendFileStart
 	 * @param {TagLoader | XHRLoader} loader
 	 * @protected
 	 */
-	p._sendFileStart = function(item){
-	  var event = {
-	    target: this,
-	    type: "filestart",
-		item: item
-	  }
-
-	  this.dispatchEvent(event);
-	}
+	p._sendFileStart = function(item) {
+		var event = new createjs.Event("filestart");
+		event.item = item;
+		this.hasEventListener("filestart") && this.dispatchEvent(event);
+	};
 
 	p.toString = function() {
 		return "[PreloadJS LoadQueue]";
 	};
+
 	/**
 	 * A function proxy for PreloadJS methods. By default, JavaScript methods do not maintain scope, so passing a
 	 * method as a callback will result in the method getting called in the scope of the caller. Using a proxy
