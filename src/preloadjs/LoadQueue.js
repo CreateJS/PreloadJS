@@ -1015,7 +1015,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._addItem = function(value, basePath) {
-		var item = this._createLoadItem(value);
+		var item = this._createLoadItem(value, basePath);
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
 		var loader = this._createLoader(item, basePath);
 		if (loader != null) {
@@ -1047,7 +1047,7 @@ TODO: WINDOWS ISSUES
 	 * @return {Object} The loader instance that will be used.
 	 * @private
 	 */
-	p._createLoadItem = function(value) {
+	p._createLoadItem = function(value, basePath) {
 		var item = null;
 
 		// Create/modify a load item
@@ -1099,7 +1099,7 @@ TODO: WINDOWS ISSUES
 		// Give plugins a chance to modify the loadItem:
 		var customHandler = this._typeCallbacks[item.type] || this._extensionCallbacks[item.ext];
 		if (customHandler) {
-			var result = customHandler(item.src, item.type, item.id, item.data);
+			var result = customHandler(item.src, item.type, item.id, item.data, basePath);
 			//Plugin will handle the load, so just ignore it.
 			if (result === false) {
 				return null;
