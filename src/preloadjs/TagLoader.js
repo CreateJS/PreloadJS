@@ -35,7 +35,7 @@
 this.createjs = this.createjs||{};
 
 (function() {
-
+	"use strict";
 	/**
 	 * A preloader that loads items using a tag-based approach. HTML audio and images can use this loader to load
 	 * content cross-domain without security errors, whereas anything loaded with XHR has potential issues with cross-

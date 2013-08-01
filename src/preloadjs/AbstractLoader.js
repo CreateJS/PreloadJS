@@ -35,7 +35,7 @@
 this.createjs = this.createjs||{};
 
 (function() {
-
+	"use strict";
 	/**
 	 * The base loader, which defines all the generic callbacks and events. All loaders extend this class, including the
 	 * {{#crossLink "LoadQueue"}}{{/crossLink}}.

@@ -93,6 +93,7 @@ TODO: WINDOWS ISSUES
  */
 
 (function() {
+	"use strict";
 
 	/**
 	 * The LoadQueue class is the main API for preloading content. LoadQueue is a load manager, which maintains

@@ -35,6 +35,7 @@
 this.createjs = this.createjs || {};
 
 (function () {
+	"use strict";
 
 	/**
 	 * A preloader that loads items using XHR requests, usually XMLHttpRequest. However XDomainRequests will be used
