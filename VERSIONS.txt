@@ -5,12 +5,13 @@ CRITICAL (may break existing content):
 - updated EventDispatcher with latest bubbling model, and the Event class
 
 ****
+- implemented createjs Utils
+- implemented "use strict" mode
 - Fixed issue where a null parameter would cause remove() to reset a queue (removeAll)
 - Fixed documentation where JSONP was doc'd as a second JSON
 - Added description about file types to main LoadQueue description, including example.
 - Fixed edge case where an unmatched file pattern would cause errors
 - Handled cases with no extension
-- Added "use strict"; to everything.
 - fixed an issue with EventDispatcher when adding the same listener to an event twice
 
 Version 0.3.1 [May 10, 2013]

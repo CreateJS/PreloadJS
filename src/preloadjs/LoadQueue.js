@@ -1285,7 +1285,7 @@ TODO: WINDOWS ISSUES
 			if (loader instanceof createjs.TagLoader) {
 				this._currentlyLoadingScript = false;
 			} else {
-				this._loadedScripts[this._scriptOrder.indexOf(item)] = item;
+				this._loadedScripts[createjs.indexOf(this._scriptOrder, item)] = item;
 				this._checkScriptLoadOrder(loader);
 				return;
 			}
@@ -1547,9 +1547,7 @@ TODO: WINDOWS ISSUES
 	};
 
 	/**
-	 * A function proxy for PreloadJS methods. By default, JavaScript methods do not maintain scope, so passing a
-	 * method as a callback will result in the method getting called in the scope of the caller. Using a proxy
-	 * ensures that the method gets called in the correct scope.
+	 * REMOVED.  Use createjs.proxy instead
 	 * @method proxy
 	 * @param {Function} method The function to call
 	 * @param {Object} scope The scope to call the method name on
@@ -1557,83 +1555,25 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 * @deprecated In favour of the createjs.proxy method (see LoadQueue source).
 	 */
-	s.proxy = function(method, scope) {
-		return function() {
-			return method.apply(scope, arguments);
-		};
-	}
 
 	createjs.LoadQueue = LoadQueue;
 
 
 // Helper methods
-	/**
-	 * A function proxy for PreloadJS methods. By default, JavaScript methods do not maintain scope, so passing a
-	 * method as a callback will result in the method getting called in the scope of the caller. Using a proxy
-	 * ensures that the method gets called in the correct scope.
-	 * #method proxy
-	 * @param {Function} method The function to call
-	 * @param {Object} scope The scope to call the method name on
-	 * @param {mixed} [arg]* Arguments that are appended to the callback.
-	 * @static
-	 * @private
-	 */
-	if (!createjs.proxy) {
-		createjs.proxy = function(method, scope) {
-			var aArgs = Array.prototype.slice.call(arguments, 2);
-			return function() {
-				return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
-			};
-		}
-	}
-
 
 	// An additional module to determine the current browser, version, operating system, and other environmental variables.
 	var BrowserDetect = function() {}
 
 	BrowserDetect.init = function() {
 		var agent = navigator.userAgent;
-		BrowserDetect.isFirefox = (agent.indexOf("Firefox") > -1);
+		BrowserDetect.isFirefox = (createjs.indexOf(agent, "Firefox") > -1);
 		BrowserDetect.isOpera = (window.opera != null);
-		BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);
-		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
+		BrowserDetect.isChrome = (createjs.indexOf(agent, "Chrome") > -1);
+		BrowserDetect.isIOS = createjs.indexOf(agent, "iPod") > -1 || createjs.indexOf(agent, "iPhone") > -1 || createjs.indexOf(agent, "iPad") > -1;
 	}
 
 	BrowserDetect.init();
 
 	createjs.LoadQueue.BrowserDetect = BrowserDetect;
 
-	// Patch for IE7 and 8 that don't have indexOf
-	// https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf
-	if (!Array.prototype.indexOf) {
-	    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-	        if (this == null) {
-	            throw new TypeError();
-	        }
-	        var t = Object(this);
-	        var len = t.length >>> 0;
-	        if (len === 0) {
-	            return -1;
-	        }
-	        var n = 0;
-	        if (arguments.length > 1) {
-	            n = Number(arguments[1]);
-	            if (n != n) { // shortcut for verifying if it's NaN
-	                n = 0;
-	            } else if (n != 0 && n != Infinity && n != -Infinity) {
-	                n = (n > 0 || -1) * Math.floor(Math.abs(n));
-	            }
-	        }
-	        if (n >= len) {
-	            return -1;
-	        }
-	        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-	        for (; k < len; k++) {
-	            if (k in t && t[k] === searchElement) {
-	                return k;
-	            }
-	        }
-	        return -1;
-	    }
-	}
 }());
