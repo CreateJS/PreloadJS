@@ -1,4 +1,4 @@
-Version NEXT [Not Released]
+Version 0.4.0 [Releasing Soon]
 ************************************************************************************************************************
 CRITICAL (may break existing content):
 - removed all onEvent handlers (ex. onClick, onTick, onAnimationEnd, etc)
@@ -12,7 +12,8 @@ CRITICAL (may break existing content):
 - Added description about file types to main LoadQueue description, including example.
 - Fixed edge case where an unmatched file pattern would cause errors
 - Handled cases with no extension
-- fixed an issue with EventDispatcher when adding the same listener to an event twice
+- Fixed an issue with EventDispatcher when adding the same listener to an event twice
+- Updated the build process to use NodeJS & Grunt.js. Please refer to the readme in the build folder.
 
 Version 0.3.1 [May 10, 2013]
 ****************************************************************************************************
