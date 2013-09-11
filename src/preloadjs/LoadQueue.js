@@ -1566,10 +1566,10 @@ TODO: WINDOWS ISSUES
 
 	BrowserDetect.init = function() {
 		var agent = navigator.userAgent;
-		BrowserDetect.isFirefox = (createjs.indexOf(agent, "Firefox") > -1);
+		BrowserDetect.isFirefox = (agent.indexOf("Firefox") > -1);
 		BrowserDetect.isOpera = (window.opera != null);
-		BrowserDetect.isChrome = (createjs.indexOf(agent, "Chrome") > -1);
-		BrowserDetect.isIOS = createjs.indexOf(agent, "iPod") > -1 || createjs.indexOf(agent, "iPhone") > -1 || createjs.indexOf(agent, "iPad") > -1;
+		BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);
+		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
 	}
 
 	BrowserDetect.init();

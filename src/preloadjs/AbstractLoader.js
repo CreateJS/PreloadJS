@@ -366,7 +366,7 @@ this.createjs = this.createjs||{};
 		}
 
 		var query = [];
-		var idx = createjs.indexOf(src, '?');
+		var idx = src.indexOf('?');
 
 		if (idx != -1) {
 			var q = src.slice(idx+1);
