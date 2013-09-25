@@ -1,4 +1,4 @@
-Version 0.4.0 [Releasing Soon]
+Version 0.4.0 [September 25, 2013]
 ************************************************************************************************************************
 CRITICAL (may break existing content):
 - removed all onEvent handlers (ex. onClick, onTick, onAnimationEnd, etc)
@@ -14,6 +14,7 @@ CRITICAL (may break existing content):
 - Handled cases with no extension
 - Fixed an issue with EventDispatcher when adding the same listener to an event twice
 - Updated the build process to use NodeJS & Grunt.js. Please refer to the readme in the build folder.
+
 
 Version 0.3.1 [May 10, 2013]
 ****************************************************************************************************
@@ -44,6 +45,7 @@ Version 0.3.1 [May 10, 2013]
 - Fixed several IE 6-8 bugs.
 - Fixed svg flickering while loading on Opera.
 - Fixed issue where operations such as setMaxConnections would unpause a queue
+
 
 Version 0.3.0 [Feb 12, 2013]
 ****************************************************************************************************
