@@ -748,7 +748,7 @@ TODO: WINDOWS ISSUES
 
 		//Reset the queue to its start state
 		var a = [];
-		for (i=0,l=this._loadQueueBackup.length;i<l;i++) {
+		for (var i=0, l=this._loadQueueBackup.length; i<l; i++) {
 			a.push(this._loadQueueBackup[i].getItem());
 		}
 
