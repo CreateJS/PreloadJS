@@ -1542,10 +1542,6 @@ TODO: WINDOWS ISSUES
 		this.hasEventListener("filestart") && this.dispatchEvent(event);
 	};
 
-	p.toString = function() {
-		return "[PreloadJS LoadQueue]";
-	};
-
 	/**
 	 * REMOVED.  Use createjs.proxy instead
 	 * @method proxy
@@ -1555,6 +1551,10 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 * @deprecated In favour of the createjs.proxy method (see LoadQueue source).
 	 */
+
+	p.toString = function() {
+		return "[PreloadJS LoadQueue]";
+	};
 
 	createjs.LoadQueue = LoadQueue;
 
