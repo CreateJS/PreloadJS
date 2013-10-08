@@ -688,13 +688,13 @@ TODO: WINDOWS ISSUES
 		// Remove specific items
 		} else {
 			while (args.length) {
-				var item = args.pop();
+				var idOrSrc = args.pop();
 				var r = this.getResult(item);
 
 				//Remove from the main load Queue
 				for (i = this._loadQueue.length-1;i>=0;i--) {
 					loadItem = this._loadQueue[i].getItem();
-					if (loadItem.id == item || loadItem.src == item) {
+					if (loadItem.id == idOrSrc || loadItem.src == idOrSrc) {
 						this._loadQueue.splice(i,1)[0].cancel();
 						break;
 					}
@@ -703,16 +703,15 @@ TODO: WINDOWS ISSUES
 				//Remove from the backup queue
 				for (i = this._loadQueueBackup.length-1;i>=0;i--) {
 					loadItem = this._loadQueueBackup[i].getItem();
-					if (loadItem.id == item || loadItem.src == item) {
+					if (loadItem.id == idOrSrc || loadItem.src == idOrSrc) {
 						this._loadQueueBackup.splice(i,1)[0].cancel();
 						break;
 					}
 				}
 
 				if (r) {
-					delete this._loadItemsById[r.id];
-					delete this._loadItemsBySrc[r.src];
-					this._disposeItem(r);
+					// fix
+					this._disposeItem(this.getItem(idOrSrc));
 				} else {
 					for (var i=this._currentLoads.length-1;i>=0;i--) {
 						var loadItem = this._currentLoads[i].getItem();
