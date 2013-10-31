@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PreloadJS: Queue Example</title>
+
+	<link rel="stylesheet" type="text/css" href="./assets/demoStyles.css" />
+	<style type="text/css">
+		#template {
+			display:none;
+		}
+
+		#mainProgress {
+			width: auto;
+			height: 20px;
+			float: none;
+			position: relative;
+		}
+		#mainProgress LABEL { position: absolute; }
+
+		.item {
+			height: 170px;
+			width: 238px;
+			border: 1px solid #eee;
+			background-color: #ddd;
+			padding: 2px;
+			float:left;
+			position: relative;
+			text-align: center;
+		}
+		.item .progress {
+			width: 0;
+			height: 20px;
+			background-color: #9c9;
+			bottom: 0;
+		}
+		.complete {}
+		.error {
+			background-color: #FAA;
+		}
+		.complete DIV, .error DIV { display: none; }
+	</style>
+</head>
+<body onload="init()">
+
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Preload Queue</h1>
+	    <p>This sample simply loads a manifest file, which defines a list of files to load in an external JSON file.
+		This is set up to load using JSONP (using a callback). To use XHR, the JSON must not contain the function
+		wrapper, and the item an manifest must include a callback.</p>
+	</header>
+
+	<div id="container" class="content">
+		<input type="button" id="reloadBtn" value="Reset" />
+		<div id="mainProgress" class="item">
+			<label>Overall Progress</label><div class="progress"></div>
+		</div>
+		<hr />
+		<!-- New items will get placed here -->
+	</div>
+
+	<!-- Item Template. This is cloned whenever we want a new one. -->
+	<div id="template" class="item">
+		<div class="progress"></div>
+	</div>
+
+	<!-- Note: All PreloadJS classes are listed here: -->
+    <script type="text/javascript" src="../src/createjs/events/Event.js"></script>
+    <script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
+	<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
+	<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+
+    <!-- We also provide hosted minified versions of all CreateJS libraries.
+      http://code.createjs.com -->
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        var map = {};
+        var preload;
+        var loader;
+        var manifest;
+        var w = 238; // Item width
+        var h = 170; // Item height
+
+        function init() {
+            if (window.top != window) {
+                document.getElementById("header").style.display = "none";
+            }
+
+            $("#loadAnotherBtn").click(loadAnother);
+            $("#loadAllBtn").click(loadAll);
+            $("#reloadBtn").click(reload);
+
+            reload();
+        }
+
+        // Reset everything
+        function reload() {
+            // If there is an open preload queue, close it.
+            if (preload != null) { preload.close(); }
+
+            // Reset the UI
+            $("#reloadBtn").css("display", "none");
+            $(".box").remove();
+            $("#mainProgress .progress").width(0);
+
+            $("#loadAnotherBtn").attr("disabled", null);
+            $("#loadAllBtn").attr("disabled", null);
+
+            // Push each item into our manifest
+
+            // Create a preloader. There is no manifest added to it up-front, we will add items on-demand.
+            preload = new createjs.LoadQueue(true, "assets/");
+
+            // Use this instead to use tag loading
+            //preload = new createjs.LoadQueue(false, "assets/");
+
+			//preload.installPlugin(createjs.Sound);
+
+            preload.addEventListener("fileload", handleFileLoad);
+            preload.addEventListener("progress", handleOverallProgress);
+            preload.addEventListener("fileprogress", handleFileProgress);
+            preload.addEventListener("error", handleFileError);
+            preload.setMaxConnections(5);
+
+			preload.loadManifest({src: "manifest.json", type:"manifest"});
+        }
+
+        function stop() {
+            if (preload != null) { preload.close(); }
+        }
+
+        function loadAll() {
+            while (manifest.length > 0) {
+                loadAnother();
+            }
+        }
+
+        function loadAnother() {
+            // Get the next manifest item, and load it
+            var item = manifest.shift();
+            preload.loadFile(item);
+
+            // If we have no more items, disable the UI.
+            if (manifest.length == 0) {
+                $("#loadAnotherBtn").attr("disabled", "disabled");
+                $("#loadAllBtn").attr("disabled", "disabled");
+                $("#reloadBtn").css("display","inline");
+            }
+
+            // Create a new loader display item
+            var div = $("#template").clone();
+            div.attr("id", ""); // Wipe out the ID
+            div.addClass("box")
+            $("#container").append(div);
+            map[item] = div; // Store a reference to each item by its src
+        }
+
+        // File complete handler
+        function handleFileLoad(event) {
+
+			switch (event.item.type) {
+				case "css":
+					break;
+				case "image":
+					var div = $("#template").clone();
+					div.attr("id", ""); // Wipe out the ID
+					div.addClass("box")
+					$("#container").append(div);
+					div.addClass("complete");
+
+					// Get a reference to the loaded image (<img/>)
+					var img = event.result;
+
+					// Resize it to fit inside the item
+					var r = img.width/img.height;
+					var ir = w/h
+					if (r > ir) {
+						img.width = w;
+						img.height = w/r;
+					} else {
+						img.height = h;
+						img.width = h;
+					}
+					div.append(img); // Add it to the DOM
+
+					break;
+			}
+        }
+
+        // File progress handler
+        function handleFileProgress(event) {
+           return;
+            var div = map[event.item.src]; // Lookup the related item
+			if (div == null) { return; }
+            div.children("DIV").width(event.progress*div.width()); // Set the width the progress.
+        }
+
+        // Overall progress handler
+        function handleOverallProgress(event) {
+            $("#mainProgress > .progress").width(preload.progress * $("#mainProgress").width());
+        }
+
+        // An error happened on a file
+        function handleFileError(event) {
+			return;
+            var div = map[event.item.src];
+            div.addClass("error");
+        }
+
+    </script>
+
+</body>
+</html>

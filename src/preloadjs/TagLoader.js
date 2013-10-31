@@ -120,7 +120,7 @@ this.createjs = this.createjs||{};
 	 * @return {HTMLImageElement | HTMLAudioElement | Object} The loaded and parsed content.
 	 */
 	p.getResult = function() {
-		if (this._item.type == createjs.LoadQueue.JSONP) {
+		if (this._item.type == createjs.LoadQueue.JSONP || this._item.type == createjs.LoadQueue.MANIFEST) {
 			return this._jsonResult;
 		} else {
 			return this._tag;
@@ -177,7 +177,9 @@ this.createjs = this.createjs||{};
 		}
 
 		// If we're loading JSONP, we need to add our callback now.
-		if (item.type == createjs.LoadQueue.JSONP) {
+		if (item.type == createjs.LoadQueue.JSONP
+				|| item.type == createjs.LoadQueue.JSON
+				|| item.type == createjs.LoadQueue.MANIFEST) {
 			if (item.callback == null) {
 				throw new Error('callback is required for loading JSONP requests.');
 			}
@@ -194,6 +196,7 @@ this.createjs = this.createjs||{};
 		if (item.type == createjs.LoadQueue.SVG ||
 			item.type == createjs.LoadQueue.JSONP ||
 			item.type == createjs.LoadQueue.JSON ||
+			item.type == createjs.LoadQueue.MANIFEST ||
 			item.type == createjs.LoadQueue.JAVASCRIPT ||
 			item.type == createjs.LoadQueue.CSS) {
 				this._startTagVisibility = tag.style.visibility;
@@ -283,7 +286,8 @@ this.createjs = this.createjs||{};
 		// Remove from the DOM
 		switch (item.type) {
 			case createjs.LoadQueue.SVG:
-			case createjs.LoadQueue.JSONP:
+			case createjs.LoadQueue.JSONP: // Note: Removing script tags is a fool's errand.
+			case createjs.LoadQueue.MANIFEST:
 				// case createjs.LoadQueue.CSS:
 				//LM: We may need to remove CSS tags loaded using a LINK
 				tag.style.visibility = this._startTagVisibility;
@@ -319,7 +323,8 @@ this.createjs = this.createjs||{};
 		}
 
 		var item = this.getItem();
-		if (item.type == createjs.LoadQueue.JSONP) {
+		if (item.type == createjs.LoadQueue.JSONP
+			|| item.type == createjs.LoadQueue.MANIFEST) {
 			window[item.callback] = null;
 		}
 	};

@@ -147,6 +147,7 @@ TODO: WINDOWS ISSUES
 	 *     <li>createjs.LoadQueue.JAVASCRIPT (JavaScript files)</li>
 	 *     <li>createjs.LoadQueue.JSON (JSON data)</li>
 	 *     <li>createjs.LoadQueue.JSONP (JSON files cross-domain)</li>
+	 *     <li>createjs.LoadQueue.MANIFEST (A list of files to load in JSON format, see {{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}} )</li>
 	 *     <li>createjs.LoadQueue.SOUND (Audio file formats)</li>
 	 *     <li>createjs.LoadQueue.SVG (SVG files)</li>
 	 *     <li>createjs.LoadQueue.TEXT (Text files - XHR only)</li>
@@ -271,6 +272,10 @@ TODO: WINDOWS ISSUES
 	/**
 	 * The preload type for javascript files, usually with the "js" file extension. JavaScript files are loaded into a
 	 * SCRIPT tag.
+	 *
+	 * Since version 0.4.1+, due to how tag-loaded scripts work, all JavaScript files are automatically injected into
+	 * the BODY of the document to maintain parity between XHR and tag-loaded scripts. In version 0.4.0 and earlier,
+	 * only tag-loaded scripts were injected.
 	 * @property JAVASCRIPT
 	 * @type {String}
 	 * @default javascript
@@ -280,7 +285,8 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
-	 * JavaScript object.
+	 * JavaScript object. Note that if a `callback` is present on the load item, the file will be loaded with JSONP,
+	 * no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to.
 	 * @property JSON
 	 * @type {String}
 	 * @default json
@@ -289,14 +295,30 @@ TODO: WINDOWS ISSUES
 	s.JSON = "json";
 
 	/**
-	 * The preload type for jsonp files, usually with the "json" file extension. JSOON data is loaded and parsed into a
-	 * JavaScript object. You are required to pass a callback parameter that matches the jsonp result.
+	 * The preload type for jsonp files, usually with the "json" file extension. JSON data is loaded and parsed into a
+	 * JavaScript object. You are required to pass a callback parameter that matches the function wrapper in the JSON.
+	 * Note that JSONP will always be used if there is a callback present, no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}}
+	 * property is set to.
 	 * @property JSONP
 	 * @type {String}
 	 * @default jsonp
 	 * @static
 	 */
 	s.JSONP = "jsonp";
+
+	/**
+	 * The preload type for json-based manifest files, usually with the "json" file extension. The JSON data is loaded
+	 * and parsed into a JavaScript object, and parsed. PreloadJS will then look for a "manifest" property in the JSON,
+	 * which is an array of files to load, following the same format as the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
+	 * method. If a "callback" is specified on the manifest object, then it will be loaded using JSONP instead,
+	 * regardless of what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to.
+	 * @property MANIFEST
+	 * @type {String}
+	 * @default manifest
+	 * @static
+	 * @since 0.4.1
+	 */
+	s.MANIFEST = "manifest";
 
 	/**
 	 * The preload type for sound files, usually mp3, ogg, or wav. Audio is loaded into an AUDIO tag.
@@ -357,7 +379,7 @@ TODO: WINDOWS ISSUES
 	 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
 	 *
 	 * <b>Note: This property is read-only.</b> To change it, please use the {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
-	 * method.
+	 * method, or specify the `useXHR` argument in the LoadQueue constructor.
 	 *
 	 * @property useXHR
 	 * @type {Boolean}
@@ -367,7 +389,7 @@ TODO: WINDOWS ISSUES
 	p.useXHR = true;
 
 	/**
-	 * Does LoadQueue stop processing the current queue when an error is encountered.
+	 * Determines if the LoadQueue will stop processing the current queue when an error is encountered.
 	 * @property stopOnError
 	 * @type {Boolean}
 	 * @default false
@@ -383,20 +405,9 @@ TODO: WINDOWS ISSUES
 	 */
 	p.maintainScriptOrder = true;
 
-	/*
-	 * LM: Not Implemented.
-	 * Automatically add tags to the HEAD of the document when they are loaded. Note that when loading JavaScript
-	 * using a tag-based approach (<code>useXHR=false</code>), tags are automatically added to the HEAD in order to
-	 * load them.
-	 * @property addHeadTags
-	 * @type {Boolean}
-	 * @default trues
-	 */
-	//p.addHeadTags = true;
-
 	/**
 	 * The next preload queue to process when this one is complete. If an error is thrown in the current queue, and
-	 * <code>loadQueue.stopOnError</code> is <code>true</code>, the next queue will not be processed.
+	 * {{#crossLink "LoadQueue/stopOnError:property"}}{{/crossLink}} is `true`, the next queue will not be processed.
 	 * @property next
 	 * @type {LoadQueue}
 	 * @default null
@@ -811,8 +822,8 @@ TODO: WINDOWS ISSUES
 	/**
 	 * Set the maximum number of concurrent connections. Note that browsers and servers may have a built-in maximum
 	 * number of open connections, so any additional connections may remain in a pending state until the browser
-	 * opens the connection. Note that when loading scripts using tags, with <code>maintainScriptOrder=true</code>, only
-	 * one script is loaded at a time due to browser limitations.
+	 * opens the connection. Note that when loading scripts using tags, and {{#crossLink "LoadQueue/maintainScriptOrder:property"}}{{/crossLink}}
+	 * is `true`, only one script is loaded at a time due to browser limitations.
 	 * @method setMaxConnections
 	 * @param {Number} value The number of concurrent loads to allow. By default, only a single connection per LoadQueue
 	 * is open at any time.
@@ -875,12 +886,14 @@ TODO: WINDOWS ISSUES
 	 * Load an array of items. To load a single file, use the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} method.
 	 * The files in the manifest are requested in the same order, but may complete in a different order if the max
 	 * connections are set above 1 using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}. Scripts will load
-	 * in the right order as long as <code>loadQueue.maintainScriptOrder</code> is true (which is default).
+	 * in the right order as long as {{#crossLink "LoadQueue/maintainScriptOrder"}}{{/crossLink}} is true (which is
+	 * default).
 	 *
 	 * Note that files are always appended to the current queue, so this method can be used multiple times to add files.
 	 * To clear the queue first, use the {{#crossLink "AbstractLoader/close"}}{{/crossLink}} method.
 	 * @method loadManifest
-	 * @param {Array} manifest The list of files to load. Each file can be either:
+	 * @param {Array|String|Object} manifest The list of files to load. If a single object or string is passed, it will
+	 * be loaded the same as a single-item array. Each load item can be either:
 	 * <ol>
 	 *     <li>a path to a resource (string). Note that this kind of load item will be
 	 *      converted to an object (see below) in the background.</li>
@@ -904,6 +917,7 @@ TODO: WINDOWS ISSUES
 	p.loadManifest = function(manifest, loadNow, basePath) {
 		var data = null;
 
+		// Proper list of items
 		if (manifest instanceof Array) {
 			if (manifest.length == 0) {
 				var event = new createjs.Event("error");
@@ -912,13 +926,17 @@ TODO: WINDOWS ISSUES
 				return;
 			}
 			data = manifest;
+
 		} else {
+
+			// Empty/null
 			if (manifest == null) {
 				var event = new createjs.Event("error");
 				event.text = "PRELOAD_MANIFEST_NULL";
 				this._sendError(event);
 				return;
 			}
+
 			data = [manifest];
 		}
 
@@ -1085,8 +1103,8 @@ TODO: WINDOWS ISSUES
 			item.type = this._getTypeByExtension(item.ext);
 		}
 
-		if (item.type == createjs.LoadQueue.JSON && item.callback != null) {
-			item.type = createjs.LoadQueue.JSONP;
+		if (item.type == createjs.LoadQueue.JSON || item.type == createjs.LoadQueue.MANIFEST) {
+			item._loadAsJSONP = (item.callback != null);
 		}
 
 		if (item.type == createjs.LoadQueue.JSONP && item.callback == null) {
@@ -1155,6 +1173,9 @@ TODO: WINDOWS ISSUES
 		// Determine the XHR usage overrides:
 		switch (item.type) {
 			case createjs.LoadQueue.JSON:
+			case createjs.LoadQueue.MANIFEST:
+				useXHR = !item._loadAsJSONP;
+				break;
 			case createjs.LoadQueue.XML:
 			case createjs.LoadQueue.TEXT:
 				useXHR = true; // Always use XHR2 with text/XML
@@ -1257,7 +1278,7 @@ TODO: WINDOWS ISSUES
 		var event = new createjs.Event("error");
 		event.text = "FILE_LOAD_ERROR";
 		event.item = loader.getItem();
-		// TOOD: Propagate actual error message.
+		// TODO: Propagate actual error message.
 
 		this._sendError(event);
 
@@ -1294,6 +1315,14 @@ TODO: WINDOWS ISSUES
 				this._loadedScripts[createjs.indexOf(this._scriptOrder, item)] = item;
 				this._checkScriptLoadOrder(loader);
 				return;
+			}
+		}
+
+		delete item._loadAsJSONP;
+		if (item.type == createjs.LoadQueue.MANIFEST) {
+			var manifest, result = loader.getResult();
+			if (result != null && (manifest = result.manifest)) {
+				this.loadManifest(manifest);
 			}
 		}
 
@@ -1421,8 +1450,10 @@ TODO: WINDOWS ISSUES
 				tag.autoplay = false;
 				// Note: The type property doesn't seem necessary.
 				return tag;
-			case createjs.LoadQueue.JSONP:
-			case createjs.LoadQueue.JAVASCRIPT:
+			case createjs.LoadQueue.JSON:
+			//case createjs.LoadQueue.JSONP:
+			//case createjs.LoadQueue.JAVASCRIPT:
+			case createjs.LoadQueue.MANIFEST:
 				tag = document.createElement("script");
 				tag.type = "text/javascript";
 				return tag;

@@ -548,6 +548,7 @@ this.createjs = this.createjs || {};
 				return true;
 
 			case createjs.LoadQueue.JSON:
+			case createjs.LoadQueue.MANIFEST:
 				var json = {};
 				try {
 					json = JSON.parse(this._response);
