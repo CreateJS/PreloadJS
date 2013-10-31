@@ -512,6 +512,7 @@ this.createjs = this.createjs || {};
 
 				this._rawResponse = this._response;
 				this._response = tag;
+				(document.body || document.getElementsByTagName("body")[0]).appendChild(tag);
 				return true;
 
 			case createjs.LoadQueue.CSS:
