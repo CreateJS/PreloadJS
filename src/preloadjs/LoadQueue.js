@@ -776,16 +776,22 @@ TODO: WINDOWS ISSUES
 	};
 
 	/**
-	 * Register a plugin. Plugins can map to both load types (sound, image, etc), or can map to specific extensions
-	 * (png, mp3, etc). Currently, only one plugin can exist per type/extension. Plugins must return an object containing:
-	 *  <ul><li>callback: The function to call</li>
-	 *      <li>types: An array of types to handle</li>
-	 *      <li>extensions: An array of extensions to handle. This only fires if an applicable type handler has not fired.</li></ul>
-	 * Note that even though a plugin might match both a type and extension handler, the type handler takes priority and
-     * is the only one that gets fired.  For example if you have a handler for type=sound, and a handler for extension=mp3,
-     * only the type handler would fire when an mp3 file is loaded.
+	 * Register a plugin. Plugins can map to load types (sound, image, etc), or specific extensions (png, mp3, etc).
+	 * Currently, only one plugin can exist per type/extension.
+	 *
+	 * When a plugin is installed, a <code>getPreloadHandlers()</code> method will be called on it. For more information
+	 * on this method, check out the {{#crossLink "SamplePlugin/getPreloadHandlers"}}{{/crossLink}} method in the
+	 * {{#crossLink "SamplePlugin"}}{{/crossLink}} class.
+	 *
+	 * Before a file is loaded, a matching plugin has an opportunity to modify the load. If a `callback` is returned
+	 * from the {{#crossLink "SamplePlugin/getPreloadHandlers"}}{{/crossLink}} method, it will be invoked first, and its
+	 * result may cancel or modify the item. The callback method can also return a `completeHandler` to be fired when
+	 * the file is loaded, or a `tag` object, which will manage the actual download. For more information on these
+	 * methods, check out the {{#crossLink "SamplePlugin/preloadHandler"}}{{/crossLink}} and {{#crossLink "SamplePlugin/fileLoadHandler"}}{{/crossLink}}
+	 * methods on the {{#crossLink "SamplePlugin"}}{{/crossLink}}.
+	 *
 	 * @method installPlugin
-	 * @param {Function} plugin The plugin to install
+	 * @param {Function} plugin The plugin class to install.
 	 */
 	p.installPlugin = function(plugin) {
 		if (plugin == null || plugin.getPreloadHandlers == null) { return; }
