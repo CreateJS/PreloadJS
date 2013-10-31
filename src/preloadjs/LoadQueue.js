@@ -46,7 +46,7 @@
  * <h4>Example</h4>
  *      var queue = new createjs.LoadQueue();
  *      queue.installPlugin(createjs.Sound);
- *      queue.addEventListener("complete", handleComplete);
+ *      queue.on("complete", handleComplete, this);
  *      queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
  *      queue.loadManifest([
  *          {id: "myImage", src:"path/to/myImage.jpg"}
@@ -110,8 +110,8 @@ TODO: WINDOWS ISSUES
 	 * lets you add as many listeners as you want for events. You can subscribe to complete, error, fileload, progress,
 	 * and fileprogress.
 	 *
-	 *      queue.addEventListener("fileload", handleFileLoad);
-	 *      queue.addEventListener("complete", handleComplete);
+	 *      queue.on("fileload", handleFileLoad, this);
+	 *      queue.on("complete", handleComplete, this);
 	 *
 	 * <b>Adding files and manifests</b><br />
 	 * Add files you want to load using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or add multiple files at a
@@ -807,14 +807,16 @@ TODO: WINDOWS ISSUES
 	p.installPlugin = function(plugin) {
 		if (plugin == null || plugin.getPreloadHandlers == null) { return; }
 		var map = plugin.getPreloadHandlers();
+		map.scope = plugin;
+
 		if (map.types != null) {
 			for (var i=0, l=map.types.length; i<l; i++) {
-				this._typeCallbacks[map.types[i]] = map.callback;
+				this._typeCallbacks[map.types[i]] = map;
 			}
 		}
 		if (map.extensions != null) {
 			for (i=0, l=map.extensions.length; i<l; i++) {
-				this._extensionCallbacks[map.extensions[i]] = map.callback;
+				this._extensionCallbacks[map.extensions[i]] = map;
 			}
 		}
 	};
@@ -1035,12 +1037,12 @@ TODO: WINDOWS ISSUES
 	 * method.
 	 * @method _addItem
 	 * @param {String|Object} value The item to add to the queue.
-	 * @param {String} basePath A path to prepend to the item's source.
-	 * 	Sources beginning with http:// or similar will not receive a base path.
+	 * @param {String} basePath A path to prepend to the item's source. Sources beginning with http:// or similar will
+	 * not receive a base path.
 	 * @private
 	 */
 	p._addItem = function(value, basePath) {
-		var item = this._createLoadItem(value);
+		var item = this._createLoadItem(value, basePath);
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
 		var loader = this._createLoader(item, basePath);
 		if (loader != null) {
@@ -1069,10 +1071,12 @@ TODO: WINDOWS ISSUES
 	 * alter the load item.
 	 * @method _createLoadItem
 	 * @param {String | Object | HTMLAudioElement | HTMLImageElement} value The item that needs to be preloaded.
+ 	 * @param {String} basePath A path to prepend to the item's source. Sources beginning with http:// or similar will
+     * not receive a base path.
 	 * @return {Object} The loader instance that will be used.
 	 * @private
 	 */
-	p._createLoadItem = function(value) {
+	p._createLoadItem = function(value, basePath) {
 		var item = null;
 
 		// Create/modify a load item
@@ -1124,7 +1128,8 @@ TODO: WINDOWS ISSUES
 		// Give plugins a chance to modify the loadItem:
 		var customHandler = this._typeCallbacks[item.type] || this._extensionCallbacks[item.ext];
 		if (customHandler) {
-			var result = customHandler(item.src, item.type, item.id, item.data);
+			var result = customHandler.callback.call(customHandler.scope, item.src, item.type, item.id, item.data,
+					basePath || this._basePath, this);
 			//Plugin will handle the load, so just ignore it.
 			if (result === false) {
 				return null;
@@ -1255,9 +1260,9 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._loadItem = function(loader) {
-		loader.addEventListener("progress", createjs.proxy(this._handleProgress, this));
-		loader.addEventListener("complete", createjs.proxy(this._handleFileComplete, this));
-		loader.addEventListener("error", createjs.proxy(this._handleFileError, this));
+		loader.on("progress", this._handleProgress, this);
+		loader.on("complete", this._handleFileComplete, this);
+		loader.on("error", this._handleFileError, this);
 		this._currentLoads.push(loader);
 		this._sendFileStart(loader.getItem());
 		loader.load();
