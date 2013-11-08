@@ -46,7 +46,7 @@
  * <h4>Example</h4>
  *      var queue = new createjs.LoadQueue();
  *      queue.installPlugin(createjs.Sound);
- *      queue.addEventListener("complete", handleComplete);
+ *      queue.on("complete", handleComplete, this);
  *      queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
  *      queue.loadManifest([
  *          {id: "myImage", src:"path/to/myImage.jpg"}
@@ -110,8 +110,8 @@ TODO: WINDOWS ISSUES
 	 * lets you add as many listeners as you want for events. You can subscribe to complete, error, fileload, progress,
 	 * and fileprogress.
 	 *
-	 *      queue.addEventListener("fileload", handleFileLoad);
-	 *      queue.addEventListener("complete", handleComplete);
+	 *      queue.on("fileload", handleFileLoad, this);
+	 *      queue.on("complete", handleComplete, this);
 	 *
 	 * <b>Adding files and manifests</b><br />
 	 * Add files you want to load using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or add multiple files at a
@@ -807,14 +807,16 @@ TODO: WINDOWS ISSUES
 	p.installPlugin = function(plugin) {
 		if (plugin == null || plugin.getPreloadHandlers == null) { return; }
 		var map = plugin.getPreloadHandlers();
+		map.scope = plugin;
+
 		if (map.types != null) {
 			for (var i=0, l=map.types.length; i<l; i++) {
-				this._typeCallbacks[map.types[i]] = map.callback;
+				this._typeCallbacks[map.types[i]] = map;
 			}
 		}
 		if (map.extensions != null) {
 			for (i=0, l=map.extensions.length; i<l; i++) {
-				this._extensionCallbacks[map.extensions[i]] = map.callback;
+				this._extensionCallbacks[map.extensions[i]] = map;
 			}
 		}
 	};
@@ -1255,9 +1257,9 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._loadItem = function(loader) {
-		loader.addEventListener("progress", createjs.proxy(this._handleProgress, this));
-		loader.addEventListener("complete", createjs.proxy(this._handleFileComplete, this));
-		loader.addEventListener("error", createjs.proxy(this._handleFileError, this));
+		loader.on("progress", this._handleProgress, this);
+		loader.on("complete", this._handleFileComplete, this);
+		loader.on("error", this._handleFileError, this);
 		this._currentLoads.push(loader);
 		this._sendFileStart(loader.getItem());
 		loader.load();

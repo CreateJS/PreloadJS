@@ -51,7 +51,8 @@
 	 * PreloadJS expects this method to return an object containing:
      * <ul>
      *     <li><strong>callback:</strong> The function to call on the plugin class right before an item is loaded. Check
-	 *     out the {{#crossLink "SamplePlugin/preloadHandler"}}{{/crossLink}} method for more information.</li>
+	 *     out the {{#crossLink "SamplePlugin/preloadHandler"}}{{/crossLink}} method for more information. The callback
+	 *     is automatically called in the scope of the plugin.</li>
      *     <li><strong>types:</strong> An array of recognized PreloadJS load types to handle. Supported load types are
 	 *     "binary","image", "javascript", "json", "jsonp", "sound", "svg", "text", and "xml".</li>
      *     <li><strong>extensions:</strong> An array of strings containing file extensions to handle, such as "jpg",
@@ -79,7 +80,7 @@
 	 */
 	s.getPreloadHandlers = function() {
 		return {
-			callback: createjs.proxy(s.preloadHandler, s), // Proxy the method to maintain scope
+			callback: s.preloadHandler, // Proxy the method to maintain scope
 			types: ["image"],
 			extensions: ["jpg", "jpeg", "png", "gif"]
 		}
@@ -89,7 +90,19 @@
 	 * This is a sample method to show how to handle the callback specified in the {{#crossLink "LoadQueue/getPreloadHandlers"}}{{/crossLink}}.
 	 * Right before a file is loaded, if a plugin for the file type or extension is found, then the callback for that
 	 * plugin will be invoked. The arguments provided match most of those specified in load items passed into {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}:
-	 * `src`, `type`, `id`, and `data`, followed by the `basePath`.
+	 * <ul>
+	 *     <li><strong>src:</strong> The item source</li>
+	 *     <li><strong>type:</strong> The item type</li>
+	 *     <li><strong>id:</strong> The item id</li>
+	 *     <li><strong>data:</strong> Arbitrary data attached to the item</li>
+	 * </li>
+	 * Two additional arguments are appended:
+	 * <ul>
+	 *     <li><strong>basePath:</strong> A path that is prepended to all items loaded with PreloadJS. <strong>Note
+	 *     that basePath is deprecated, but is left in for backwards compatibility</strong></li>
+	 *     <li><strong>queue:</strong> The {{#crossLink "LoadQueue"}}{{/crossLink}} instance that is loading the
+	 *     item.</li>
+	 * </ul>
 	 *
 	 * This gives the plugin an opportunity to modify the load item, or even cancel the load. The return value of the
 	 * callback determines how PreloadJS will handle the file:
@@ -116,13 +129,13 @@
 	 *      //Check out the SamplePlugin source for a more complete example.
 	 *
 	 *      // Cancel a load
-	 *      SamplePlugin.preloadHandler = function(src, type, id, data, basePath) {
+	 *      SamplePlugin.preloadHandler = function(src, type, id, data, basePath, queue) {
      *          if (id.indexOf("thumb") { return false; } // Don't load items like "image-thumb.png"
      *          return true;
      *      }
 	 *
 	 *      // Specify a completeHandler
-	 *      SamplePlugin.preloadHandler = function(src, type, id, data, basePath) {
+	 *      SamplePlugin.preloadHandler = function(src, type, id, data, basePath, queue) {
 	 *          return {
 	 *              completeHandler: SamplePlugin.fileLoadHandler
 	 *          };
@@ -138,9 +151,10 @@
 	 * item is loaded and returned to the user from PreloadJS.
 	 * @param basePath {String} A base path which is supplied to PreloadJS, which is prepended to the source of any
 	 * load item.
+	 * @param queue {LoadQueue} The {{#crossLink "LoadQueue"}}{{/crossLink}} instance that is preloading the item.
 	 * @return {Boolean|Object} How PreloadJS should handle the load. See the main description for more info.
 	 */
-	s.preloadHandler = function(src, type, id, data, basePath) {
+	s.preloadHandler = function(src, type, id, data, basePath, queue) {
 		var options = {};
 
 		// Tell PreloadJS to skip this file
