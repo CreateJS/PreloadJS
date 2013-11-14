@@ -4,6 +4,7 @@ Version NEXT [Not Released]
 - Added SamplePlugin class to assist with updated plugin documentation
 - Added file-based manifest support. Loading a single JSON file that defines a manifest object will
 	automatically load the files in the manifest. Included a sample.
+- Fixed the rawResult when loading XML
 
 
 Version 0.4.0 [September 25, 2013]
