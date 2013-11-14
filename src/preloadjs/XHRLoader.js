@@ -533,6 +533,7 @@ this.createjs = this.createjs || {};
 
 			case createjs.LoadQueue.XML:
 				var xml = this._parseXML(this._response, "text/xml");
+				this._rawResponse = this._response;
 				this._response = xml;
 				return true;
 
