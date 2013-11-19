@@ -1168,8 +1168,7 @@ TODO: WINDOWS ISSUES
 		// Give plugins a chance to modify the loadItem:
 		var customHandler = this._typeCallbacks[item.type] || this._extensionCallbacks[item.ext];
 		if (customHandler) {
-			var src = this.buildPath(item.src, item.basePath);
-			var result = customHandler.callback.call(customHandler.scope, src, item.type, item.id, item.data,
+			var result = customHandler.callback.call(customHandler.scope, item.src, item.type, item.id, item.data,
 					null, this); // NOTE: No basePath argument anymore. The full path is sent to the plugin
 
 			// The plugin will handle the load, or has canceled it. Ignore it.
@@ -1183,11 +1182,12 @@ TODO: WINDOWS ISSUES
 			// Result is a loader class:
 			} else {
 				if (result.src != null) { item.src = result.src; }
-				if (result.id != null) { item.id = result.id; }
-				if (result.tag != null && result.tag.load instanceof Function) { //Item has what we need load
+				if (result.id != null) { item.id = result.id; } // TODO: Evaluate this. An overridden ID could be problematic
+				if (result.tag != null && result.tag.load instanceof Function) { // Item has what we need load
 					item.tag = result.tag;
 				}
-                if (result.completeHandler != null) {item.completeHandler = result.completeHandler;}  // we have to call back this function when we are done loading
+				if (result.basePath != null) { item.basePath = result.basePath; }
+                if (result.completeHandler != null) { item.completeHandler = result.completeHandler; }
 			}
 
 			// Allow type overriding:
@@ -1197,6 +1197,10 @@ TODO: WINDOWS ISSUES
 			match = this._parseURI(item.src);
 			if (match != null && match[5] != null) {
 				item.ext = match[5].toLowerCase();
+			}
+			// Ensure an updated ID does not have a protocol. If it does, remove the basePath from the item.
+			if (match[1] != null) {
+				delete item.basePath;
 			}
 		}
 
