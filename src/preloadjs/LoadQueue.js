@@ -374,6 +374,17 @@ TODO: WINDOWS ISSUES
 
 // Prototype
 	/**
+	 * A path that will be prepended on to the item's source parameter before it is loaded. The _basePath property will
+	 * not be used if a call to {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
+	 * includes a basePath, or an item's path includes a protocol such as "http://".
+	 * @property _basePath
+	 * @type {String}
+	 * @private
+	 * @since 0.3.1
+	 */
+	p._basePath = null;
+
+	/**
 	 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
 	 * on the requirements for a media type. For example, HTML audio can not be loaded with XHR, and WebAudio can not be
 	 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
@@ -864,9 +875,11 @@ TODO: WINDOWS ISSUES
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
 	 * true, the queue will resume automatically.
-	 * @param {String} [basePath] An optional base path prepended to the file source when the file is loaded.
-	 * Sources beginning with http:// or similar will not receive a base path.
-	 * The load item will not be modified.
+	 * @param {String} [basePath] An optional base path prepended to the file source when the file is loaded. The
+	 * basePath argument will override the {{#crossLink "LoadQueue/_basePath:property"}}{{/crossLink}} property set on a
+	 * LoadQueue. Sources beginning with http:// or similar will not receive a base path. Since PreloadJS 0.4.1, the
+	 * load item src will be modified when it is added, but a "_src" property will be added to maintain the original
+	 * path.
 	 */
 	p.loadFile = function(file, loadNow, basePath) {
 		if (file == null) {
@@ -894,8 +907,7 @@ TODO: WINDOWS ISSUES
 	 * Note that files are always appended to the current queue, so this method can be used multiple times to add files.
 	 * To clear the queue first, use the {{#crossLink "AbstractLoader/close"}}{{/crossLink}} method.
 	 * @method loadManifest
-	 * @param {Array|String|Object} manifest The list of files to load. If a single object or string is passed, it will
-	 * be loaded the same as a single-item array. Each load item can be either:
+	 * @param {Array|String|Object} manifest An Array with the list of files to load. Each load item can be either:
 	 * <ol>
 	 *     <li>a path to a resource (string). Note that this kind of load item will be
 	 *      converted to an object (see below) in the background.</li>
@@ -909,17 +921,25 @@ TODO: WINDOWS ISSUES
 	 *         <li>data: An arbitrary data object, which is returned with the loaded object</li>
 	 *     </ul>
 	 * </ol>
+	 *
+	 * If the manifest is specified as string, it will be used as a path to a manifest file, the contents of which will
+	 * be subsequently loaded. A single object can also be passed, which must either have no type, or the {{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}}
+	 * type. Objects that have other types, such as images will throw errors. To load a single file, the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
+	 * method should be used instead.
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} and this value is
 	 * true, the queue will resume automatically.
-	 * @param {String} [basePath] An optional base path prepended to each of the files' source when the file is loaded.
-	 * Sources beginning with http:// or similar will not receive a base path.
-	 * The load items will not be modified.
+	 * @param {String} [basePath] An optional base path prepended to the file source when the file is loaded. The
+	 * basePath argument will override the {{#crossLink "LoadQueue/_basePath:property"}}{{/crossLink}} property set on a
+	 * LoadQueue constructor. Sources beginning with http:// or similar will not receive a base path. File manifests can
+	 * optionally contain a "basePath" property, which will override the default basePath set on a LoadQueue, however
+	 * it will not override this basePath argument. Since version 0.4.1, the basePath will be added to the load item
+	 * when it is added, and the full path will need to be used when looking up an item by its ID using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}.
 	 */
 	p.loadManifest = function(manifest, loadNow, basePath) {
 		var data = null;
 
-		// Proper list of items
+		// Array-based list of items
 		if (manifest instanceof Array) {
 			if (manifest.length == 0) {
 				var event = new createjs.Event("error");
@@ -929,17 +949,33 @@ TODO: WINDOWS ISSUES
 			}
 			data = manifest;
 
-		} else {
+		// String-based. Only file-manifests can be specified this way. Any other types will cause an error when loaded.
+		} else if (typeof(manifest) === "string") {
+			data = [{
+				src: manifest,
+				type: s.MANIFEST,
+				basePath: basePath
+			}];
 
-			// Empty/null
-			if (manifest == null) {
+		// Object-based. Only file manifests can be specified this way. Other types will throw an error.
+		} else if (typeof(manifest) == "object") {
+			if (manifest.type === undefined || manifest.type === null) {
+				manifest.type = s.MANIFEST;
+			} else if (manifest.type !== s.MANIFEST) {
 				var event = new createjs.Event("error");
-				event.text = "PRELOAD_MANIFEST_NULL";
+				event.text = "PRELOAD_MANIFEST_ERROR";
 				this._sendError(event);
 				return;
 			}
-
+			manifest.basePath = basePath;
 			data = [manifest];
+
+		// Unsupported. This will throw an error.
+		} else {
+			var event = new createjs.Event("error");
+			event.text = "PRELOAD_MANIFEST_NULL";
+			this._sendError(event);
+			return;
 		}
 
 		for (var i=0, l=data.length; i<l; i++) {
@@ -1037,14 +1073,13 @@ TODO: WINDOWS ISSUES
 	 * method.
 	 * @method _addItem
 	 * @param {String|Object} value The item to add to the queue.
-	 * @param {String} basePath A path to prepend to the item's source.
-	 * 	Sources beginning with http:// or similar will not receive a base path.
+	 * @param {String} [basePath] An optional base path prepended to the file source when the file is loaded.
 	 * @private
 	 */
 	p._addItem = function(value, basePath) {
-		var item = this._createLoadItem(value);
+		var item = this._createLoadItem(value, basePath); // basePath is added to the load object.
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
-		var loader = this._createLoader(item, basePath);
+		var loader = this._createLoader(item);
 		if (loader != null) {
 			this._loadQueue.push(loader);
 			this._loadQueueBackup.push(loader);
@@ -1071,10 +1106,13 @@ TODO: WINDOWS ISSUES
 	 * alter the load item.
 	 * @method _createLoadItem
 	 * @param {String | Object | HTMLAudioElement | HTMLImageElement} value The item that needs to be preloaded.
+ 	 * @param {String} basePath A path to prepend to the item's source. Sources beginning with http:// or similar will
+	 * not receive a base path. Since PreloadJS 0.4.1, the load item src will be modified when it is added, but a "_src"
+	 * property will be added to maintain the original path.
 	 * @return {Object} The loader instance that will be used.
 	 * @private
 	 */
-	p._createLoadItem = function(value) {
+	p._createLoadItem = function(value, basePath) {
 		var item = null;
 
 		// Create/modify a load item
@@ -1098,12 +1136,16 @@ TODO: WINDOWS ISSUES
 				return null;
 		}
 
-		// Note: This does NOT account for basePath. It should be fine.
+		// Determine Extension, etc.
 		var match = this._parseURI(item.src);
 		if (match != null) { item.ext = match[5]; }
 		if (item.type == null) {
 			item.type = this._getTypeByExtension(item.ext);
 		}
+
+		// Determine the basePath. Only added if there is no "protocol", such as "http://"
+		var bp = (basePath || this._basePath);
+		if (match[1] == null && bp != null) { item.basePath = bp; }
 
 		if (item.type == createjs.LoadQueue.JSON || item.type == createjs.LoadQueue.MANIFEST) {
 			item._loadAsJSONP = (item.callback != null);
@@ -1114,20 +1156,23 @@ TODO: WINDOWS ISSUES
 		}
 
 		// Create a tag for the item. This ensures there is something to either load with or populate when finished.
-		if (item.tag == null) {
+		if (item.tag === undefined || item.tag === null) {
 			item.tag = this._createTag(item.type);
 		}
 
 		// If there's no id, set one now.
-		if (item.id == null || item.id == "") {
-            item.id = item.src;
+		if (item.id === undefined || item.id === null || item.id === "") {
+            item.id = this.buildPath(item.src, item.basePath);
 		}
 
 		// Give plugins a chance to modify the loadItem:
 		var customHandler = this._typeCallbacks[item.type] || this._extensionCallbacks[item.ext];
 		if (customHandler) {
-			var result = customHandler(item.src, item.type, item.id, item.data);
-			//Plugin will handle the load, so just ignore it.
+			var src = this.buildPath(item.src, item.basePath);
+			var result = customHandler.callback.call(customHandler.scope, src, item.type, item.id, item.data,
+					null, this); // NOTE: No basePath argument anymore. The full path is sent to the plugin
+
+			// The plugin will handle the load, or has canceled it. Ignore it.
 			if (result === false) {
 				return null;
 
@@ -1150,12 +1195,15 @@ TODO: WINDOWS ISSUES
 
 			// Update the extension in case the type changed:
 			match = this._parseURI(item.src);
-			if (match != null && match[5] != null) { item.ext = match[5].toLowerCase(); }
+			if (match != null && match[5] != null) {
+				item.ext = match[5].toLowerCase();
+			}
 		}
 
 		// Store the item for lookup. This also helps clean-up later.
 		this._loadItemsById[item.id] = item;
 		this._loadItemsBySrc[item.src] = item;
+		this._loadItemsBySrc[this.buildPath(item.src, item.basePath)] = item;
 
 		return item;
 	};
@@ -1164,11 +1212,10 @@ TODO: WINDOWS ISSUES
 	 * Create a loader for a load item.
 	 * @method _createLoader
 	 * @param {Object} item A formatted load item that can be used to generate a loader.
-	 * @param {String} basePath A path that will be prepended on to the source parameter of all items in the queue before they are loaded. Note that a basePath provided to any loadFile or loadManifest call will override the basePath specified on the LoadQueue constructor.
 	 * @return {AbstractLoader} A loader that can be used to load content.
 	 * @private
 	 */
-	p._createLoader = function(item, basePath) {
+	p._createLoader = function(item) {
 		// Initially, try and use the provided/supported XHR mode:
 		var useXHR = this.useXHR;
 
@@ -1191,13 +1238,10 @@ TODO: WINDOWS ISSUES
 			// Note: IMAGE, CSS, SCRIPT, SVG can all use TAGS or XHR.
 		}
 
-		// If no basepath was provided here (from _addItem), then use the LoadQueue._basePath instead.
-		if (basePath == null) { basePath = this._basePath; }
-
 		if (useXHR) {
-			return new createjs.XHRLoader(item, basePath);
+			return new createjs.XHRLoader(item);
 		} else {
-			return new createjs.TagLoader(item, basePath);
+			return new createjs.TagLoader(item);
 		}
 	};
 
@@ -1324,7 +1368,7 @@ TODO: WINDOWS ISSUES
 		if (item.type == createjs.LoadQueue.MANIFEST) {
 			var manifest, result = loader.getResult();
 			if (result != null && (manifest = result.manifest)) {
-				this.loadManifest(manifest);
+				this.loadManifest(manifest, item.basePath || manifest.basePath);
 			}
 		}
 
@@ -1430,6 +1474,7 @@ TODO: WINDOWS ISSUES
 		delete this._loadedRawResults[item.id];
 		delete this._loadItemsById[item.id];
 		delete this._loadItemsBySrc[item.src];
+		delete this._loadItemsBySrc[this.buildPath(item.src, item.basePath)];
 	};
 
 
@@ -1453,8 +1498,8 @@ TODO: WINDOWS ISSUES
 				// Note: The type property doesn't seem necessary.
 				return tag;
 			case createjs.LoadQueue.JSON:
-			//case createjs.LoadQueue.JSONP:
-			//case createjs.LoadQueue.JAVASCRIPT:
+			case createjs.LoadQueue.JSONP:
+			case createjs.LoadQueue.JAVASCRIPT:
 			case createjs.LoadQueue.MANIFEST:
 				tag = document.createElement("script");
 				tag.type = "text/javascript";

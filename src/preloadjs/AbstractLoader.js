@@ -96,15 +96,6 @@ this.createjs = this.createjs||{};
 	 */
 	p._item = null;
 
-	/**
-	 * A path that will be prepended on to the item's source parameter before it is loaded.
-	 * @property _basePath
-	 * @type {String}
-	 * @private
-	 * @since 0.3.1
-	 */
-	p._basePath = null;
-
 // Events
 	/**
 	 * The event that is fired when the overall progress changes.
@@ -346,20 +337,15 @@ this.createjs = this.createjs||{};
 	 * path. All of the loaders in PreloadJS use this method to compile paths when loading.
 	 * @method buildPath
 	 * @param {String} src The source path to add values to.
-	 * @param {String} [basePath] A string to prepend to the file path. Sources beginning with http:// or similar will
-	 * not receive a base path.
+	 * @param {String} [basePath] An optional path to prepend to the source.
 	 * @param {Object} [data] Object used to append values to this request as a query string. Existing parameters on the
 	 * path will be preserved.
 	 * @returns {string} A formatted string that contains the path and the supplied parameters.
 	 * @since 0.3.1
 	 */
-	p.buildPath = function(src, _basePath, data) {
-		if (_basePath != null) {
-			var match = this._parseURI(src);
-			// IE 7,8 Return empty string here.
-			if (match == null || match[1] == null || match[1] == '') {
-				src = _basePath + src;
-			}
+	p.buildPath = function(src, basePath, data) {
+		if (basePath != null) { // Assume there is only a basePath if there should be.
+			src = basePath + src;
 		}
 		if (data == null) {
 			return src;

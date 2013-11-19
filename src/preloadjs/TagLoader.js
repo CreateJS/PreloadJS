@@ -52,8 +52,8 @@ this.createjs = this.createjs||{};
 	 * @param {Object} item The item to load. Please see {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} for
 	 * information on load items.
 	 */
-	var TagLoader = function (item, basePath) {
-		this.init(item, basePath);
+	var TagLoader = function (item) {
+		this.init(item);
 	};
 
 	var p = TagLoader.prototype = new createjs.AbstractLoader();
@@ -105,9 +105,8 @@ this.createjs = this.createjs||{};
 	p._jsonResult = null;
 
 	// Overrides abstract method in AbstractLoader
-	p.init = function (item, basePath) {
+	p.init = function (item) {
 		this._item = item;
-		this._basePath = basePath;
 		this._tag = item.tag;
 		this._isAudio = (window.HTMLAudioElement && item.tag instanceof HTMLAudioElement);
 		this._tagCompleteProxy = createjs.proxy(this._handleLoad, this);
@@ -162,7 +161,7 @@ this.createjs = this.createjs||{};
 			tag.onreadystatechange = createjs.proxy(this._handleReadyStateChange,  this);
 		}
 
-		var src = this.buildPath(item.src, this._basePath, item.values);
+		var src = this.buildPath(item.src, item.basePath, item.values);
 
 		// Set the src after the events are all added.
 		switch(item.type) {
@@ -311,15 +310,17 @@ this.createjs = this.createjs||{};
 
 		// Delete handlers.
 		var tag = this.getItem().tag;
-		tag.onload = null;
-		tag.removeEventListener && tag.removeEventListener("canplaythrough", this._tagCompleteProxy, false);
-		tag.onstalled = null;
-		tag.onprogress = null;
-		tag.onerror = null;
+		if (tag != null) {
+			tag.onload = null;
+			tag.removeEventListener && tag.removeEventListener("canplaythrough", this._tagCompleteProxy, false);
+			tag.onstalled = null;
+			tag.onprogress = null;
+			tag.onerror = null;
 
-		//TODO: Test this
-		if (tag.parentNode) {
-			tag.parentNode.removeChild(tag);
+			//TODO: Test this
+			if (tag.parentNode) {
+				tag.parentNode.removeChild(tag);
+			}
 		}
 
 		var item = this.getItem();
