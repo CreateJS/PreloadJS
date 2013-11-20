@@ -161,7 +161,7 @@ this.createjs = this.createjs||{};
 			tag.onreadystatechange = createjs.proxy(this._handleReadyStateChange,  this);
 		}
 
-		var src = this.buildPath(item.src, item.basePath, item.values);
+		var src = this.buildPath(item.src, item.values);
 
 		// Set the src after the events are all added.
 		switch(item.type) {

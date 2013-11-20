@@ -6,6 +6,6 @@
 		"image2.jpg",
 		"image3.jpg",
 		{ "src": "font.css" },
-		{ "src":"manifest.json", type:"manifest" }
+		{ "src":"manifest.json", "type":"manifest" }
 	]
 }

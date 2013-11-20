@@ -396,7 +396,7 @@ this.createjs = this.createjs || {};
 	p._createXHR = function (item) {
 		// Check for cross-domain loads. We can't fully support them, but we can try.
 		var target = document.createElement("a");
-		target.href = this.buildPath(item.src, item.basePath);
+		target.href = item.src;
 
 		var host = document.createElement("a");
 		host.href = location.href;
@@ -438,9 +438,9 @@ this.createjs = this.createjs || {};
 
 		var src = null;
 		if (item.method == createjs.LoadQueue.GET) {
-			src = this.buildPath(item.src, item.basePath, item.values);
+			src = this.buildPath(item.src, item.values);
 		} else {
-			src = this.buildPath(item.src, item.basePath);
+			src = item.src;
 		}
 
 		// Open the request.  Set cross-domain flags if it is supported (XHR level 1 only)
@@ -504,7 +504,7 @@ this.createjs = this.createjs || {};
 			// Note: Images need to wait for onload, but do use the cache.
 			case createjs.LoadQueue.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
-				tag.src = this.buildPath(this._item.src, this._item.basePath, this._item.values);
+				tag.src = this.buildPath(this._item.src, this._item.values);
 
 				this._rawResponse = this._response;
 				this._response = tag;
