@@ -253,9 +253,9 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleAbort = function (event) {
 		this._clean();
-		var event = new createjs.Event("error");
-		event.text = "XHR_ABORTED";
-		this._sendError(event);
+		var newEvent = new createjs.Event("error");
+		newEvent.text = "XHR_ABORTED";
+		this._sendError(newEvent);
 	};
 
 	/**
@@ -597,11 +597,11 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleTagReady = function () {
 		this._sendComplete();
-	}
+	};
 
 	p.toString = function () {
 		return "[PreloadJS XHRLoader]";
-	}
+	};
 
 	createjs.XHRLoader = XHRLoader;
 

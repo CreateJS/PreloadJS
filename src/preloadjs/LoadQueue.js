@@ -78,8 +78,6 @@
 // namespace:
 this.createjs = this.createjs||{};
 
-//TODO: addHeadTags support
-
 /*
 TODO: WINDOWS ISSUES
 	* No error for HTML audio in IE 678
@@ -781,7 +779,7 @@ TODO: WINDOWS ISSUES
 	 * a binary result to work with. Binary files are loaded using XHR2.
 	 * @method isBinary
 	 * @param {String} type The item type.
-	 * @return If the specified type is binary.
+	 * @return {Boolean} If the specified type is binary.
 	 * @private
 	 */
 	s.isBinary = function(type) {
@@ -843,7 +841,7 @@ TODO: WINDOWS ISSUES
 		if (!this._paused && this._loadQueue.length > 0) {
 			this._loadNext();
 		}
-	}
+	};
 
 	/**
 	 * Load a single file. To add multiple files at once, use the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
@@ -887,7 +885,7 @@ TODO: WINDOWS ISSUES
 		} else {
 			this.setPaused(true);
 		}
-	}
+	};
 
 	/**
 	 * Load an array of items. To load a single file, use the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} method.
@@ -1124,7 +1122,7 @@ TODO: WINDOWS ISSUES
 					src: value
 				}; break;
 			case "object":
-				if (window.HTMLAudioElement && value instanceof HTMLAudioElement) {
+				if (window.HTMLAudioElement && value instanceof window.HTMLAudioElement) {
 					item = {
 						tag: value,
 						src: item.tag.src,
@@ -1337,12 +1335,12 @@ TODO: WINDOWS ISSUES
 		this._numItemsLoaded++;
 		this._updateProgress();
 
-		var event = new createjs.Event("error");
-		event.text = "FILE_LOAD_ERROR";
-		event.item = loader.getItem();
+		var newEvent = new createjs.Event("error");
+		newEvent.text = "FILE_LOAD_ERROR";
+		newEvent.item = loader.getItem();
 		// TODO: Propagate actual error message.
 
-		this._sendError(event);
+		this._sendError(newEvent);
 
 		if (!this.stopOnError) {
 			this._removeLoadItem(loader);
@@ -1392,8 +1390,14 @@ TODO: WINDOWS ISSUES
 		}
 
 		this._processFinishedLoad(item, loader);
-	}
+	};
 
+	/**
+	 * @method _processFinishedLoad
+	 * @param {Object} item
+	 * @param {AbstractLoader} loader
+	 * @protected
+	 */
 	p._processFinishedLoad = function(item, loader) {
 		// Old handleFileTagComplete follows here.
 		this._numItemsLoaded++;
@@ -1479,7 +1483,7 @@ TODO: WINDOWS ISSUES
 			loaded += (chunk / remaining) * (remaining/this._numItems);
 		}
 		this._sendProgress(loaded);
-	}
+	};
 
 	/**
 	 * Clean out item results, to free them from memory. Mainly, the loaded item and results are cleared from internal
@@ -1493,7 +1497,6 @@ TODO: WINDOWS ISSUES
 		delete this._loadedRawResults[item.id];
 		delete this._loadItemsById[item.id];
 		delete this._loadItemsBySrc[item.src];
-		delete this._loadItemsBySrc[this.buildPath(item.src, item.basePath)];
 	};
 
 
@@ -1636,7 +1639,7 @@ TODO: WINDOWS ISSUES
 	 * Dispatch a filestart event immediately before a file starts to load. Please see the {{#crossLink "LoadQueue/filestart:event"}}{{/crossLink}}
 	 * event for details on the event payload.
 	 * @method _sendFileStart
-	 * @param {TagLoader | XHRLoader} loader
+	 * @param {Object} item The item that is being loaded.
 	 * @protected
 	 */
 	p._sendFileStart = function(item) {
@@ -1673,7 +1676,7 @@ TODO: WINDOWS ISSUES
 		BrowserDetect.isOpera = (window.opera != null);
 		BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);
 		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
-	}
+	};
 
 	BrowserDetect.init();
 

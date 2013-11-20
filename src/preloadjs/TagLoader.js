@@ -108,7 +108,7 @@ this.createjs = this.createjs||{};
 	p.init = function (item) {
 		this._item = item;
 		this._tag = item.tag;
-		this._isAudio = (window.HTMLAudioElement && item.tag instanceof HTMLAudioElement);
+		this._isAudio = (window.HTMLAudioElement && item.tag instanceof window.HTMLAudioElement);
 		this._tagCompleteProxy = createjs.proxy(this._handleLoad, this);
 	};
 
@@ -130,7 +130,6 @@ this.createjs = this.createjs||{};
 	p.cancel = function() {
 		this.canceled = true;
 		this._clean();
-		var item = this.getItem();
 	};
 
 	// Overrides abstract method in AbstractLoader
@@ -279,7 +278,7 @@ this.createjs = this.createjs||{};
 		var item = this.getItem();
 		var tag = item.tag;
 
-		if (this.loaded || this.isAudio && tag.readyState !== 4) { return; } //LM: Not sure if we still need the audio check.
+		if (this.loaded || this._isAudio && tag.readyState !== 4) { return; } //LM: Not sure if we still need the audio check.
 		this.loaded = true;
 
 		// Remove from the DOM
@@ -332,7 +331,7 @@ this.createjs = this.createjs||{};
 
 	p.toString = function() {
 		return "[PreloadJS TagLoader]";
-	}
+	};
 
 	createjs.TagLoader = TagLoader;
 
