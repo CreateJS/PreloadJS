@@ -881,14 +881,14 @@ TODO: WINDOWS ISSUES
 	 * load item src will be modified when it is added, but a "_src" property will be added to maintain the original
 	 * path.
 	 */
-	p.loadFile = function(file, loadNow, basePath) {
+	p.loadFile = function(file, loadNow) {
 		if (file == null) {
 			var event = new createjs.Event("error");
 			event.text = "PRELOAD_NO_FILE";
 			this._sendError(event);
 			return;
 		}
-		this._addItem(file, basePath);
+		this._addItem(file);
 
 		if (loadNow !== false) {
 			this.setPaused(false);
@@ -954,7 +954,7 @@ TODO: WINDOWS ISSUES
 			data = [{
 				src: manifest,
 				type: s.MANIFEST,
-				basePath: basePath
+				basePath: ""
 			}];
 
 		// Object-based. Only file manifests can be specified this way. Other types will throw an error.
@@ -967,7 +967,7 @@ TODO: WINDOWS ISSUES
 				this._sendError(event);
 				return;
 			}
-			manifest.basePath = basePath;
+			manifest.basePath = "";
 			data = [manifest];
 
 		// Unsupported. This will throw an error.
@@ -1368,7 +1368,10 @@ TODO: WINDOWS ISSUES
 			}
 		}
 
+		// Clean up the load item
 		delete item._loadAsJSONP;
+
+		// If the item was a manifest, then
 		if (item.type == createjs.LoadQueue.MANIFEST) {
 			var manifest, result = loader.getResult();
 			if (result != null && (manifest = result.manifest)) {

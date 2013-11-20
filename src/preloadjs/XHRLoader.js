@@ -450,6 +450,11 @@ this.createjs = this.createjs || {};
 			req.setRequestHeader("Origin", location.origin);
 		}
 
+        /*TODO: Test and implement.
+        if (crossDomain && !headers["X-Requested-With"] ) {
+                headers["X-Requested-With"] = "XMLHttpRequest";
+        }*/
+
 		// To send data we need to set the Content-type header)
 		 if (item.values && item.method == createjs.LoadQueue.POST) {
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
