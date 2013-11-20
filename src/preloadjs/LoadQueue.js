@@ -1453,8 +1453,8 @@ TODO: WINDOWS ISSUES
 				// Note: The type property doesn't seem necessary.
 				return tag;
 			case createjs.LoadQueue.JSON:
-			//case createjs.LoadQueue.JSONP:
-			//case createjs.LoadQueue.JAVASCRIPT:
+			case createjs.LoadQueue.JSONP:
+			case createjs.LoadQueue.JAVASCRIPT:
 			case createjs.LoadQueue.MANIFEST:
 				tag = document.createElement("script");
 				tag.type = "text/javascript";
