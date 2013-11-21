@@ -870,15 +870,19 @@ TODO: WINDOWS ISSUES
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
 	 * true, the queue will resume automatically.
+	 * @param {String} [basePath] <strong>Deprecated</strong> A base path that will be prepended to each file. The
+	 * basePath argument overrides the path specified in the constructor. This parameter will be removed in a future
+	 * tagged version. Note that if you load a maninfest using a file of type LoadQueue.MANIFEST, its files will
+	 * <strong>NOT</strong> use the basePath parameter.
 	 */
-	p.loadFile = function(file, loadNow) {
+	p.loadFile = function(file, loadNow, basePath) {
 		if (file == null) {
 			var event = new createjs.Event("error");
 			event.text = "PRELOAD_NO_FILE";
 			this._sendError(event);
 			return;
 		}
-		this._addItem(file);
+		this._addItem(file, null, basePath);
 
 		if (loadNow !== false) {
 			this.setPaused(false);
@@ -927,8 +931,12 @@ TODO: WINDOWS ISSUES
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} and this value is
 	 * true, the queue will resume automatically.
+	 * @param {String} [basePath] <strong>Deprecated</strong> A base path that will be prepended to each file. The
+	 * basePath argument overrides the path specified in the constructor. This parameter will be removed in a future
+	 * tagged version. Note that basePath set when loading a manifest will <strong>NOT</strong> apply to the files in
+	 * that manifest.
 	 */
-	p.loadManifest = function(manifest, loadNow) {
+	p.loadManifest = function(manifest, loadNow, basePath) {
 		var fileList = null;
 		var path = null;
 
@@ -977,7 +985,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		for (var i=0, l=fileList.length; i<l; i++) {
-			this._addItem(fileList[i], path);
+			this._addItem(fileList[i], path, basePath);
 		}
 
 		if (loadNow !== false) {
@@ -1074,10 +1082,13 @@ TODO: WINDOWS ISSUES
 	 * @param {String} [path] An optional path prepended to the `src`. The path will only be prepended if the src is
 	 * relative, and does not start with a protocol such as `http://`, or a path like `../`. If the LoadQueue was
 	 * provided a {{#crossLink "_basePath"}}{{/crossLink}}, then it will optionally be prepended after.
+	 * @param {String} [basePath] <strong>Deprecated</strong>An optional basePath passed into a {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
+	 * or {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} call. This parameter will be removed in a future tagged
+	 * version.
 	 * @private
 	 */
-	p._addItem = function(value, path) {
-		var item = this._createLoadItem(value, path); // basePath and manifest path are added to the src.
+	p._addItem = function(value, path, basePath) {
+		var item = this._createLoadItem(value, path, basePath); // basePath and manifest path are added to the src.
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
 		var loader = this._createLoader(item);
 		if (loader != null) {
@@ -1109,10 +1120,12 @@ TODO: WINDOWS ISSUES
  	 * @param {String} [path] A path to prepend to the item's source. Sources beginning with http:// or similar will
 	 * not receive a path. Since PreloadJS 0.4.1, the src will be modified to include the `path` and {{#crossLink "LoadQueue/_basePath:property"}}{{/crossLink}}
 	 * when it is added.
+	 * @param {String} [basePath] <strong>Deprectated</strong> A base path to prepend to the items source in addition to
+	 * the path argument.
 	 * @return {Object} The loader instance that will be used.
 	 * @private
 	 */
-	p._createLoadItem = function(value, path) {
+	p._createLoadItem = function(value, path, basePath) {
 		var item = null;
 
 		// Create/modify a load item
@@ -1145,16 +1158,17 @@ TODO: WINDOWS ISSUES
 
 		// Inject path & basePath
 		var bp = ""; // Store the generated basePath
+		var useBasePath = basePath || this._basePath;
 		if (match && match[1] == null && match[3] == null) {
 			if (path) {
 				bp = path;
 				var pathMatch = this._parsePath(path);
 				// Also append basePath
-				if (this._basePath && pathMatch && pathMatch[1] == null && pathMatch[2] == null) {
-					bp = this._basePath + bp;
+				if (useBasePath != null && pathMatch && pathMatch[1] == null && pathMatch[2] == null) {
+					bp = useBasePath + bp;
 				}
-			} else if (this._basePath) {
-				bp = this._basePath;
+			} else if (useBasePath != null) {
+				bp = useBasePath;
 			}
 		}
 		item.src = bp + item.src;

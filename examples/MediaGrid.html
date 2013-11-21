@@ -107,15 +107,17 @@
             }
 
             // Create a new queue.
-            //preload = new createjs.LoadQueue(true, "assets_global/");
+            //preload = new createjs.LoadQueue(true, "assets/");
 
             // Use this instead to favor tag loading
-            preload = new createjs.LoadQueue(false, "assets/");
+            preload = new createjs.LoadQueue(true);
 
             createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
             preload.installPlugin(createjs.Sound);
             preload.addEventListener("fileload", handleFileLoaded);
             preload.addEventListener("error", handleFileError);
+
+			preload.loadFile({src:"MediaGridManifest.json", callback:"maps", type:"manifest"}, true, "assets/");
         }
 
         function stop() {
@@ -135,11 +137,12 @@
 			};
 
             if (!type) {
-                preload.loadFile(item, true, "assets/");
+                //preload.loadFile(item, true);
+				preload.loadManifest({path:"assets/", manifest:[item]});
             } else {
 				item.type = type.nodeValue;
 				item.callback = "maps";
-                preload.loadFile(item, true, "assets/");
+                preload.loadFile(item, true);
             }
         }
 
@@ -150,6 +153,7 @@
             var result = event.result;
 
             var div = document.getElementById(id);
+			if (div == null) { console.log(event);return; }
             switch (item.type){
                 case createjs.LoadQueue.CSS:
                     (document.head || document.getElementsByTagName("head")[0]).appendChild(result);
