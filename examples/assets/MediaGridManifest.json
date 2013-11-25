@@ -1,0 +1,23 @@
+maps({
+	"path": "assets/",
+	"manifest": [
+		{"id":"Texas.jpg", "src":"Texas.jpg"},
+		{"id":"bg.css", "src":"bg.css"},
+		{"id":"alert1.js", "src":"alert1.js"},
+		{"id":"grant.xml", "src":"grant.xml"},
+		{"id":"gbot.svg", "src":"gbot.svg"},
+		{"id":"grant.json", "src":"grant.json"},
+		{"id":"font.css", "src":"font.css"},
+		{"id":"Thunder.mp3|Thunder.ogg", "src":"Thunder.mp3|Thunder.ogg"},
+		{"id":"http://gskinner.com/assets/createjs/mapsJSONP.json", "callback":"maps", "src":"http://gskinner.com/assets/createjs/mapsJSONP.json"},
+		{"id":"Autumn.png", "src":"Autumn.png"},
+		"NoFileHere.png"
+	],
+	"path2": "./assets/basepath/easeljs/",
+	"manifest2":[
+		{"id":"bg.css", "src":"./assets/Texas.jpg"},
+		{"id":"alert1.js", "src":"icon_48x48.png"},
+		{"id":"grant.xml", "src":"icon_128x128.png"},
+		{"id":"Autumn.png", "src":"http://upload.wikimedia.org/wikipedia/commons/2/29/Bowl_of_smarties.jpg"}
+	]
+});

@@ -49,8 +49,8 @@ this.createjs = this.createjs || {};
 	 * for an overview of supported file properties.
 	 * @extends AbstractLoader
 	 */
-	var XHRLoader = function (item, basePath) {
-		this.init(item, basePath);
+	var XHRLoader = function (item) {
+		this.init(item);
 	};
 
 	var p = XHRLoader.prototype = new createjs.AbstractLoader();
@@ -103,9 +103,8 @@ this.createjs = this.createjs || {};
 	p._rawResponse = null;
 
 	// Overrides abstract method in AbstractLoader
-	p.init = function (item, basePath) {
+	p.init = function (item) {
 		this._item = item;
-		this._basePath = basePath;
 		if (!this._createXHR(item)) {
 			//TODO: Throw error?
 		}
@@ -254,9 +253,9 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleAbort = function (event) {
 		this._clean();
-		var event = new createjs.Event("error");
-		event.text = "XHR_ABORTED";
-		this._sendError(event);
+		var newEvent = new createjs.Event("error");
+		newEvent.text = "XHR_ABORTED";
+		this._sendError(newEvent);
 	};
 
 	/**
@@ -397,7 +396,7 @@ this.createjs = this.createjs || {};
 	p._createXHR = function (item) {
 		// Check for cross-domain loads. We can't fully support them, but we can try.
 		var target = document.createElement("a");
-		target.href = this.buildPath(item.src, this._basePath);
+		target.href = item.src;
 
 		var host = document.createElement("a");
 		host.href = location.href;
@@ -439,9 +438,9 @@ this.createjs = this.createjs || {};
 
 		var src = null;
 		if (item.method == createjs.LoadQueue.GET) {
-			src = this.buildPath(item.src, this._basePath, item.values);
+			src = this.buildPath(item.src, item.values);
 		} else {
-			src = this.buildPath(item.src, this._basePath);
+			src = item.src;
 		}
 
 		// Open the request.  Set cross-domain flags if it is supported (XHR level 1 only)
@@ -450,6 +449,11 @@ this.createjs = this.createjs || {};
 		if (crossdomain && req instanceof XMLHttpRequest && this._xhrLevel == 1) {
 			req.setRequestHeader("Origin", location.origin);
 		}
+
+        /*TODO: Test and implement.
+        if (crossDomain && !headers["X-Requested-With"] ) {
+                headers["X-Requested-With"] = "XMLHttpRequest";
+        }*/
 
 		// To send data we need to set the Content-type header)
 		 if (item.values && item.method == createjs.LoadQueue.POST) {
@@ -500,7 +504,7 @@ this.createjs = this.createjs || {};
 			// Note: Images need to wait for onload, but do use the cache.
 			case createjs.LoadQueue.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
-				tag.src = this.buildPath(this._item.src, this._basePath, this._item.values);
+				tag.src = this.buildPath(this._item.src, this._item.values);
 				tag.crossOrigin = "Anonymous";
 
 				this._rawResponse = this._response;
@@ -594,11 +598,11 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleTagReady = function () {
 		this._sendComplete();
-	}
+	};
 
 	p.toString = function () {
 		return "[PreloadJS XHRLoader]";
-	}
+	};
 
 	createjs.XHRLoader = XHRLoader;
 

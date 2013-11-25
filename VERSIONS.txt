@@ -1,10 +1,19 @@
 Version NEXT [Not Released]
 ************************************************************************************************************************
+CRITICAL (may break existing content)
+- Single files that are NOT manifests can no longer be loaded using loadManifest(). Use loadFile instead.
+
+****
 - Changed XHR-loaded scripts to automatically add to the document body after loading
 - Added SamplePlugin class to assist with updated plugin documentation
+- Fixed the rawResult when loading XML
+- Deprecated the "basePath" argument on loadFile() and loadManifest() methods
+- Added file-based manifest support. Supported approaches include loading a single JSON/JSONP file, or a JavaScript
+ 	object that defines a manifest of files, as well as an optional "path" property, which is prepended to each file in
+ 	the list (in addition to the queue's basePath).
+- Lots of minor fixes to code, including formatting and clean up.
 - Added file-based manifest support. Loading a single JSON file that defines a manifest object will
 	automatically load the files in the manifest. Included a sample.
-- Fixed the rawResult when loading XML.
 - Added anonymous cross-origin header to images loaded using XHR.
 
 

@@ -52,13 +52,23 @@ this.createjs = this.createjs||{};
 
 	/**
 	 * The RegExp pattern to use to parse file URIs. This supports simple file names, as well as full domain URIs with
-	 * query strings. The resulting match is: protocol:$1 domain:$2 path:$3 file:$4 extension:$5 query:$6.
+	 * query strings. The resulting match is: protocol:$1 domain:$2 relativePath:$3 path:$4 file:$5 extension:$6 query:$7.
 	 * @property FILE_PATTERN
 	 * @type {RegExp}
 	 * @static
 	 * @protected
 	 */
-	s.FILE_PATTERN = /^(?:(\w+:)\/{2}(\w+(?:\.\w+)*\/?))?([/.]*?(?:[^?]+)?\/)?((?:[^/?]+)\.(\w+))(?:\?(\S+)?)?$/;
+	s.FILE_PATTERN = /^(?:(\w+:)\/{2}(\w+(?:\.\w+)*\/?)|(.{0,2}\/{1}))?([/.]*?(?:[^?]+)?\/)?((?:[^/?]+)\.(\w+))(?:\?(\S+)?)?$/;
+
+	/**
+	 * The RegExp pattern to use to parse path URIs. This supports protocols, relative files, and paths. The resulting
+	 * match is: protocol:$1 relativePath:$2 path$3.
+	 * @property PATH_PATTERN
+	 * @type {RegExp}
+	 * @static
+	 * @protected
+	 */
+	s.PATH_PATTERN = /^(?:(\w+:)\/{2})|(.{0,2}\/{1})?([/.]*?(?:[^?]+)?\/?)?$/;
 
 	/**
 	 * If the loader has completed loading. This provides a quick check, but also ensures that the different approaches
@@ -95,15 +105,6 @@ this.createjs = this.createjs||{};
 	 * @private
 	 */
 	p._item = null;
-
-	/**
-	 * A path that will be prepended on to the item's source parameter before it is loaded.
-	 * @property _basePath
-	 * @type {String}
-	 * @private
-	 * @since 0.3.1
-	 */
-	p._basePath = null;
 
 // Events
 	/**
@@ -308,16 +309,29 @@ this.createjs = this.createjs||{};
 	};
 
 	/**
-	 * Parse a file URI using the <code>AbstractLoader.FILE_PATTERN</code> RegExp pattern.
+	 * Parse a file URI using the {{#crossLink "AbstractLoader/FILE_PATTERN:property"}}{{/crossLink}} RegExp pattern.
 	 * @method _parseURI
 	 * @param {String} path The file path to parse.
-	 * @return {Array} The matched file contents. Please see the <code>AbstractLoader.FILE_PATTERN</code> property for
-	 * details on the return value. This will return null if it does not match.
+	 * @return {Array} The matched file contents. Please see the FILE_PATTERN property for details on the return value.
+	 * This will return null if it does not match.
 	 * @protected
 	 */
 	p._parseURI = function(path) {
 		if (!path) { return null; }
 		return path.match(s.FILE_PATTERN);
+	};
+
+	/**
+	 * Parse a file URI using the {{#crossLink "AbstractLoader/PATH_PATTERN"}}{{/crossLink}} RegExp pattern.
+	 * @method _parsePath
+	 * @param {String} path The file path to parse.
+	 * @return {Array} The matched path contents. Please see the PATH_PATTERN property for details on the return value.
+	 * This will return null if it does not match.
+	 * @protected
+	 */
+	p._parsePath = function(path) {
+		if (!path) { return null; }
+		return path.match(s.PATH_PATTERN);
 	};
 
 	/**
@@ -346,21 +360,12 @@ this.createjs = this.createjs||{};
 	 * path. All of the loaders in PreloadJS use this method to compile paths when loading.
 	 * @method buildPath
 	 * @param {String} src The source path to add values to.
-	 * @param {String} [basePath] A string to prepend to the file path. Sources beginning with http:// or similar will
-	 * not receive a base path.
 	 * @param {Object} [data] Object used to append values to this request as a query string. Existing parameters on the
 	 * path will be preserved.
 	 * @returns {string} A formatted string that contains the path and the supplied parameters.
 	 * @since 0.3.1
 	 */
-	p.buildPath = function(src, _basePath, data) {
-		if (_basePath != null) {
-			var match = this._parseURI(src);
-			// IE 7,8 Return empty string here.
-			if (match == null || match[1] == null || match[1] == '') {
-				src = _basePath + src;
-			}
-		}
+	p.buildPath = function(src, data) {
 		if (data == null) {
 			return src;
 		}
