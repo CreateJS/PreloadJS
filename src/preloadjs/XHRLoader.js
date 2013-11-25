@@ -501,6 +501,7 @@ this.createjs = this.createjs || {};
 			case createjs.LoadQueue.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
 				tag.src = this.buildPath(this._item.src, this._basePath, this._item.values);
+				tag.crossOrigin = "Anonymous";
 
 				this._rawResponse = this._response;
 				this._response = tag;
