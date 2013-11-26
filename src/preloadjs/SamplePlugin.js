@@ -117,8 +117,8 @@
 	 * can include modified `src` and `id` parameters, as well as "tag" and "completeHandler" properties:
 	 * <ul>
 	 *     <li><strong>tag:</strong> a JavaScript object that will handle the actual loading of the file. This is
-	 *     modeled after HTML image &amp; audio tags, and must contain a <code>load()</code> method, as well as
-	 *     <code>onload</code> and <code>onerror</code> callbacks.</li>
+	 *     modeled after HTML image &amp; audio tags, and must contain a <code>load()</code> method or a `src` setter,
+	 *     as well as and <code>onload</code> and <code>onerror</code> callback.</li>
 	 *     <li><strong>completeHandler:</strong> A method to call on the plugin once the item has been loaded. This is
 	 *     useful to provide any necessary post-load functionality. Check out the {{#crossLink "SamplePlugin/fileLoadHandler"}}{{/crossLink}}
 	 *     for more information.</li>

@@ -284,8 +284,10 @@ this.createjs = this.createjs||{};
 		// Remove from the DOM
 		switch (item.type) {
 			case createjs.LoadQueue.SVG:
+			case createjs.LoadQueue.JSON:
 			case createjs.LoadQueue.JSONP: // Note: Removing script tags is a fool's errand.
 			case createjs.LoadQueue.MANIFEST:
+			case createjs.LoadQueue.CSS:
 				// case createjs.LoadQueue.CSS:
 				//LM: We may need to remove CSS tags loaded using a LINK
 				tag.style.visibility = this._startTagVisibility;
@@ -308,7 +310,8 @@ this.createjs = this.createjs||{};
 		clearTimeout(this._loadTimeout);
 
 		// Delete handlers.
-		var tag = this.getItem().tag;
+		var item = this.getItem();
+		var tag = item.tag;
 		if (tag != null) {
 			tag.onload = null;
 			tag.removeEventListener && tag.removeEventListener("canplaythrough", this._tagCompleteProxy, false);
@@ -317,7 +320,13 @@ this.createjs = this.createjs||{};
 			tag.onerror = null;
 
 			//TODO: Test this
-			if (tag.parentNode) {
+			if (tag.parentNode != null
+					&& item.type == createjs.LoadQueue.SVG
+					&& item.type == createjs.LoadQueue.JSON
+					&& item.type == createjs.LoadQueue.MANIFEST
+					&& item.type == createjs.LoadQueue.CSS
+					&& item.type == createjs.LoadQueue.JSONP) {
+				 // Note: Removing script tags is a fool's errand.
 				tag.parentNode.removeChild(tag);
 			}
 		}

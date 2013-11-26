@@ -1195,7 +1195,6 @@ TODO: WINDOWS ISSUES
 		// Give plugins a chance to modify the loadItem:
 		var customHandler = this._typeCallbacks[item.type] || this._extensionCallbacks[item.ext];
 		if (customHandler) {
-
 			// Plugins are now passed both the full source, as well as a combined path+basePath (appropriately)
 			var result = customHandler.callback.call(customHandler.scope, item.src, item.type, item.id, item.data,
 					bp, this);
@@ -1213,7 +1212,7 @@ TODO: WINDOWS ISSUES
 			} else {
 				if (result.src != null) { item.src = result.src; }
 				if (result.id != null) { item.id = result.id; } // TODO: Evaluate this. An overridden ID could be problematic
-				if (result.tag != null && result.tag.load instanceof Function) { // Item has what we need load
+				if (result.tag != null) { // Assumes that the returned tag either has a load method or a src setter.
 					item.tag = result.tag;
 				}
                 if (result.completeHandler != null) { item.completeHandler = result.completeHandler; }

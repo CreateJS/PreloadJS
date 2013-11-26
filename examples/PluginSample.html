@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PreloadJS: Plugin Sample</title>
+
+	<link rel="stylesheet" type="text/css" href="./assets/demoStyles.css" />
+	<style>
+		.image {
+			max-width: 320px;
+			max-height: 240px;
+			border: 1px solid #666;
+			margin: 5px;
+		}
+	</style>
+</head>
+
+<body onload="init()">
+
+	<header id="header" class="PreloadJS">
+		<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Plugin</h1>
+		<p>In this example, a plugin is defined, which parses a Preload item source into an HTML image ID that is
+			already present in the HTML DOM. PreloadJS will then use the image to do the loading, and the image
+			will be displayed in its defined position when it is loaded.</p>
+	</header>
+
+	<img class="image" id="texas" />
+	<img class="image" id="bluebird" />
+	<img class="image" id="nepal" />
+
+	<!-- Note: All PreloadJS classes are listed here: -->
+    <script type="text/javascript" src="../src/createjs/events/Event.js"></script>
+    <script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
+	<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
+	<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+
+    <!-- We also provide hosted minified versions of all CreateJS libraries.
+        http://code.createjs.com -->
+
+    <script>
+        var preload;
+
+        function init() {
+            if (window.top != window) {
+                document.getElementById("header").style.display = "none";
+            }
+
+            // Create a new queue.
+            preload = new createjs.LoadQueue(false, "assets/");
+
+            // Use this instead to favor xhr loading
+            //preload = new createjs.LoadQueue(true, "assets/");
+
+			var plugin = function() {};
+			plugin.getPreloadHandlers = function() {
+					return {
+						types:["image"],
+						callback: function(src, type, id, data, basePath) {
+							var id = src.toLowerCase().split("/").pop().split(".")[0];
+							var img = document.getElementById(id);
+							return {tag:img};
+						}
+					}
+				};
+
+            preload.installPlugin(plugin);
+
+			preload.on("fileload", function(event) {
+				console.log("Loaded",event.item);
+			})
+			preload.loadManifest([
+				"Texas.jpg",
+				"BlueBird.png",
+				"Nepal.jpg",
+				"Autumn.png" //NOTE: Will not display
+			]);
+        }
+
+    </script>
+
+</body>
+</html>
