@@ -1526,7 +1526,9 @@ TODO: WINDOWS ISSUES
 		var tag = null;
 		switch (type) {
 			case createjs.LoadQueue.IMAGE:
-				return document.createElement("img");
+				tag = document.createElement("img");
+				tag.crossOrigin = "Anonymous";
+				return tag;
 			case createjs.LoadQueue.SOUND:
 				tag = document.createElement("audio");
 				tag.autoplay = false;
