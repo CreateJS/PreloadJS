@@ -229,13 +229,22 @@ TODO: WINDOWS ISSUES
 	var s = LoadQueue;
 
 	/**
-	 * Time in milliseconds to assume a load has failed.
-	 * @property LOAD_TIMEOUT
+	 * Time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
+	 * event is dispatched if the timeout is reached before any data is received.
+	 * @property loadTimeout
 	 * @type {Number}
 	 * @default 8000
 	 * @static
+	 * @since 0.4.1
 	 */
-	s.LOAD_TIMEOUT = 8000;
+	s.loadTimeout = 8000;
+
+	/**
+	 * Time in milliseconds to assume a load has failed.
+	 * @type {Number}
+	 * @deprecated in favor of the {{#crossLink "LoadQueue/loadTimeout:property"}}{{/crossLink}} property.
+	 */
+	s.LOAD_TIMEOUT = 0;
 
 // Preload Types
 	/**

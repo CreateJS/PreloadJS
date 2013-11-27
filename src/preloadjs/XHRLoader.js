@@ -158,7 +158,13 @@ this.createjs = this.createjs || {};
 		this._request.ontimeout = createjs.proxy(this._handleTimeout, this);
 		// Set up a timeout if we don't have XHR2
 		if (this._xhrLevel == 1) {
-			this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), createjs.LoadQueue.LOAD_TIMEOUT);
+			var duration = createjs.LoadQueue.LOAD_TIMEOUT;
+			if (duration == 0) {
+				duration = createjs.LoadQueue.loadTimeout;
+			} else {
+				try { console.warn("LoadQueue.LOAD_TIMEOUT has been deprecated in favor of LoadQueue.loadTimeout");} catch(e) {}
+			}
+			this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), duration);
 		}
 
 		// Note: We don't get onload in all browsers (earlier FF and IE). onReadyStateChange handles these.

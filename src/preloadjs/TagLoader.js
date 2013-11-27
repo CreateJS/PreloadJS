@@ -137,9 +137,10 @@ this.createjs = this.createjs||{};
 		var item = this._item;
 		var tag = this._tag;
 
-		// In case we don't get any events.
 		clearTimeout(this._loadTimeout); // Clear out any existing timeout
-		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), createjs.LoadQueue.LOAD_TIMEOUT);
+		var duration = createjs.LoadQueue.LOAD_TIMEOUT;
+		if (duration == 0) { duration = createjs.LoadQueue.loadTimeout; }
+		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), duration);
 
 		if (this._isAudio) {
 			tag.src = null; // Unset the source so we can set the preload type to "auto" without kicking off a load. This is only necessary for audio tags passed in by the developer.
