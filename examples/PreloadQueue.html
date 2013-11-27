@@ -172,7 +172,7 @@
 
         // File complete handler
         function handleFileLoad(event) {
-            var div = map[event.item.src];
+            var div = map[event.item.id];
             div.addClass("complete");
 
             // Get a reference to the loaded image (<img/>)
@@ -193,7 +193,7 @@
 
         // File progress handler
         function handleFileProgress(event) {
-            var div = map[event.item.src]; // Lookup the related item
+            var div = map[event.item.id]; // Lookup the related item
             div.children("DIV").width(event.progress*div.width()); // Set the width the progress.
         }
 
@@ -204,7 +204,7 @@
 
         // An error happened on a file
         function handleFileError(event) {
-            var div = map[event.item.src];
+            var div = map[event.item.id];
             div.addClass("error");
         }
 
