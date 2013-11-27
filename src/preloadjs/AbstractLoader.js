@@ -383,6 +383,39 @@ this.createjs = this.createjs||{};
 	};
 
 	/**
+	 * @method _isCrossDomain
+	 * @param {Object} item A load item with a `src` property
+	 * @return {Boolean} If the load item is loading from a different domain than the current location.
+	 * @private
+	 */
+	p._isCrossDomain = function(item) {
+		var target = document.createElement("a");
+		target.href = item.src;
+
+		var host = document.createElement("a");
+		host.href = location.href;
+
+		var crossdomain = (target.hostname != "") &&
+				(target.port != host.port ||
+						target.protocol != host.protocol ||
+						target.hostname != host.hostname);
+		return crossdomain;
+	}
+
+	/**
+	 * @method _isLocal
+	 * @param {Object} item A load item with a `src` property
+	 * @return {Boolean} If the load item is loading from the "file:" protocol. Assume that the host must be local as
+	 * well.
+	 * @private
+	 */
+	p._isLocal = function(item) {
+		var target = document.createElement("a");
+		target.href = item.src;
+		return target.hostname == "" && target.protocol == "file:";
+	}
+
+	/**
 	 * @method toString
 	 * @return {String} a string representation of the instance.
 	 */

@@ -1250,7 +1250,7 @@ TODO: WINDOWS ISSUES
 
 		// Create a tag for the item. This ensures there is something to either load with or populate when finished.
 		if (item.tag === undefined || item.tag === null) {
-			item.tag = this._createTag(item.type);
+			item.tag = this._createTag(item);
 		}
 
 		// If there's no id, set one now.
@@ -1588,12 +1588,12 @@ TODO: WINDOWS ISSUES
 	 * Note that tags are not appended to the HTML body.
 	 * @private
 	 */
-	p._createTag = function(type) {
+	p._createTag = function(item) {
 		var tag = null;
-		switch (type) {
+		switch (item.type) {
 			case createjs.LoadQueue.IMAGE:
 				tag = document.createElement("img");
-				tag.crossOrigin = "Anonymous";
+				if (!this._isLocal(item)) { tag.crossOrigin = "Anonymous"; }
 				return tag;
 			case createjs.LoadQueue.SOUND:
 				tag = document.createElement("audio");

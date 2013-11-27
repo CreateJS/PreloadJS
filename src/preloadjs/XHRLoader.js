@@ -401,16 +401,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._createXHR = function (item) {
 		// Check for cross-domain loads. We can't fully support them, but we can try.
-		var target = document.createElement("a");
-		target.href = item.src;
-
-		var host = document.createElement("a");
-		host.href = location.href;
-
-		var crossdomain = (target.hostname != "") &&
-						 	(target.port != host.port ||
-							 target.protocol != host.protocol ||
-							 target.hostname != host.hostname);
+		var crossdomain = this._isCrossDomain(item);
 
 		// Create the request. Fall back to whatever support we have.
 		var req = null;
@@ -511,7 +502,7 @@ this.createjs = this.createjs || {};
 			case createjs.LoadQueue.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
 				tag.src = this.buildPath(this._item.src, this._item.values);
-				tag.crossOrigin = "Anonymous";
+				tag.crossOrigin = "Anonymous"; // We can assume this, since XHR images are always loaded on a server.
 
 				this._rawResponse = this._response;
 				this._response = tag;
