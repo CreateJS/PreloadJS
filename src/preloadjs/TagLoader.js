@@ -83,6 +83,7 @@ this.createjs = this.createjs||{};
 	 * @property _isAudio
 	 * @type {Boolean}
 	 * @default false
+	 * @protected
 	 */
 	p._isAudio = false;
 

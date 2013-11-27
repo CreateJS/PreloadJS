@@ -2,6 +2,9 @@ Version NEXT [Not Released]
 ************************************************************************************************************************
 CRITICAL (may break existing content)
 - Single files that are NOT manifests can no longer be loaded using loadManifest(). Use loadFile instead.
+- Items have relevant path/basePaths prepended to the src. Auto-generated IDs will include a path (from a manifest),
+ 	but not a basePath.
+- LOAD_TIMEOUT changed to loadTimeout. LOAD_TIMEOUT is deprecated, but still supported.
 
 ****
 - Changed XHR-loaded scripts to automatically add to the document body after loading
@@ -15,6 +18,9 @@ CRITICAL (may break existing content)
 - Added file-based manifest support. Loading a single JSON file that defines a manifest object will
 	automatically load the files in the manifest. Included a sample.
 - Added anonymous cross-origin header to images loaded using XHR.
+- Changed text loading to be UTF-8 encoded.
+- AbstractLoader changed to extend EventDispatcher, instead of using a mix-in.
+- Major documentation pass.
 
 
 Version 0.4.0 [September 25, 2013]

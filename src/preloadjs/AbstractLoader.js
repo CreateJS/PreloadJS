@@ -82,7 +82,7 @@ this.createjs = this.createjs||{};
 	/**
 	 * Determine if the loader was canceled. Canceled loads will not fire complete events. Note that
 	 * {{#crossLink "LoadQueue"}}{{/crossLink}} queues should be closed using {{#crossLink "AbstractLoader/close"}}{{/crossLink}}
-	 * instead of canceled.
+	 * instead of setting this property.
 	 * @property canceled
 	 * @type {Boolean}
 	 * @default false
@@ -91,6 +91,15 @@ this.createjs = this.createjs||{};
 
 	/**
 	 * The current load progress (percentage) for this item. This will be a number between 0 and 1.
+	 *
+	 * <h4>Example</h4>
+	 *
+	 *     var queue = new createjs.LoadQueue();
+	 *     queue.loadFile("largeImage.png");
+	 *     queue.on("progress", function() {
+	 *         console.log("Progress:", queue.progress, event.progress);
+	 *     });
+	 *
 	 * @property progress
 	 * @type {Number}
 	 * @default 0
@@ -144,7 +153,7 @@ this.createjs = this.createjs||{};
 	 * @param {String} type The event type.
 	 * @param {Object} [item] The item that was being loaded that caused the error. The item was specified in
 	 * the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
-	 * call. If only a string path or tag was specified, the object will contain that value as a property.
+	 * call. If only a string path or tag was specified, the object will contain that value as a `src` property.
 	 * @param {String} [error] The error object or text.
 	 * @since 0.3.0
 	 */
@@ -344,8 +353,8 @@ this.createjs = this.createjs||{};
 	};
 
 	/**
-	 * A utility method that builds a file path using a source, a basePath, and a data object, and formats it into a new
-	 * path. All of the loaders in PreloadJS use this method to compile paths when loading.
+	 * A utility method that builds a file path using a source and a data object, and formats it into a new path. All
+	 * of the loaders in PreloadJS use this method to compile paths when loading.
 	 * @method buildPath
 	 * @param {String} src The source path to add values to.
 	 * @param {Object} [data] Object used to append values to this request as a query string. Existing parameters on the

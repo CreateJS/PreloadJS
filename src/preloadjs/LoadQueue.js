@@ -44,6 +44,7 @@
  * to load files and process results.
  *
  * <h4>Example</h4>
+ *
  *      var queue = new createjs.LoadQueue();
  *      queue.installPlugin(createjs.Sound);
  *      queue.on("complete", handleComplete, this);
@@ -69,6 +70,9 @@
  *      <li>Some formats have poor support for complete events in IE 6, 7, and 8 (SVG, tag loading of scripts, XML/JSON)</li>
  *      <li>Opera has poor support for SVG loading with XHR</li>
  *      <li>CSS loading in Android and Safari will not work with tags (currently, a workaround is in progress)</li>
+ *      <li>Local loading is not permitted with XHR, which is required by some file formats. When testing local content
+ *      use either a local server, or enable tag loading, which is supported for most formats. See {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
+ *      for more information.</li>
  * </li>
  *
  * @module PreloadJS
@@ -94,8 +98,8 @@ TODO: WINDOWS ISSUES
 	"use strict";
 
 	/**
-	 * The LoadQueue class is the main API for preloading content. LoadQueue is a load manager, which maintains
-	 * a single file, or a queue of files.
+	 * The LoadQueue class is the main API for preloading content. LoadQueue is a load manager, which can preload either
+	 * a single file, or queue of files.
 	 *
 	 * <b>Creating a Queue</b><br />
 	 * To use LoadQueue, create a LoadQueue instance. If you want to force tag loading where possible, set the useXHR
@@ -105,24 +109,35 @@ TODO: WINDOWS ISSUES
 	 *
 	 * <b>Listening for Events</b><br />
 	 * Add any listeners you want to the queue. Since PreloadJS 0.3.0, the {{#crossLink "EventDispatcher"}}{{/crossLink}}
-	 * lets you add as many listeners as you want for events. You can subscribe to complete, error, fileload, progress,
-	 * and fileprogress.
+	 * lets you add as many listeners as you want for events. You can subscribe to the following events:<ul>
+	 *     <li>{{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}}: fired when a queue completes loading all
+	 *     files</li>
+	 *     <li>{{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}: fired when the queue encounters an error with
+	 *     any file.</li>
+	 *     <li>{{#crossLink "AbstractLoader/progress:event"}}{{/crossLink}}: Progress for the entire queue has
+	 *     changed.</li>
+	 *     <li>{{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}: A single file has completed loading.</li>
+	 *     <li>{{#crossLink "LoadQueue/fileprogress:event"}}{{/crossLink}}: Progress for a single file has changes. Note
+	 *     that only files loaded with XHR (or possibly by plugins) will fire progress events other than 0 or 100%.</li>
+	 * </ul>
 	 *
 	 *      queue.on("fileload", handleFileLoad, this);
 	 *      queue.on("complete", handleComplete, this);
 	 *
 	 * <b>Adding files and manifests</b><br />
 	 * Add files you want to load using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or add multiple files at a
-	 * time using {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}. Files are appended to the queue, so you can use
-	 * these methods as many times as you like, whenever you like.
+	 * time using a list or a manifest definition using {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}. Files are
+	 * appended to the end of the active queue, so you can use these methods as many times as you like, whenever you
+	 * like.
 	 *
 	 *      queue.loadFile("filePath/file.jpg");
 	 *      queue.loadFile({id:"image", src:"filePath/file.jpg"});
 	 *      queue.loadManifest(["filePath/file.jpg", {id:"image", src:"filePath/file.jpg"}];
 	 *
-	 * If you pass <code>false</code> as the second parameter, the queue will not immediately load the files (unless it
-	 * has already been started). Call the {{#crossLink "AbstractLoader/load"}}{{/crossLink}} method to begin a paused queue.
-	 * Note that a paused queue will automatically resume when new files are added to it.
+	 * If you pass `false` as the `loadNow` parameter, the queue will not kick of the load of the files, but it will not
+	 * stop if it has already been started. Call the {{#crossLink "AbstractLoader/load"}}{{/crossLink}} method to begin
+	 * a paused queue. Note that a paused queue will automatically resume when new files are added to it with a
+	 * `loadNow` argument of `true`.
 	 *
 	 *      queue.load();
 	 *
@@ -137,38 +152,40 @@ TODO: WINDOWS ISSUES
 	 *      // Note that PreloadJS will not read a file extension from the query string
 	 *      queue.loadFile({src:"http://server.com/proxy?file=image.jpg"}, type:createjs.LoadQueue.IMAGE});
 	 *
-	 * Supported types include:
+	 * Supported types are defined on the LoadQueue class, and include:
 	 * <ul>
-	 *     <li>createjs.LoadQueue.BINARY (Raw binary data via XHR)</li>
-	 *     <li>createjs.LoadQueue.CSS (CSS files)</li>
-	 *     <li>createjs.LoadQueue.IMAGE (Common image formats)</li>
-	 *     <li>createjs.LoadQueue.JAVASCRIPT (JavaScript files)</li>
-	 *     <li>createjs.LoadQueue.JSON (JSON data)</li>
-	 *     <li>createjs.LoadQueue.JSONP (JSON files cross-domain)</li>
-	 *     <li>createjs.LoadQueue.MANIFEST (A list of files to load in JSON format, see {{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}} )</li>
-	 *     <li>createjs.LoadQueue.SOUND (Audio file formats)</li>
-	 *     <li>createjs.LoadQueue.SVG (SVG files)</li>
-	 *     <li>createjs.LoadQueue.TEXT (Text files - XHR only)</li>
-	 *     <li>createjs.LoadQueue.XML (XML data)</li>
+	 *     <li>{{#crossLink "LoadQueue/BINARY:property"}}{{/crossLink}}: Raw binary data via XHR</li>
+	 *     <li>{{#crossLink "LoadQueue/CSS:property"}}{{/crossLink}}: CSS files</li>
+	 *     <li>{{#crossLink "LoadQueue/IMAGE:property"}}{{/crossLink}}: Common image formats</li>
+	 *     <li>{{#crossLink "LoadQueue/JAVASCRIPT:property"}}{{/crossLink}}: JavaScript files</li>
+	 *     <li>{{#crossLink "LoadQueue/JSON:property"}}{{/crossLink}}: JSON data</li>
+	 *     <li>{{#crossLink "LoadQueue/JSONP:property"}}{{/crossLink}}: JSON files cross-domain</li>
+	 *     <li>{{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}}: A list of files to load in JSON format, see
+	 *     {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}</li>
+	 *     <li>{{#crossLink "LoadQueue/SOUND:property"}}{{/crossLink}}: Audio file formats</li>
+	 *     <li>{{#crossLink "LoadQueue/SVG:property"}}{{/crossLink}}: SVG files</li>
+	 *     <li>{{#crossLink "LoadQueue/TEXT:property"}}{{/crossLink}}: Text files - XHR only</li>
+	 *     <li>{{#crossLink "LoadQueue/XML:property"}}{{/crossLink}}: XML data</li>
 	 * </ul>
 	 *
 	 * <b>Handling Results</b><br />
-	 * When a file is finished downloading, a "fileload" event is dispatched. In an example above, there is an event
-	 * listener snippet for fileload. Loaded files are always an object that can be used immediately, including:
+	 * When a file is finished downloading, a {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event is
+	 * dispatched. In an example above, there is an event listener snippet for fileload. Loaded files are usually a
+	 * resolved object that can be used immediately, including:
 	 * <ul>
-	  *     <li>Image: An &lt;img /&gt; tag</li>
-	  *     <li>Audio: An &lt;audio /&gt; tag</a>
-	  *     <li>JavaScript: A &lt;script /&gt; tag</li>
-	  *     <li>CSS: A &lt;link /&gt; tag</li>
-	  *     <li>XML: An XML DOM node</li>
-	  *     <li>SVG: An &lt;object /&gt; tag</li>
-	  *     <li>JSON: A formatted JavaScript Object</li>
-	  *     <li>Text: Raw text</li>
-	  *     <li>Binary: The binary loaded result</li>
-	  * </ul>
+	 *     <li>Image: An &lt;img /&gt; tag</li>
+	 *     <li>Audio: An &lt;audio /&gt; tag</a>
+	 *     <li>JavaScript: A &lt;script /&gt; tag</li>
+	 *     <li>CSS: A &lt;link /&gt; tag</li>
+	 *     <li>XML: An XML DOM node</li>
+	 *     <li>SVG: An &lt;object /&gt; tag</li>
+	 *     <li>JSON: A formatted JavaScript Object</li>
+	 *     <li>Text: Raw text</li>
+	 *     <li>Binary: The binary loaded result</li>
+	 * </ul>
 	 *
 	 *      function handleFileLoad(event) {
-	 *          var item = event.item; // A reference to the item that was passed in
+	 *          var item = event.item; // A reference to the item that was passed in to the LoadQueue
 	 *          var type = item.type;
 	 *
 	 *          // Add any images to the page body.
@@ -179,22 +196,23 @@ TODO: WINDOWS ISSUES
 	 *
 	 * At any time after the file has been loaded (usually after the queue has completed), any result can be looked up
 	 * via its "id" using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}. If no id was provided, then the "src" or
-	 * file path can be used instead. It is recommended to always pass an id.
+	 * file path can be used instead, including the `path` defined by a manifest, but <strong>not including</strong> a
+	 * base path defined on the LoadQueue. It is recommended to always pass an id.
 	 *
 	 *      var image = queue.getResult("image");
 	 *      document.body.appendChild(image);
 	 *
-	 * Raw loaded content can be accessed using the <code>rawResult</code> property of the <code>fileload</code> event,
-	 * or can be looked up using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}, and <code>true</code> as the 2nd
-	 * parameter. This is only applicable for content that has been parsed for the browser, specifically, JavaScript,
-	 * CSS, XML, SVG, and JSON objects.
+	 * Raw loaded content can be accessed using the <code>rawResult</code> property of the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}
+	 * event, or can be looked up using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}, passing `true` as the 2nd
+	 * argument. This is only applicable for content that has been parsed for the browser, specifically: JavaScript,
+	 * CSS, XML, SVG, and JSON objects, or anything loaded with XHR.
 	 *
-	 *      var image = queue.getResult("image", true);
+	 *      var image = queue.getResult("image", true); // load the binary image data loaded with XHR.
 	 *
 	 * <b>Plugins</b><br />
 	 * LoadQueue has a simple plugin architecture to help process and preload content. For example, to preload audio,
-	 * make sure to install the <a href="http://soundjs.com">SoundJS</a> Sound class, which will help preload HTML
-	 * audio, Flash audio, and WebAudio files. This should be installed <b>before</b> loading any audio files.
+	 * make sure to install the <a href="http://soundjs.com">SoundJS</a> Sound class, which will help load HTML audio,
+	 * Flash audio, and WebAudio files. This should be installed <strong>before</strong> loading any audio files.
 	 *
 	 *      queue.installPlugin(createjs.Sound);
 	 *
@@ -213,11 +231,12 @@ TODO: WINDOWS ISSUES
 	 * </ul>
 	 *
 	 * @class LoadQueue
-	 * @param {Boolean} [useXHR=true] Determines whether the preload instance will favor loading with XHR (XML HTTP Requests),
-	 * or HTML tags. When this is <code>false</code>, LoadQueue will use tag loading when possible, and fall back on XHR
+	 * @param {Boolean} [useXHR=true] Determines whether the preload instance will favor loading with XHR (XML HTTP
+	 * Requests), or HTML tags. When this is `false`, the queue will use tag loading when possible, and fall back on XHR
 	 * when necessary.
-	 * @param {String} basePath A path that will be prepended on to the source parameter of all items in the queue
-	 * before they are loaded.  Sources beginning with `http://` or `../` or similar will not receive a base path.
+	 * @param {String} [basePath=""] A path that will be prepended on to the source parameter of all items in the queue
+	 * before they are loaded.  Sources beginning with a protocol such as `http://` or a relative path such as `../`
+	 * will not receive a base path.
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
@@ -248,7 +267,7 @@ TODO: WINDOWS ISSUES
 
 // Preload Types
 	/**
-	 * The preload type for generic binary types. Note that images and sound files are treated as binary.
+	 * The preload type for generic binary types. Note that images are loaded as binary files when using XHR.
 	 * @property BINARY
 	 * @type {String}
 	 * @default binary
@@ -257,7 +276,8 @@ TODO: WINDOWS ISSUES
 	s.BINARY = "binary";
 
 	/**
-	 * The preload type for css files. CSS files are loaded into a LINK or STYLE tag (depending on the load type)
+	 * The preload type for css files. CSS files are loaded using a &lt;link&gt; when loaded with XHR, or a
+	 * &lt;style&gt; tag when loaded with tags.
 	 * @property CSS
 	 * @type {String}
 	 * @default css
@@ -266,7 +286,7 @@ TODO: WINDOWS ISSUES
 	s.CSS = "css";
 
 	/**
-	 * The preload type for image files, usually png, gif, or jpg/jpeg. Images are loaded into an IMAGE tag.
+	 * The preload type for image files, usually png, gif, or jpg/jpeg. Images are loaded into an &lt;image&gt; tag.
 	 * @property IMAGE
 	 * @type {String}
 	 * @default image
@@ -276,11 +296,11 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * The preload type for javascript files, usually with the "js" file extension. JavaScript files are loaded into a
-	 * SCRIPT tag.
+	 * &lt;script&gt; tag.
 	 *
 	 * Since version 0.4.1+, due to how tag-loaded scripts work, all JavaScript files are automatically injected into
-	 * the BODY of the document to maintain parity between XHR and tag-loaded scripts. In version 0.4.0 and earlier,
-	 * only tag-loaded scripts were injected.
+	 * the body of the document to maintain parity between XHR and tag-loaded scripts. In version 0.4.0 and earlier,
+	 * only tag-loaded scripts are injected.
 	 * @property JAVASCRIPT
 	 * @type {String}
 	 * @default javascript
@@ -291,7 +311,8 @@ TODO: WINDOWS ISSUES
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
 	 * JavaScript object. Note that if a `callback` is present on the load item, the file will be loaded with JSONP,
-	 * no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to.
+	 * no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to, and the JSON
+	 * must contain a matching wrapper function.
 	 * @property JSON
 	 * @type {String}
 	 * @default json
@@ -313,8 +334,8 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * The preload type for json-based manifest files, usually with the "json" file extension. The JSON data is loaded
-	 * and parsed into a JavaScript object, and parsed. PreloadJS will then look for a "manifest" property in the JSON,
-	 * which is an array of files to load, following the same format as the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
+	 * and parsed into a JavaScript object. PreloadJS will then look for a "manifest" property in the JSON, which is an
+	 * Array of files to load, following the same format as the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * method. If a "callback" is specified on the manifest object, then it will be loaded using JSONP instead,
 	 * regardless of what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to.
 	 * @property MANIFEST
@@ -326,7 +347,8 @@ TODO: WINDOWS ISSUES
 	s.MANIFEST = "manifest";
 
 	/**
-	 * The preload type for sound files, usually mp3, ogg, or wav. Audio is loaded into an AUDIO tag.
+	 * The preload type for sound files, usually mp3, ogg, or wav. When loading via tags, audio is loaded into an
+	 * &lt;audio&gt; tag.
 	 * @property SOUND
 	 * @type {String}
 	 * @default sound
@@ -412,8 +434,9 @@ TODO: WINDOWS ISSUES
 	p.stopOnError = false;
 
 	/**
-	 * Ensure loaded scripts "complete" in the order they are specified. Note that scripts loaded via tags will only
-	 * load one at a time, and will be added to the document when they are loaded.
+	 * Ensure loaded scripts "complete" in the order they are specified. Loaded scripts are added to the document head
+	 * once they are loaded. Note that scripts loaded via tags will load one-at-a-time when this property is `true`.
+	 * load one at a time
 	 * @property maintainScriptOrder
 	 * @type {Boolean}
 	 * @default true
@@ -656,6 +679,8 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * Change the usXHR value. Note that if this is set to true, it may fail depending on the browser's capabilities.
+	 * Additionally, some files require XHR in order to load, such as JSON (without JSONP), Text, and XML, so XHR will
+	 * be used regardless of what is passed to this method.
 	 * @method setUseXHR
 	 * @param {Boolean} value The new useXHR value to set.
 	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
@@ -671,8 +696,7 @@ TODO: WINDOWS ISSUES
 
 	/**
 	 * Stops all queued and loading items, and clears the queue. This also removes all internal references to loaded
-	 * content, and allows the queue to be used again. Items that have not yet started can be kicked off again using
-	 * the {{#crossLink "AbstractLoader/load"}}{{/crossLink}} method.
+	 * content, and allows the queue to be used again.
 	 * @method removeAll
 	 * @since 0.3.0
 	 */
@@ -683,8 +707,20 @@ TODO: WINDOWS ISSUES
 	/**
 	 * Stops an item from being loaded, and removes it from the queue. If nothing is passed, all items are removed.
 	 * This also removes internal references to loaded item(s).
+	 *
+	 * <h4>Example</h4>
+	 *
+	 *      queue.loadManifest([
+	 *          {src:"test.png", id:"png"},
+	 *          {src:"test.jpg", id:"jpg"},
+	 *          {src:"test.mp3", id:"mp3"}
+	 *      ]);
+	 *      queue.remove("png"); // Single item by ID
+	 *      queue.remove("png", "test.jpg"); // Items as arguments. Mixed id and src.
+	 *      queue.remove(["test.png", "jpg"]); // Items in an Array. Mixed id and src.
+	 *
 	 * @method remove
-	 * @param {String | Array} idsOrUrls The id or ids to remove from this queue. You can pass an item, an array of
+	 * @param {String | Array} idsOrUrls* The id or ids to remove from this queue. You can pass an item, an array of
 	 * items, or multiple items as arguments.
 	 * @since 0.3.0
 	 */
@@ -704,11 +740,9 @@ TODO: WINDOWS ISSUES
 		// Destroy everything
 		if (!args) {
 			this.close();
-
 			for (var n in this._loadItemsById) {
 				this._disposeItem(this._loadItemsById[n]);
 			}
-
 			this.init(this.useXHR);
 
 		// Remove specific items
@@ -839,8 +873,14 @@ TODO: WINDOWS ISSUES
 	/**
 	 * Set the maximum number of concurrent connections. Note that browsers and servers may have a built-in maximum
 	 * number of open connections, so any additional connections may remain in a pending state until the browser
-	 * opens the connection. Note that when loading scripts using tags, and {{#crossLink "LoadQueue/maintainScriptOrder:property"}}{{/crossLink}}
+	 * opens the connection. When loading scripts using tags, and when {{#crossLink "LoadQueue/maintainScriptOrder:property"}}{{/crossLink}}
 	 * is `true`, only one script is loaded at a time due to browser limitations.
+	 *
+	 * <h4>Example</h4>
+	 *
+	 *      var queue = new createjs.LoadQueue();
+	 *      queue.setMaxConnections(10); // Allow 10 concurrent loads
+	 *
 	 * @method setMaxConnections
 	 * @param {Number} value The number of concurrent loads to allow. By default, only a single connection per LoadQueue
 	 * is open at any time.
@@ -856,13 +896,13 @@ TODO: WINDOWS ISSUES
 	 * Load a single file. To add multiple files at once, use the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * method.
 	 *
-	 * Note that files are always appended to the current queue, so this method can be used multiple times to add files.
+	 * Files are always appended to the current queue, so this method can be used multiple times to add files.
 	 * To clear the queue first, use the {{#crossLink "AbstractLoader/close"}}{{/crossLink}} method.
 	 * @method loadFile
 	 * @param {Object | String} file The file object or path to load. A file can be either
-     * <ol>
-     *     <li>a path to a resource (string). Note that this kind of load item will be
-     *     converted to an object (see below) in the background.</li>
+     * <ul>
+     *     <li>A string path to a resource. Note that this kind of load item will be converted to an object (see below)
+	 *     in the background.</li>
      *     <li>OR an object that contains:<ul>
      *         <li>src: The source of the file that is being loaded. This property is <b>required</b>. The source can
 	 *         either be a string (recommended), or an HTML tag.</li>
@@ -872,17 +912,19 @@ TODO: WINDOWS ISSUES
      *         <li>id: A string identifier which can be used to reference the loaded object.</li>
 	 *         <li>callback: Optional, used for JSONP requests, to define what method to call when the JSONP is loaded.</li>
      *         <li>data: An arbitrary data object, which is included with the loaded object</li>
-	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. Default; GET</li>
+	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. The default
+	 *         value is "GET"</li>
 	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
      *     </ul>
-     * </ol>
+     * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
-	 * true, the queue will resume automatically.
-	 * @param {String} [basePath] <strong>Deprecated</strong> A base path that will be prepended to each file. The
-	 * basePath argument overrides the path specified in the constructor. This parameter will be removed in a future
-	 * tagged version. Note that if you load a maninfest using a file of type LoadQueue.MANIFEST, its files will
-	 * <strong>NOT</strong> use the basePath parameter.
+	 * `true`, the queue will resume automatically.
+	 * @param {String} [basePath] A base path that will be prepended to each file. The basePath argument overrides the
+	 * path specified in the constructor. Note that if you load a manifest using a file of type {{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}},
+	 * its files will <strong>NOT</strong> use the basePath parameter. <strong>The basePath parameter is deprecated.</strong>
+	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
+	 * constructor, or a `path` property in a manifest definition.
 	 */
 	p.loadFile = function(file, loadNow, basePath) {
 		if (file == null) {
@@ -901,17 +943,17 @@ TODO: WINDOWS ISSUES
 	};
 
 	/**
-	 * Load an array of items. To load a single file, use the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} method.
+	 * Load an array of files. To load a single file, use the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} method.
 	 * The files in the manifest are requested in the same order, but may complete in a different order if the max
 	 * connections are set above 1 using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}. Scripts will load
 	 * in the right order as long as {{#crossLink "LoadQueue/maintainScriptOrder"}}{{/crossLink}} is true (which is
 	 * default).
 	 *
-	 * Note that files are always appended to the current queue, so this method can be used multiple times to add files.
+	 * Files are always appended to the current queue, so this method can be used multiple times to add files.
 	 * To clear the queue first, use the {{#crossLink "AbstractLoader/close"}}{{/crossLink}} method.
 	 * @method loadManifest
-	 * @param {Array|String|Object} manifest An Array with the list of files to load. The loadManifest call supports
-	 * four types of manifests:
+	 * @param {Array|String|Object} manifest An list of files to load. The loadManifest call supports four types of
+	 * manifests:
 	 * <ol>
 	 *     <li>A string path, which points to a manifest file, which is a JSON file that contains a "manifest" property,
 	 *     which defines the list of files to load, and can optionally contain a "path" property, which will be
@@ -923,27 +965,33 @@ TODO: WINDOWS ISSUES
 	 *     optionally contain a "path" property, which will be prepended to each file in the list.</li>
 	 *     <li>An Array of files to load.</li>
 	 * </ol>
-	 * Each "file" in a manifest can be defined as:
+	 *
+	 * Each "file" in a manifest can be either:
 	 * <ul>
-	 *     <li>A path to a resource (string). Note that this kind of load item will be converted to an object, which
-	 *     will be returned once the load is complete.</li>
-	 *     <li>An object that contains:<ul>
-	 *         <li>src: The source of the file that is being loaded. This property is <b>required</b>.
-	 *         The source can either be a string (recommended), or an HTML tag. </li>
+	 *     <li>A string path to a resource (string). Note that this kind of load item will be converted to an object
+	 *     (see below) in the background.</li>
+	 *      <li>OR an object that contains:<ul>
+	 *         <li>src: The source of the file that is being loaded. This property is <b>required</b>. The source can
+	 *         either be a string (recommended), or an HTML tag.</li>
 	 *         <li>type: The type of file that will be loaded (image, sound, json, etc). PreloadJS does auto-detection
 	 *         of types using the extension. Supported types are defined on LoadQueue, such as <code>LoadQueue.IMAGE</code>.
 	 *         It is recommended that a type is specified when a non-standard file URI (such as a php script) us used.</li>
 	 *         <li>id: A string identifier which can be used to reference the loaded object.</li>
-	 *         <li>data: An arbitrary data object, which is returned with the loaded object</li>
-	 *     </ul></li>
+	 *         <li>callback: Optional, used for JSONP requests, to define what method to call when the JSONP is loaded.</li>
+	 *         <li>data: An arbitrary data object, which is included with the loaded object</li>
+	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. The default
+	 *         value is "GET"</li>
+	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
+	 *     </ul>
 	 * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} and this value is
-	 * true, the queue will resume automatically.
-	 * @param {String} [basePath] <strong>Deprecated</strong> A base path that will be prepended to each file. The
-	 * basePath argument overrides the path specified in the constructor. This parameter will be removed in a future
-	 * tagged version. Note that basePath set when loading a manifest will <strong>NOT</strong> apply to the files in
-	 * that manifest.
+	 * `true`, the queue will resume automatically.
+	 * @param {String} [basePath] A base path that will be prepended to each file. The basePath argument overrides the
+	 * path specified in the constructor. Note that if you load a manifest using a file of type {{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}},
+	 * its files will <strong>NOT</strong> use the basePath parameter. <strong>The basePath parameter is deprecated.</strong>
+	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
+	 * constructor, or a `path` property in a manifest definition.
 	 */
 	p.loadManifest = function(manifest, loadNow, basePath) {
 		var fileList = null;
@@ -1011,19 +1059,23 @@ TODO: WINDOWS ISSUES
 	};
 
 	/**
-	 * Look up a load item using either the "id" or "src" that was specified when loading it.
+	 * Look up a load item using either the "id" or "src" that was specified when loading it. Note that if no "id" was
+	 * supplied with the load item, the ID will be the "src", including a `path` property defined by a manifest. The
+	 * `basePath` will not be part of the ID.
 	 * @method getItem
 	 * @param {String} value The <code>id</code> or <code>src</code> of the load item.
 	 * @return {Object} The load item that was initially requested using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
-	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}. This object is also returned via the "fileload" event
-	 * as the "item" parameter.
+	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}. This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}
+	 * event as the `item` parameter.
 	 */
 	p.getItem = function(value) {
 		return this._loadItemsById[value] || this._loadItemsBySrc[value];
 	};
 
 	/**
-	 * Look up a loaded result using either the "id" or "src" that was specified when loading it.
+	 * Look up a loaded result using either the "id" or "src" that was specified when loading it. Note that if no "id"
+	 * was supplied with the load item, the ID will be the "src", including a `path` property defined by a manifest. The
+	 * `basePath` will not be part of the ID.
 	 * @method getResult
 	 * @param {String} value The <code>id</code> or <code>src</code> of the load item.
 	 * @param {Boolean} [rawResult=false] Return a raw result instead of a formatted result. This applies to content
@@ -1032,19 +1084,19 @@ TODO: WINDOWS ISSUES
 	 * @return {Object} A result object containing the content that was loaded, such as:
      * <ul>
 	 *      <li>An image tag (&lt;image /&gt;) for images</li>
-	 *      <li>A script tag for JavaScript (&lt;script /&gt;). Note that scripts loaded with tags may be added to the
-	 *      HTML head.</li>
-	 *      <li>A style tag for CSS (&lt;style /&gt;)</li>
+	 *      <li>A script tag for JavaScript (&lt;script /&gt;). Note that scripts are automatically added to the HTML
+	 *      DOM.</li>
+	 *      <li>A style tag for CSS (&lt;style /&gt; or &lt;link &gt;)</li>
 	 *      <li>Raw text for TEXT</li>
 	 *      <li>A formatted JavaScript object defined by JSON</li>
 	 *      <li>An XML document</li>
-	 *      <li>An binary arraybuffer loaded by XHR</li>
+	 *      <li>A binary arraybuffer loaded by XHR</li>
 	 *      <li>An audio tag (&lt;audio &gt;) for HTML audio. Note that it is recommended to use SoundJS APIs to play
 	 *      loaded audio. Specifically, audio loaded by Flash and WebAudio will return a loader object using this method
 	 *      which can not be used to play audio back.</li>
 	 * </ul>
-     * This object is also returned via the "fileload" event as the "item" parameter. Note that if a raw result is
-	 * requested, but not found, the result will be returned instead.
+     * This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}  event as the 'item`
+	 * parameter. Note that if a raw result is requested, but not found, the result will be returned instead.
 	 */
 	p.getResult = function(value, rawResult) {
 		var item = this._loadItemsById[value] || this._loadItemsBySrc[value];
@@ -1059,6 +1111,9 @@ TODO: WINDOWS ISSUES
 	/**
 	 * Pause or resume the current load. Active loads will not be cancelled, but the next items in the queue will not
 	 * be processed when active loads complete. LoadQueues are not paused by default.
+	 *
+	 * Note that if new items are added to the queue using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}},
+	 * a paused queue will be resumed, unless the `loadNow` argument is `false`.
 	 * @method setPaused
 	 * @param {Boolean} value Whether the queue should be paused or not.
 	 */
