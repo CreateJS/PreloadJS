@@ -3,7 +3,7 @@
 <head>
 	<title>PreloadJS: Plugin Sample</title>
 
-	<link rel="stylesheet" type="text/css" href="./assets/demoStyles.css" />
+	<link rel="stylesheet" type="text/css" href="./assets/demoStyles.css"/>
 	<style>
 		.image {
 			max-width: 320px;
@@ -16,70 +16,68 @@
 
 <body onload="init()">
 
-	<header id="header" class="PreloadJS">
-		<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Plugin</h1>
-		<p>In this example, a plugin is defined, which parses a Preload item source into an HTML image ID that is
-			already present in the HTML DOM. PreloadJS will then use the image to do the loading, and the image
-			will be displayed in its defined position when it is loaded.</p>
-	</header>
+<header id="header" class="PreloadJS">
+	<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Plugin</h1>
 
-	<img class="image" id="texas" />
-	<img class="image" id="bluebird" />
-	<img class="image" id="nepal" />
+	<p>In this example, a PreloadJS plugin is defined, which parses a load item  into an HTML image ID that is
+		already present in the HTML DOM. PreloadJS will then use the image to do the loading, and the image
+		will be displayed in its defined position when it is loaded.</p>
+</header>
 
-	<!-- Note: All PreloadJS classes are listed here: -->
-    <script type="text/javascript" src="../src/createjs/events/Event.js"></script>
-    <script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
-	<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
-	<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+<img class="image" id="texas"/>
+<img class="image" id="bluebird"/>
+<img class="image" id="nepal"/>
 
-    <!-- We also provide hosted minified versions of all CreateJS libraries.
-        http://code.createjs.com -->
+<!-- Note: All PreloadJS classes are listed here: -->
+<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
+<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
+<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
+<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
+<script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
+<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
 
-    <script>
-        var preload;
+<!-- We also provide hosted minified versions of all CreateJS libraries.
+	http://code.createjs.com -->
 
-        function init() {
-            if (window.top != window) {
-                document.getElementById("header").style.display = "none";
-            }
+<script>
+	var preload;
 
-            // Create a new queue.
-            preload = new createjs.LoadQueue(false, "assets/");
+	function init() {
+		if (window.top != window) {
+			document.getElementById("header").style.display = "none";
+		}
 
-            // Use this instead to favor xhr loading
-            //preload = new createjs.LoadQueue(true, "assets/");
+		// Create a new queue.
+		preload = new createjs.LoadQueue(false, "assets/");
 
-			var plugin = function() {};
-			plugin.getPreloadHandlers = function() {
-					return {
-						types:["image"],
-						callback: function(src, type, id, data, basePath) {
-							var id = src.toLowerCase().split("/").pop().split(".")[0];
-							var img = document.getElementById(id);
-							return {tag:img};
-						}
+		// Use this instead to favor xhr loading
+		//preload = new createjs.LoadQueue(true, "assets/");
+
+		var plugin = {
+			getPreloadHandlers:function () {
+				return {
+					types:["image"],
+					callback:function (src, type, id, data, basePath) {
+						var id = src.toLowerCase().split("/").pop().split(".")[0];
+						var img = document.getElementById(id);
+						return {tag:img};
 					}
 				};
+			}
+		}
 
-            preload.installPlugin(plugin);
+		preload.installPlugin(plugin);
+		preload.loadManifest([
+			"Texas.jpg",
+			"BlueBird.png",
+			"Nepal.jpg",
+			"Autumn.png" //NOTE: Will not display
+		]);
+	}
 
-			preload.on("fileload", function(event) {
-				console.log("Loaded",event.item);
-			})
-			preload.loadManifest([
-				"Texas.jpg",
-				"BlueBird.png",
-				"Nepal.jpg",
-				"Autumn.png" //NOTE: Will not display
-			]);
-        }
-
-    </script>
+</script>
 
 </body>
 </html>
