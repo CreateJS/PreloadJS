@@ -40,13 +40,13 @@ this.createjs = this.createjs||{};
 	 * The base loader, which defines all the generic callbacks and events. All loaders extend this class, including the
 	 * {{#crossLink "LoadQueue"}}{{/crossLink}}.
 	 * @class AbstractLoader
-	 * @uses EventDispatcher
+	 * @extends EventDispatcher
 	 */
 	var AbstractLoader = function () {
 		this.init();
 	};
 
-	AbstractLoader.prototype = {};
+	AbstractLoader.prototype = new createjs.EventDispatcher(); //TODO: TEST!
 	var p = AbstractLoader.prototype;
 	var s = AbstractLoader;
 
@@ -178,18 +178,6 @@ this.createjs = this.createjs||{};
 	 * @type {Function}
 	 * @deprecated Use addEventListener and the "error" event.
 	 */
-
-
-// mix-ins:
-	// EventDispatcher methods:
-	p.addEventListener = null;
-	p.removeEventListener = null;
-	p.removeAllEventListeners = null;
-	p.dispatchEvent = null;
-	p.hasEventListener = null;
-	p._listeners = null;
-	createjs.EventDispatcher.initialize(p);
-
 
 	/**
 	 * Get a reference to the manifest item that is loaded by this loader. In most cases this will be the value that was
