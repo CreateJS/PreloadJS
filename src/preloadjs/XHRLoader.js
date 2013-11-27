@@ -430,7 +430,7 @@ this.createjs = this.createjs || {};
 
 		// IE9 doesn't support overrideMimeType(), so we need to check for it.
 		if (item.type == createjs.LoadQueue.TEXT && req.overrideMimeType) {
-			req.overrideMimeType("text/plain; charset=x-user-defined");
+			req.overrideMimeType("text/plain; charset=utf-8");
 		}
 
 		// Determine the XHR level
