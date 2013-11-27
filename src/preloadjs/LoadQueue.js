@@ -1168,10 +1168,12 @@ TODO: WINDOWS ISSUES
 		// Inject path & basePath
 		var bp = ""; // Store the generated basePath
 		var useBasePath = basePath || this._basePath;
+		var autoId = item.src;
 		if (match && match[1] == null && match[3] == null) {
 			if (path) {
 				bp = path;
 				var pathMatch = this._parsePath(path);
+				autoId = path + autoId;
 				// Also append basePath
 				if (useBasePath != null && pathMatch && pathMatch[1] == null && pathMatch[2] == null) {
 					bp = useBasePath + bp;
@@ -1198,7 +1200,7 @@ TODO: WINDOWS ISSUES
 
 		// If there's no id, set one now.
 		if (item.id === undefined || item.id === null || item.id === "") {
-            item.id = item.src;
+            item.id = autoId;
 		}
 
 		// Give plugins a chance to modify the loadItem:
