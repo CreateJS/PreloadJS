@@ -17,7 +17,7 @@ CRITICAL (may break existing content)
 - Lots of minor fixes to code, including formatting and clean up.
 - Added file-based manifest support. Loading a single JSON file that defines a manifest object will
 	automatically load the files in the manifest. Included a sample.
-- Added anonymous cross-origin header to images loaded using XHR.
+- Added anonymous cross-origin header to images loaded using XHR and tags. Modified to only add when loading on a server.
 - Changed text loading to be UTF-8 encoded.
 - AbstractLoader changed to extend EventDispatcher, instead of using a mix-in.
 - Major documentation pass.
