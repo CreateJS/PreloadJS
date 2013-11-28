@@ -21,6 +21,7 @@ CRITICAL (may break existing content)
 - Changed text loading to be UTF-8 encoded.
 - AbstractLoader changed to extend EventDispatcher, instead of using a mix-in.
 - Major documentation pass.
+- Fixed issue with XHR scripts and maxConnections
 
 
 Version 0.4.0 [September 25, 2013]

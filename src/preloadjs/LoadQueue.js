@@ -1504,10 +1504,12 @@ TODO: WINDOWS ISSUES
 			if (item === null) { break; } // This is still loading. Do not process further.
 			if (item === true) { continue; } // This has completed, and been processed. Move on.
 
-			// This item has finished, and is the next one to get dispatched.
+			// Append script tags to the head automatically. Tags do this in the loader, but XHR scripts have to maintain order.
+			var item = this._loadedResults[item.id];
+			(document.body || document.getElementsByTagName("body")[0]).appendChild(item);
+
 			this._processFinishedLoad(item);
 			this._loadedScripts[i] = true;
-			i--; l--;
 		}
 	};
 
