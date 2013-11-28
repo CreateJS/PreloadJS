@@ -1,1 +1,1 @@
-alert("I am script #1");
+alert("The alert1.js script includes this alert!");

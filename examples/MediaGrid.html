@@ -8,16 +8,27 @@
 	   .gridBox {
 			float: left;
 			width: 150px;
-			height: 123px;
+			height: 112px;
 			background-color: #363535;
 			border-width: thin;
 			color: #FFF0EE;
 			margin: 1px;
 		}
 	   .gridBox:hover {  background-color: #111111; }
+	   .gridBox.error  {
+		   background-color: #992222;
+	   }
+	   .gridBox.error LABEL {
+		   color: #ffffff !important;
+	   }
 
 	   #imageGrid {
 		   width: 960px;
+	   }
+	   #controls {
+		   height: 25px;
+		   padding: 5px;
+		   background-color: rgba(255,255,255,0.2);
 	   }
 		LABEL {
 			position: relative;
@@ -37,8 +48,13 @@
             that PreloadJS uses tag loading to avoid cross-origin errors. Other media types will not load locally.</p>
 	</header>
 
+
+	<div id="controls">
+		Click an item to load it. <input type="button" value="Load the entire manifest" onclick="loadManifest()">
+	</div>
+
 	<div id="imageGrid">
-		<div id="Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 400px">
+		<div id="Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 375px;">
 			<label>Image</label>
 		</div>
 
@@ -54,7 +70,7 @@
 			<label>XML</label>
 		</div>
 
-		<div id="gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:248px; float: right; overflow:hidden">
+		<div id="gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:226px; float: right; overflow:hidden">
 			<label>SVG</label>
 		</div>
 
@@ -74,11 +90,11 @@
             <label>JSONP<br />(loaded from gskinner.com)</label>
         </div>
 
-		<div id="Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:150px">
+		<div id="Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:147px">
 			<label>Image</label>
 		</div>
 
-		<div id="NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:75px;">
+		<div id="NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:72px;">
 			<label>Intentionally missing file<br/>to generate error.</label>
 		</div>
 	</div>
@@ -110,13 +126,15 @@
             //preload = new createjs.LoadQueue(true, "assets/");
 
             // Use this instead to favor tag loading
-            preload = new createjs.LoadQueue(true);
+            preload = new createjs.LoadQueue(false);
 
             createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
             preload.installPlugin(createjs.Sound);
             preload.addEventListener("fileload", handleFileLoaded);
             preload.addEventListener("error", handleFileError);
+		}
 
+		function loadManifest() {
 			preload.loadFile({src:"MediaGridManifest.json", callback:"maps", type:"manifest"}, true, "assets/");
         }
 
@@ -175,7 +193,7 @@
                 case createjs.LoadQueue.JSON:
                 case createjs.LoadQueue.JSONP:
                 case createjs.LoadQueue.XML:
-                    alert(result);
+                    alert("Loaded: " + id + "\n" + result);
                     div.innerHTML = "<label>Complete :)</label>";
                     break;
 
@@ -197,7 +215,7 @@
         function handleFileError(event) {
             var div = document.getElementById(event.item.id);
             div.innerHTML = "<label>Error :(</label>";
-            div.style.backgroundColor = "#992222";
+			div.className = "gridBox error";
         }
 
     </script>
