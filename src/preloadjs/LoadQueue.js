@@ -1505,8 +1505,8 @@ TODO: WINDOWS ISSUES
 			if (item === true) { continue; } // This has completed, and been processed. Move on.
 
 			// Append script tags to the head automatically. Tags do this in the loader, but XHR scripts have to maintain order.
-			var item = this._loadedResults[item.id];
-			(document.body || document.getElementsByTagName("body")[0]).appendChild(item);
+			var loadItem = this._loadedResults[item.id];
+			(document.body || document.getElementsByTagName("body")[0]).appendChild(loadItem);
 
 			this._processFinishedLoad(item);
 			this._loadedScripts[i] = true;
