@@ -13,6 +13,7 @@
 			border-width: thin;
 			color: #FFF0EE;
 			margin: 1px;
+            overflow: hidden;
 		}
 	   .gridBox:hover {  background-color: #111111; }
 	   .gridBox.error  {
@@ -34,7 +35,13 @@
 			position: relative;
 			top: 10px; left: 10px;
 			font-family: sans-serif; font-size: 12px;
+            word-wrap: break-word;
 		}
+
+        XMP {
+            color: #ffffff;
+            font-size: 10px;
+        }
 	</style>
 </head>
 
@@ -94,7 +101,7 @@
 			<label>Image</label>
 		</div>
 
-		<div id="NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:72px;">
+		<div id="assets/NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:72px;">
 			<label>Intentionally missing file<br/>to generate error.</label>
 		</div>
 	</div>
@@ -126,7 +133,7 @@
             //preload = new createjs.LoadQueue(true, "assets/");
 
             // Use this instead to favor tag loading
-            preload = new createjs.LoadQueue(false);
+            preload = new createjs.LoadQueue(true);
 
             createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
             preload.installPlugin(createjs.Sound);
@@ -175,7 +182,7 @@
             switch (item.type){
                 case createjs.LoadQueue.CSS:
                     (document.head || document.getElementsByTagName("head")[0]).appendChild(result);
-                    div.innerHTML = "<label>Complete :)</label>";
+                    div.innerHTML = "<label>CSS is complete :)</label>";
                     break;
 
                 case createjs.LoadQueue.IMAGE:
@@ -187,20 +194,24 @@
 
                 case createjs.LoadQueue.JAVASCRIPT:
                     document.body.appendChild(result);
-                    div.innerHTML = "<label>Complete :)</label>";
+                    div.innerHTML = "<label>Javascript is complete :)</label>";
                     break;
 
                 case createjs.LoadQueue.JSON:
-                case createjs.LoadQueue.JSONP:
                 case createjs.LoadQueue.XML:
-                    alert("Loaded: " + id + "\n" + result);
-                    div.innerHTML = "<label>Complete :)</label>";
+                    div.innerHTML = "<label>" +
+                                        item.type +
+                                        " loaded: <br /><xmp>" +
+                                        (event.rawResult?event.rawResult:'') +
+                                    "</xmp></label>";
                     break;
-
+                case createjs.LoadQueue.JSONP:
+                    div.innerHTML = "<label>JSONP is complete :)</label>";
+                    break;
                 case createjs.LoadQueue.SOUND:
                     document.body.appendChild(result);
                     result.play();
-                    div.innerHTML = "<label>Complete :)</label>";
+                    div.innerHTML = "<label>Sound is complete :)</label>";
                     break;
 
                 case createjs.LoadQueue.SVG:
