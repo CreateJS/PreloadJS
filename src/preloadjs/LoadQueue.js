@@ -835,6 +835,30 @@ TODO: WINDOWS ISSUES
 		}
 	};
 
+
+	/**
+	 * Determine if a specific type is a text based asset, and should be loaded as UTF-8.
+	 * @method isText
+	 * @param {String} type The item type.
+	 * @return {Boolean} If the specified type is text.
+	 * @private
+	 */
+	s.isText = function(type) {
+		switch (type) {
+			case createjs.LoadQueue.TEXT:
+			case createjs.LoadQueue.JSON:
+			case createjs.LoadQueue.MANIFEST:
+			case createjs.LoadQueue.XML:
+			case createjs.LoadQueue.HTML:
+			case createjs.LoadQueue.CSS:
+			case createjs.LoadQueue.SVG:
+			case createjs.LoadQueue.JAVASCRIPT:
+				return true;
+			default:
+				return false;
+		}
+	};
+
 	/**
 	 * Register a plugin. Plugins can map to load types (sound, image, etc), or specific extensions (png, mp3, etc).
 	 * Currently, only one plugin can exist per type/extension.

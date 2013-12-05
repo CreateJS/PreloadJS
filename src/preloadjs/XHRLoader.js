@@ -426,7 +426,7 @@ this.createjs = this.createjs || {};
 		}
 
 		// IE9 doesn't support overrideMimeType(), so we need to check for it.
-		if (item.type == createjs.LoadQueue.TEXT && req.overrideMimeType) {
+		if (createjs.LoadQueue.isText(item.type) && req.overrideMimeType) {
 			req.overrideMimeType("text/plain; charset=utf-8");
 		}
 
