@@ -22,6 +22,7 @@ CRITICAL (may break existing content)
 - AbstractLoader changed to extend EventDispatcher, instead of using a mix-in.
 - Major documentation pass.
 - Fixed issue with XHR scripts and maxConnections
+- included a sample htaccess file in /extras that can be used to serve CORS-safe images.
 
 
 Version 0.4.0 [September 25, 2013]

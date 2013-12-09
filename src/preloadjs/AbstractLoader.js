@@ -413,7 +413,7 @@ this.createjs = this.createjs||{};
 		var target = document.createElement("a");
 		target.href = item.src;
 		return target.hostname == "" && target.protocol == "file:";
-	}
+	};
 
 	/**
 	 * @method toString
