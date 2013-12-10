@@ -237,11 +237,14 @@ TODO: WINDOWS ISSUES
 	 * @param {String} [basePath=""] A path that will be prepended on to the source parameter of all items in the queue
 	 * before they are loaded.  Sources beginning with a protocol such as `http://` or a relative path such as `../`
 	 * will not receive a base path.
+	 * @param {String|Boolean} [crossOrigin] An optional flag to support images loaded from a CORS-enabled server. To
+	 * use it, set this value to `true`, which will default it to "Anonymous". Any string value is supported, but
+	 * only "" and "Anonymous" are recommended.
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
-	var LoadQueue = function(useXHR, basePath) {
-		this.init(useXHR, basePath);
+	var LoadQueue = function(useXHR, basePath, crossOrigin) {
+		this.init(useXHR, basePath, crossOrigin);
 	};
 
 	var p = LoadQueue.prototype = new createjs.AbstractLoader();
@@ -409,6 +412,20 @@ TODO: WINDOWS ISSUES
 	 * @since 0.3.1
 	 */
 	p._basePath = null;
+
+	/**
+	 * An optional flag to set on images that are loaded using PreloadJS, which enables CORS support. Images loaded
+	 * cross-domain by servers that support CORS require the crossOrigin flag to be loaded and interacted with by
+	 * a canvas. When loading locally, or with a server with no CORS support, this flag can cause other security issues,
+	 * so it is recommended to only set it if you are sure the server supports it. Currently, supported values are ""
+	 * and "Anonymous".
+	 * @property _crossOrigin
+	 * @type {String}
+	 * @defaultValue ""
+	 * @private
+	 * @since 0.4.1
+	 */
+	p._crossOrigin = "";
 
 	/**
 	 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
@@ -654,7 +671,7 @@ TODO: WINDOWS ISSUES
 	p._loadedScripts = null;
 
 	// Overrides abstract method in AbstractLoader
-	p.init = function(useXHR, basePath) {
+	p.init = function(useXHR, basePath, crossOrigin) {
 		this._numItems = this._numItemsLoaded = 0;
 		this._paused = false;
 		this._loadStartWasDispatched = false;
@@ -675,6 +692,9 @@ TODO: WINDOWS ISSUES
 
 		this._basePath = basePath;
 		this.setUseXHR(useXHR);
+		this._crossOrigin = (crossOrigin === true)
+				? "Anonymous" : (crossOrigin === false || crossOrigin == null)
+				? "" : crossOrigin;
 	};
 
 	/**
@@ -1356,7 +1376,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		if (useXHR) {
-			return new createjs.XHRLoader(item);
+			return new createjs.XHRLoader(item, this._crossOrigin);
 		} else {
 			return new createjs.TagLoader(item);
 		}
@@ -1619,7 +1639,7 @@ TODO: WINDOWS ISSUES
 		switch (item.type) {
 			case createjs.LoadQueue.IMAGE:
 				tag = document.createElement("img");
-				if (!this._isLocal(item)) { tag.crossOrigin = "Anonymous"; }
+				if (this._crossOrigin != "" && !this._isLocal(item)) { tag.crossOrigin = this._crossOrigin; }
 				return tag;
 			case createjs.LoadQueue.SOUND:
 				tag = document.createElement("audio");

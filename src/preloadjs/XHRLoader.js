@@ -47,10 +47,12 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 * @param {Object} item The object that defines the file to load. Please see the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
 	 * for an overview of supported file properties.
+	 * @param {String} [crossOrigin] An optional flag to support images loaded from a CORS-enabled server. Please see
+	 * {{#crossLink "LoadQueue/_crossOrigin:property"}}{{/crossLink}} for more info.
 	 * @extends AbstractLoader
 	 */
-	var XHRLoader = function (item) {
-		this.init(item);
+	var XHRLoader = function (item, crossOrigin) {
+		this.init(item, crossOrigin);
 	};
 
 	var p = XHRLoader.prototype = new createjs.AbstractLoader();
@@ -102,9 +104,19 @@ this.createjs = this.createjs || {};
 	 */
 	p._rawResponse = null;
 
+	/**
+	 * See {{#crossLink "LoadQueue/_crossOrigin:property"}}{{/crossLink}}
+	 * @property _crossOrigin
+	 * @type {String}
+	 * @defaultValue ""
+	 * @private
+	 */
+	p._crossOrigin = "";
+
 	// Overrides abstract method in AbstractLoader
-	p.init = function (item) {
+	p.init = function (item, crossOrigin) {
 		this._item = item;
+		this._crossOrigin = crossOrigin;
 		if (!this._createXHR(item)) {
 			//TODO: Throw error?
 		}
@@ -501,8 +513,8 @@ this.createjs = this.createjs || {};
 			// Note: Images need to wait for onload, but do use the cache.
 			case createjs.LoadQueue.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
+				if (this._crossOrigin != "") { tag.crossOrigin = "Anonymous"; }// We can assume this, since XHR images are always loaded on a server.
 				tag.src = this.buildPath(this._item.src, this._item.values);
-				tag.crossOrigin = "Anonymous"; // We can assume this, since XHR images are always loaded on a server.
 
 				this._rawResponse = this._response;
 				this._response = tag;

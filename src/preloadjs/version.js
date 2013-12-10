@@ -27,6 +27,6 @@ this.createjs = this.createjs||{};
 	 * @type String
 	 * @static
 	 **/
-	s.buildDate = /*date*/"Thu, 05 Dec 2013 22:59:56 GMT"; // injected by build process
+	s.buildDate = /*date*/"Tue, 10 Dec 2013 21:18:27 GMT"; // injected by build process
 
 })();
