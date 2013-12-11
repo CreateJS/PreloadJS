@@ -1,9 +1,9 @@
 {
   "name": "PreloadJS",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "PreloadJS Docs",
   "url": "http://www.createjs.com/#!/PreloadJS",
-  "logo": "http://createjs.com/resources/SuiteIcons/PreloadJS/docs-icon-PreloadJS.png",
+  "logo": "assets/docs-icon-PreloadJS.png",
   "devDependencies": {
     "grunt": "~0.4.1",
 	"grunt-contrib-concat": "~0.3.0",
@@ -14,5 +14,5 @@
 	"lodash": "~0.9.0",
 	"grunt-hub":""
   },
-  "engine": "node >= 0.10.2"
+  "engine": "node >= 0.10.22"
 }
