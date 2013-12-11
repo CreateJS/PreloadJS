@@ -95,9 +95,9 @@
             // Use this instead to use tag loading
             //preload = new createjs.PreloadJS(false);
 
-            preload.addEventListener("progress", handleProgress);
-            preload.addEventListener("complete", handleComplete);
-            preload.addEventListener("fileload", handleFileLoad);
+            preload.on("progress", handleProgress);
+            preload.on("complete", handleComplete);
+            preload.on("fileload", handleFileLoad);
             preload.loadManifest(manifest);
 
             createjs.Ticker.setFPS(30);
@@ -126,7 +126,7 @@
                 x: borderPadding/2 * 0.75,
                 y: borderPadding/2 * 0.75
             });
-            bmp.addEventListener("click", handleClick);
+            bmp.on("click", handleClick);
 
 
             var border = new createjs.Shape(
@@ -149,7 +149,7 @@
         function handleClick(event) {
            	currentItem = event.target.parent;
             var tween = createjs.Tween.get(currentItem, {override:true}).to({y:-350}, 200).call(tweenUpComplete).to({y:0}, 500);
-			tween.addEventListener("change", handleTweenChange);
+			tween.on("change", handleTweenChange);
         }        
 		
 		function handleTweenChange(tween) {

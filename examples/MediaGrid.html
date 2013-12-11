@@ -137,8 +137,8 @@
 
             createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
             preload.installPlugin(createjs.Sound);
-            preload.addEventListener("fileload", handleFileLoaded);
-            preload.addEventListener("error", handleFileError);
+            preload.on("fileload", handleFileLoaded);
+            preload.on("error", handleFileError);
 		}
 
 		function loadManifest() {

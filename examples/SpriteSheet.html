@@ -75,7 +75,7 @@
             };
 
             var ss = new createjs.SpriteSheet(spriteSheet);
-            grant = new createjs.BitmapAnimation(ss);
+            grant = new createjs.Sprite(ss);
 
             // Set up looping
             ss.getAnimation("run").next = "run";
@@ -102,8 +102,8 @@
             ];
 
             loader = new createjs.LoadQueue();
-            loader.addEventListener("fileload", handleFileLoad);
-            loader.addEventListener("complete", handleComplete);
+            loader.on("fileload", handleFileLoad);
+            loader.on("complete", handleComplete);
             loader.loadManifest(manifest);
             stage.autoClear = false;
         }
@@ -159,7 +159,7 @@
             stage.onMouseDown = handleJumpStart;
 
             createjs.Ticker.setFPS(40);
-            createjs.Ticker.addEventListener("tick", tick);
+            createjs.Ticker.on("tick", tick);
         }
 
         function handleJumpStart() {
