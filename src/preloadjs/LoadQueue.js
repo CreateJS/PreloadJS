@@ -73,7 +73,7 @@
  *      <li>Local loading is not permitted with XHR, which is required by some file formats. When testing local content
  *      use either a local server, or enable tag loading, which is supported for most formats. See {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
  *      for more information.</li>
- * </li>
+ * </ul>
  *
  * @module PreloadJS
  * @main PreloadJS
