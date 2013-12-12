@@ -1,0 +1,8 @@
+{
+	"basePath": "assets/basepath/easeljs/",
+	"manifest": [
+		"icon_16x16.png",
+		"icon_48x48.png",
+		"icon_128x128.png"
+	]
+}

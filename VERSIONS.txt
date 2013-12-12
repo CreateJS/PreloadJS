@@ -1,4 +1,4 @@
-Version NEXT [Not Released]
+Version 0.4.1 [December 12, 2013]
 ************************************************************************************************************************
 CRITICAL (may break existing content)
 - Single files that are NOT manifests can no longer be loaded using loadManifest(). Use loadFile instead.
