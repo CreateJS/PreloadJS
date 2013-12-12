@@ -588,14 +588,18 @@ this.createjs = this.createjs || {};
 	 */
 	p._parseXML = function (text, type) {
 		var xml = null;
-		if (window.DOMParser) {
-			var parser = new DOMParser();
-			xml = parser.parseFromString(text, type);  // OJR Opera throws DOMException: NOT_SUPPORTED_ERR  // potential solution https://gist.github.com/1129031
-		} else { // IE
-			xml = new ActiveXObject("Microsoft.XMLDOM");
-			xml.async = false;
-			xml.loadXML(text);
-		}
+		try {
+			// CocoonJS does not support XML parsing with either method.
+			// Windows (?) Opera DOMParser throws DOMException: NOT_SUPPORTED_ERR  // potential solution https://gist.github.com/1129031
+			if (window.DOMParser) {
+				var parser = new DOMParser();
+				xml = parser.parseFromString(text, type);
+			} else { // IE
+				xml = new ActiveXObject("Microsoft.XMLDOM");
+				xml.async = false;
+				xml.loadXML(text);
+			}
+		} catch (e) {}
 		return xml;
 	};
 
