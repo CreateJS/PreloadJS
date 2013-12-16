@@ -139,7 +139,7 @@ TODO: WINDOWS ISSUES
 	 *
 	 *      queue.loadFile("filePath/file.jpg");
 	 *      queue.loadFile({id:"image", src:"filePath/file.jpg"});
-	 *      queue.loadManifest(["filePath/file.jpg", {id:"image", src:"filePath/file.jpg"}];
+	 *      queue.loadManifest(["filePath/file.jpg", {id:"image", src:"filePath/file.jpg"}]);
 	 *
 	 * If you pass `false` as the `loadNow` parameter, the queue will not kick of the load of the files, but it will not
 	 * stop if it has already been started. Call the {{#crossLink "AbstractLoader/load"}}{{/crossLink}} method to begin
@@ -157,7 +157,7 @@ TODO: WINDOWS ISSUES
 	 *      queue.loadFile({src:"path/to/myFile.mp3x", type:createjs.LoadQueue.SOUND});
 	 *
 	 *      // Note that PreloadJS will not read a file extension from the query string
-	 *      queue.loadFile({src:"http://server.com/proxy?file=image.jpg"}, type:createjs.LoadQueue.IMAGE});
+	 *      queue.loadFile({src:"http://server.com/proxy?file=image.jpg", type:createjs.LoadQueue.IMAGE});
 	 *
 	 * Supported types are defined on the LoadQueue class, and include:
 	 * <ul>
@@ -1810,6 +1810,9 @@ TODO: WINDOWS ISSUES
 		BrowserDetect.isOpera = (window.opera != null);
 		BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);
 		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
+
+		var ieVersion = -1;
+		BrowserDetect.ieVersion = ieVersion;
 	};
 
 	BrowserDetect.init();
