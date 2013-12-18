@@ -1,6 +1,8 @@
 Version NEXT [Not Released]
 ************************************************************************************************************************
 - Fixed issue with erroneous fileload events when manually changing the src property of an image loaded with PreloadJS.
+- Refactored XMLHTTP fallback for old IE
+- Added "headers" property on load items, which is injected into XHR request headers
 
 
 Version 0.4.1 [December 12, 2013]
