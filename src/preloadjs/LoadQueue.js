@@ -1810,9 +1810,6 @@ TODO: WINDOWS ISSUES
 		BrowserDetect.isOpera = (window.opera != null);
 		BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);
 		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
-
-		var ieVersion = -1;
-		BrowserDetect.ieVersion = ieVersion;
 	};
 
 	BrowserDetect.init();

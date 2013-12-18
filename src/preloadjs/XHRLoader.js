@@ -609,6 +609,8 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._handleTagReady = function () {
+		var tag = this._item.tag;
+		tag && (tag.onload = null);
 		this._sendComplete();
 	};
 

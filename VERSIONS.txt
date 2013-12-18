@@ -1,3 +1,8 @@
+Version NEXT [Not Released]
+************************************************************************************************************************
+- Fixed issue with erroneous fileload events when manually changing the src property of an image loaded with PreloadJS.
+
+
 Version 0.4.1 [December 12, 2013]
 ************************************************************************************************************************
 CRITICAL (may break existing content)
