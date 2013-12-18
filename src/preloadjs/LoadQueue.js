@@ -966,7 +966,10 @@ TODO: WINDOWS ISSUES
 	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. The default
 	 *         value is "GET"</li>
 	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
-     *     </ul>
+	 *         <li>headers: Optional object hash of headers to attach to an XHR request. PreloadJS will automatically
+	 *         attach some default headers when required, including Origin, Content-Type, and X-Requested-With. You may
+	 *         override the default headers if needed.</li>
+	 *     </ul>
      * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
@@ -1033,6 +1036,9 @@ TODO: WINDOWS ISSUES
 	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. The default
 	 *         value is "GET"</li>
 	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
+	 *         <li>headers: Optional object hash of headers to attach to an XHR request. PreloadJS will automatically
+	 *         attach some default headers when required, including Origin, Content-Type, and X-Requested-With. You may
+	 *         override the default headers if needed.</li>
 	 *     </ul>
 	 * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default

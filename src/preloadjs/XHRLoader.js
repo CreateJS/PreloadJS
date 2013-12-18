@@ -55,6 +55,24 @@ this.createjs = this.createjs || {};
 		this.init(item, crossOrigin);
 	};
 
+	var s = XHRLoader;
+
+	/**
+	 * A list of XMLHTTP object IDs to try when building an ActiveX object for XHR requests in earlier versions of IE.
+	 * @property ACTIVEX_VERSIONS
+	 * @type {Array}
+	 * @since 0.4.2
+	 * @private
+	 */
+	s.ACTIVEX_VERSIONS = [
+		"Msxml2.XMLHTTP.6.0",
+		"Msxml2.XMLHTTP.5.0",
+		"Msxml2.XMLHTTP.4.0",
+		"MSXML2.XMLHTTP.3.0",
+		"MSXML2.XMLHTTP",
+		"Microsoft.XMLHTTP"
+	];
+
 	var p = XHRLoader.prototype = new createjs.AbstractLoader();
 
 	//Protected
@@ -414,27 +432,25 @@ this.createjs = this.createjs || {};
 	p._createXHR = function (item) {
 		// Check for cross-domain loads. We can't fully support them, but we can try.
 		var crossdomain = this._isCrossDomain(item);
+		var headers = {};
 
-		// Create the request. Fall back to whatever support we have.
+		// Create the request. Fallback to whatever support we have.
 		var req = null;
-		if (crossdomain && window.XDomainRequest) {
-			req = new XDomainRequest(); // Note: IE9 will fail if this is not actually cross-domain.
-		} else if (window.XMLHttpRequest) { // Old IE versions use a different approach
+		if (window.XMLHttpRequest) {
 			req = new XMLHttpRequest();
-		} else {
-			try {
-				req = new ActiveXObject("Msxml2.XMLHTTP.6.0");
-			} catch (e) {
-				try {
-					req = new ActiveXObject("Msxml2.XMLHTTP.3.0");
-				} catch (e) {
-					try {
-						req = new ActiveXObject("Msxml2.XMLHTTP");
-					} catch (e) {
-						return false;
-					}
-				}
+			// This is 8 or 9, so use XDomainRequest instead.
+			if (crossdomain && req.withCredentials === undefined && window.XDomainRequest) {
+				req = new XDomainRequest();
 			}
+		} else { // Old IE versions use a different approach
+			for (var i = 0, l=s.ACTIVEX_VERSIONS.length; i<l; i++) {
+	            var axVersion = s.ACTIVEX_VERSIONS[i];
+	            try {
+	                req = new ActiveXObject(axVersions);
+		            break;
+	            } catch (e) {}
+	        }
+			if (req == null) { return false; }
 		}
 
 		// IE9 doesn't support overrideMimeType(), so we need to check for it.
@@ -456,25 +472,35 @@ this.createjs = this.createjs || {};
 		req.open(item.method || createjs.LoadQueue.GET, src, true);
 
 		if (crossdomain && req instanceof XMLHttpRequest && this._xhrLevel == 1) {
-			req.setRequestHeader("Origin", location.origin);
+			headers["Origin"] = location.origin;
 		}
 
-        /*TODO: Test and implement.
-        if (crossDomain && !headers["X-Requested-With"] ) {
-                headers["X-Requested-With"] = "XMLHttpRequest";
-        }*/
-
 		// To send data we need to set the Content-type header)
-		 if (item.values && item.method == createjs.LoadQueue.POST) {
-			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		 }
+		if (item.values && item.method == createjs.LoadQueue.POST) {
+			headers["Content-Type"] = "application/x-www-form-urlencoded";
+		}
+
+		if (!crossdomain && !headers["X-Requested-With"]) {
+			headers["X-Requested-With"] = "XMLHttpRequest";
+		}
+
+		if (item.headers) {
+			for (var n in item.headers) {
+				headers[n] = item.headers[n];
+			}
+		}
 
 		// Binary files are loaded differently.
 		if (createjs.LoadQueue.isBinary(item.type)) {
 			req.responseType = "arraybuffer";
 		}
 
+		for (n in headers) {
+			req.setRequestHeader(n, headers[n])
+		}
+
 		this._request = req;
+
 		return true;
 	};
 
