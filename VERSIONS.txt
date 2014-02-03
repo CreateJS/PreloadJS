@@ -3,6 +3,9 @@ Version NEXT [Not Released]
 - Fixed issue with erroneous fileload events when manually changing the src property of an image loaded with PreloadJS.
 - Refactored XMLHTTP fallback for old IE
 - Added "headers" property on load items, which is injected into XHR request headers
+- Added support for an optional "maintainOrder" property on load items, which makes PreloadJS ensure they get loaded in
+	order. Items other than tag-loaded scripts will be loaded at any time (depending on the setMaxConnections() value,
+	however they will always finish in the order specified.
 
 
 Version 0.4.1 [December 12, 2013]
