@@ -1083,8 +1083,9 @@ TODO: WINDOWS ISSUES
 	 * constructor, or a `path` property in a manifest definition.
 	 */
 	p.loadManifest = function(manifest, loadNow, basePath) {
-		var fileList = null;
-		var path = null;
+		var fileList = null,
+				path = null,
+				maintainOrder = null;
 
 		// Array-based list of items
 		if (manifest instanceof Array) {
@@ -1120,6 +1121,7 @@ TODO: WINDOWS ISSUES
 			} else if (manifest.manifest !== undefined) {
 				fileList = manifest.manifest;
 				path = manifest.path;
+				maintainOrder = (manifest.maintainOrder === true);
 			}
 
 		// Unsupported. This will throw an error.
@@ -1131,7 +1133,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		for (var i=0, l=fileList.length; i<l; i++) {
-			this._addItem(fileList[i], path, basePath);
+			this._addItem(fileList[i], path, basePath, maintainOrder);
 		}
 
 		if (loadNow !== false) {
@@ -1238,11 +1240,14 @@ TODO: WINDOWS ISSUES
 	 * @param {String} [basePath] <strong>Deprecated</strong>An optional basePath passed into a {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * or {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} call. This parameter will be removed in a future tagged
 	 * version.
+	 * @param {Boolean} [maintainOrder] Determines if the item should have its `maintainOrder` property set to `true`.
+	 * This is mainly to support manifests that set this flag.
 	 * @private
 	 */
-	p._addItem = function(value, path, basePath) {
+	p._addItem = function(value, path, basePath, maintainOrder) {
 		var item = this._createLoadItem(value, path, basePath); // basePath and manifest path are added to the src.
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
+		maintainOrder && (item.maintainOrder = maintainOrder);
 		var loader = this._createLoader(item);
 		if (loader != null) {
 			item._loader = loader;
