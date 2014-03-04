@@ -1,2 +1,4 @@
 .DS_Store
 .idea
+build/node_modules
+build/output
