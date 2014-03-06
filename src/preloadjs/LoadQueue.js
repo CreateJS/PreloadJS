@@ -1534,14 +1534,13 @@ TODO: WINDOWS ISSUES
 			this._loadedRawResults[item.id] = loader.getResult(true);
 		}
 
+		// Clean up the load item
+		this._removeLoadItem(loader);
+
 		if (!this._finishOrderedItem(loader)) {
 			// The item was NOT managed, so process it now
 			this._processFinishedLoad(item, loader);
 		}
-
-		// Clean up the load item
-		this._removeLoadItem(loader);
-
 	};
 
 	/**
@@ -1857,7 +1856,7 @@ TODO: WINDOWS ISSUES
             item.completeHandler(event);
         }
 
-		this.hasEventListener("fileload") && this.dispatchEvent(event)
+		this.hasEventListener("fileload") && this.dispatchEvent(event);
 	};
 
 	/**
