@@ -1,5 +1,10 @@
 Version NEXT [Not Released]
 ************************************************************************************************************************
+CRITICAL (may break existing content)
+- Completely revisited how file paths are parsed. The new version is much less aggressive, and should be more reliable
+	and simple to edit.
+
+****
 - Fixed issue with erroneous fileload events when manually changing the src property of an image loaded with PreloadJS.
 - Refactored XMLHTTP fallback for old IE
 - Added "headers" property on load items, which is injected into XHR request headers

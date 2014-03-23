@@ -1307,7 +1307,7 @@ TODO: WINDOWS ISSUES
 
 		// Determine Extension, etc.
 		var match = this._parseURI(item.src);
-		if (match != null) { item.ext = match[6]; }
+		if (match.extension) { item.ext = match.extension; }
 		if (item.type == null) {
 			item.type = this._getTypeByExtension(item.ext);
 		}
@@ -1316,13 +1316,13 @@ TODO: WINDOWS ISSUES
 		var bp = ""; // Store the generated basePath
 		var useBasePath = basePath || this._basePath;
 		var autoId = item.src;
-		if (match && match[1] == null && match[3] == null) {
+		if (!match.absolute && !match.relative) {
 			if (path) {
 				bp = path;
-				var pathMatch = this._parsePath(path);
+				var pathMatch = this._parseURI(path);
 				autoId = path + autoId;
 				// Also append basePath
-				if (useBasePath != null && pathMatch && pathMatch[1] == null && pathMatch[2] == null) {
+				if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
 					bp = useBasePath + bp;
 				}
 			} else if (useBasePath != null) {
@@ -1380,8 +1380,8 @@ TODO: WINDOWS ISSUES
 
 				// Update the extension in case the type changed:
 				match = this._parseURI(item.src);
-				if (match != null && match[6] != null) {
-					item.ext = match[6].toLowerCase();
+				if (match.extension != null) {
+					item.ext = match.extension;
 				}
 			}
 		}

@@ -90,7 +90,7 @@
                 {src:"image3.jpg", id:"image3"}
             ];
 
-            preload = new createjs.LoadQueue(true, "assets/");
+            preload = new createjs.LoadQueue(true, "test/");
 
             // Use this instead to use tag loading
             //preload = new createjs.PreloadJS(false);
@@ -98,7 +98,7 @@
             preload.on("progress", handleProgress);
             preload.on("complete", handleComplete);
             preload.on("fileload", handleFileLoad);
-            preload.loadManifest(manifest);
+            preload.loadManifest(manifest, true, "assets/");
 
             createjs.Ticker.setFPS(30);
         }
