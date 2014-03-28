@@ -98,13 +98,6 @@ module.exports = function (grunt) {
 						file: '../src/preloadjs/version.js',
 						version: '<%= version %>'
 					}
-				},
-
-				updatebower: {
-					preload: {
-						file: '../bower.json',
-						version: '<%= version %>'
-					}
 				}
 			}
 	);
