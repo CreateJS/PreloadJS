@@ -97,7 +97,14 @@ module.exports = function (grunt) {
 					preload: {
 						file: '../src/preloadjs/version.js',
 						version: '<%= version %>'
-					},
+					}
+				},
+
+				updatebower: {
+					preload: {
+						file: '../bower.json',
+						version: '<%= version %>'
+					}
 				}
 			}
 	);
@@ -207,7 +214,7 @@ module.exports = function (grunt) {
 	 *
 	 */
 	grunt.registerTask('build', [
-		"setVersion", "coreBuild", "copy:docsSite"
+		"setVersion", "coreBuild", "updatebower", "copy:docsSite"
 	]);
 
 	/**
