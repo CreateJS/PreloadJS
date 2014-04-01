@@ -19,15 +19,4 @@ module.exports = function (grunt) {
 		grunt.file.write(file, JSON.stringify(json, null, '\t'));
 	});
 
-	grunt.registerMultiTask("registerbower", function() {
-		var data = this.data;
-		var pkgName = data.package;
-		var endpoint = data.endpoint;
-
-		var contents = grunt.file.read(file);
-		var pattern = /(["-])\d\.\d\.\d|NEXT(\1|\.)/g; // Matches -#.#.#. OR "#.#.#"
-		var contents = contents.replace(pattern, "$1"+version+"$2");
-		grunt.file.write(file, contents);
-	});
-
 }

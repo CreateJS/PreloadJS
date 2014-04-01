@@ -11,6 +11,7 @@ CRITICAL (may break existing content)
 - Added support for an optional "maintainOrder" property on load items, which makes PreloadJS ensure they get loaded in
 	order. Items other than tag-loaded scripts will be loaded at any time (depending on the setMaxConnections() value,
 	however they will always finish in the order specified.
+- Added bower support, including grunt task for updating the bower.json
 
 
 Version 0.4.1 [December 12, 2013]
