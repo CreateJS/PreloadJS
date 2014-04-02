@@ -201,13 +201,29 @@ this.createjs = this.createjs||{};
 			item.type == createjs.LoadQueue.CSS) {
 				this._startTagVisibility = tag.style.visibility;
 				tag.style.visibility = "hidden";
-				(document.body || document.getElementsByTagName("body")[0]).appendChild(tag);
+				var node = document.body || document.getElementsByTagName("body")[0];
+				if (node == null) {
+					if (item.type == createjs.LoadQueue.SVG) {
+						this._handleSVGError();
+						return;
+					} else {
+						node = document.head || document.getElementsByTagName("head");
+					}
+				}
+				node.appendChild(tag);
 		}
 
 		// Note: Previous versions didn't seem to work when we called load() for OGG tags in Firefox. Seems fixed in 15.0.1
 		if (tag.load != null) {
 			tag.load();
 		}
+	};
+
+	p._handleSVGError = function() {
+		this._clean();
+		var event = new createjs.Event("error");
+		event.text = "SVG_NO_BODY";
+		this._sendError(event);
 	};
 
 	p._handleJSONPLoad = function(data) {
@@ -293,8 +309,8 @@ this.createjs = this.createjs||{};
 				// case createjs.LoadQueue.CSS:
 				//LM: We may need to remove CSS tags loaded using a LINK
 				tag.style.visibility = this._startTagVisibility;
-				(document.body || document.getElementsByTagName("body")[0]).removeChild(tag);
-			break;
+				tag.parentNode && tag.parentNode.contains(tag) && tag.parentNode.removeChild(tag);
+				break;
 			default:
 		}
 
