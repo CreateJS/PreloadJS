@@ -8,7 +8,7 @@
 		"wdamien"
 	],
 	"description": "PreloadJS makes preloading assets & getting aggregate progress events easier in JavaScript. It uses XHR2 when available, and falls back to tag-based loading when not. Part of the CreateJS suite of libraries.",
-	"main": "lib/tweenjs-0.4.1.combined.js",
+	"main": "lib/preloadjs-0.4.1.combined.js",
 	"keywords": [
 		"preload", "xhr", "createjs"
 	],
