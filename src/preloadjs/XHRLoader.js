@@ -376,7 +376,7 @@ this.createjs = this.createjs || {};
 
 		switch (status) {
 			case 404:   // Not Found
-			case 0:     // Not Loaded
+			//case 0:     // Not Loaded
 				return false;
 		}
 		return true;
