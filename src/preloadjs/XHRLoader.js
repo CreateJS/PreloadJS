@@ -490,8 +490,10 @@ this.createjs = this.createjs || {};
 			}
 		}
 
-		// Binary files are loaded differently.
-		if (createjs.LoadQueue.isBinary(item.type)) {
+		// Blobs and binary files are loaded differently.
+        if (createjs.LoadQueue.isBlob(item.type)) {
+            req.responseType = "blob";
+        } else if (createjs.LoadQueue.isBinary(item.type)) {
 			req.responseType = "arraybuffer";
 		}
 
