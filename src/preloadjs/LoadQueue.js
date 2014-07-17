@@ -792,7 +792,7 @@ TODO: WINDOWS ISSUES
 			for (var n in this._loadItemsById) {
 				this._disposeItem(this._loadItemsById[n]);
 			}
-			this.init(this.useXHR);
+			this.init(this.useXHR, this._basePath, this._crossOrigin);
 
 		// Remove specific items
 		} else {
