@@ -60,7 +60,7 @@ this.createjs = this.createjs||{};
 	s.ABSOLUTE_PATT = /^(?:\w+:)?\/{2}/i;
 
 	/**
-	 * The Regular Expression used to test file URLS for an absolute path.
+	 * The Regular Expression used to test file URLS for an relative path.
 	 * @property RELATIVE_PATH
 	 * @static
 	 * @type {RegExp}
