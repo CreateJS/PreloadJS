@@ -255,6 +255,7 @@ TODO: WINDOWS ISSUES
 	};
 
 	var p = LoadQueue.prototype = new createjs.AbstractLoader();
+	LoadQueue.prototype.constructor = LoadQueue;
 	var s = LoadQueue;
 
 	/**

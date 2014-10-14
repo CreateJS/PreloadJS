@@ -46,8 +46,8 @@ this.createjs = this.createjs||{};
 		this.init();
 	};
 
-	AbstractLoader.prototype = new createjs.EventDispatcher(); //TODO: TEST!
-	var p = AbstractLoader.prototype;
+	var p = AbstractLoader.prototype = new createjs.EventDispatcher();
+	AbstractLoader.prototype.constructor = AbstractLoader;
 	var s = AbstractLoader;
 
 	/**

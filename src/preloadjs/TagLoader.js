@@ -57,6 +57,7 @@ this.createjs = this.createjs||{};
 	};
 
 	var p = TagLoader.prototype = new createjs.AbstractLoader();
+	TagLoader.prototype.constructor = TagLoader;
 
 // Protected
 

@@ -74,6 +74,7 @@ this.createjs = this.createjs || {};
 	];
 
 	var p = XHRLoader.prototype = new createjs.AbstractLoader();
+	XHRLoader.prototype.constructor = XHRLoader;
 
 	//Protected
 	/**
