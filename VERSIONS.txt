@@ -14,6 +14,7 @@ CRITICAL (may break existing content)
 - Added bower support, including grunt task for updating the bower.json
 - Fixed issues with tag-loaded files preloaded before the body tag is available
 - Added constructors to all classes (Thanks kaesve)
+- Added .gitignore to subfolders under /docs (thanks mcfarljw)
 
 
 Version 0.4.1 [December 12, 2013]
