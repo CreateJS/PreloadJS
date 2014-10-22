@@ -15,6 +15,7 @@ CRITICAL (may break existing content)
 - Fixed issues with tag-loaded files preloaded before the body tag is available
 - Added constructors to all classes (Thanks kaesve)
 - Added .gitignore to subfolders under /docs (thanks mcfarljw)
+- Improved EventDispatcher's handling of redispatched event objects
 
 
 Version 0.4.1 [December 12, 2013]
