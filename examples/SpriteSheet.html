@@ -11,11 +11,11 @@
 
 	<header id="header" class="EaselJS">
 		<h1><span class="text-product">Easel<strong>JS</strong></span> Sprite Sheets</h1>
-		<p>An example of a sprite sheet using <strong>BitmapAnimation</strong>. This demos also shows playing named
+		<p>An example of a sprite sheet using <strong>Sprite</strong>. This demos also shows playing named
 			animations (jump and run), and animation chaining using <strong>getAnimation("name").next</strong>.
 			Click the stage to initialize a jump, which will continue back into the run when it is complete.</p>
-		<p>Some browsers can not load images or access pixel data when running local files, and may throw a security error or not
-	    			work unless the content is running on a server.</p>
+		<p>Some browsers can not load images or access pixel data when running local files, and may throw a security
+            error or not work unless the content is running on a server.</p>
 	</header>
 
 	<div class="canvasHolder">
@@ -23,16 +23,9 @@
 	</div>
 
     <script src="./assets/easeljs-NEXT.min.js"></script>
-
-	<!-- Note: All PreloadJS classes are listed here: -->
-    <script type="text/javascript" src="../src/createjs/events/Event.js"></script>
-    <script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
-	<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
-	<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+   	<!-- We also provide hosted minified versions of all CreateJS libraries.
+   	  http://code.createjs.com -->
 
     <!-- We also provide hosted minified versions of all CreateJS libraries.
     	  http://code.createjs.com -->
@@ -101,7 +94,7 @@
                 {src:"assets/parallaxHill2.png", id:"hill2"}
             ];
 
-            loader = new createjs.LoadQueue();
+            var loader = new createjs.LoadQueue();
             loader.on("fileload", handleFileLoad);
             loader.on("complete", handleComplete);
             loader.loadManifest(manifest);
@@ -135,13 +128,13 @@
                         break;
                     case "hill":
                         hill = new createjs.Shape(new createjs.Graphics().beginBitmapFill(result).drawRect(0,0,282,59));
-                        hill.x = Math.random() * w;
+                        hill.x = Math.random() * w | 0;
                         hill.scaleX = hill.scaleY = 3;
                         hill.y = 144;
                         break;
                     case "hill2":
                         hill2 = new createjs.Shape(new createjs.Graphics().beginBitmapFill(result).drawRect(0,0,212,50));
-                        hill2.x = Math.random() * w;
+                        hill2.x = Math.random() * w | 0;
                         hill2.scaleX = hill2.scaleY = 3;
                         hill2.y = 171;
                         break;
