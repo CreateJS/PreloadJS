@@ -395,6 +395,15 @@ TODO: WINDOWS ISSUES
 	 */
 	s.XML = "xml";
 
+    /**
+     * The preload type for blobs. It can only be used with XHR and it will only be used if the developer specifies it.
+     * @property BLOB
+     * @type {String}
+     * @default blob
+     * @static
+     */
+    s.BLOB = "blob";
+
 	/**
 	 * Defines a POST request, use for a method value when loading data.
 	 *
@@ -908,6 +917,23 @@ TODO: WINDOWS ISSUES
 				return false;
 		}
 	};
+
+    /**
+     * Determine if a specific type should be loaded as a blob. Plugins MUST change the item type to blob to ensure they
+     * get one. Blobs are loaded using XHR2.
+     * @method isBlob
+     * @param {String} type The item type.
+     * @return {Boolean} If the specified type is blob.
+     * @private
+     */
+    s.isBlob = function(type) {
+        switch (type) {
+            case createjs.LoadQueue.BLOB:
+                return true;
+            default:
+                return false;
+        }
+    };
 
 	/**
 	 * Register a plugin. Plugins can map to load types (sound, image, etc), or specific extensions (png, mp3, etc).
