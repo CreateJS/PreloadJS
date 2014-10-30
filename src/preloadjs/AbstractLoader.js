@@ -36,19 +36,68 @@ this.createjs = this.createjs||{};
 
 (function() {
 	"use strict";
+
+
+// constructor
 	/**
 	 * The base loader, which defines all the generic callbacks and events. All loaders extend this class, including the
 	 * {{#crossLink "LoadQueue"}}{{/crossLink}}.
 	 * @class AbstractLoader
 	 * @extends EventDispatcher
 	 */
-	var AbstractLoader = function () {
-		this.init();
+	function AbstractLoader() {
+		this.EventDispatcher_constructor();
+
+	// public properties
+		/**
+		 * If the loader has completed loading. This provides a quick check, but also ensures that the different approaches
+		 * used for loading do not pile up resulting in more than one <code>complete</code> event.
+		 * @property loaded
+		 * @type {Boolean}
+		 * @default false
+		 */
+		this.loaded = false;
+
+		/**
+		 * Determine if the loader was canceled. Canceled loads will not fire complete events. Note that
+		 * {{#crossLink "LoadQueue"}}{{/crossLink}} queues should be closed using {{#crossLink "AbstractLoader/close"}}{{/crossLink}}
+		 * instead of setting this property.
+		 * @property canceled
+		 * @type {Boolean}
+		 * @default false
+		 */
+		this.canceled = false;
+
+		/**
+		 * The current load progress (percentage) for this item. This will be a number between 0 and 1.
+		 *
+		 * <h4>Example</h4>
+		 *
+		 *     var queue = new createjs.LoadQueue();
+		 *     queue.loadFile("largeImage.png");
+		 *     queue.on("progress", function() {
+		 *         console.log("Progress:", queue.progress, event.progress);
+		 *     });
+		 *
+		 * @property progress
+		 * @type {Number}
+		 * @default 0
+		 */
+		this.progress = 0;
+
+	// protected properties
+		/**
+		 * The item this loader represents. Note that this is null in a {{#crossLink "LoadQueue"}}{{/crossLink}}, but will
+		 * be available on loaders such as {{#crossLink "XHRLoader"}}{{/crossLink}} and {{#crossLink "TagLoader"}}{{/crossLink}}.
+		 * @property _item
+		 * @type {Object}
+		 * @private
+		 */
+		this._item = null;
+
 	};
 
-	var p = AbstractLoader.prototype = new createjs.EventDispatcher();
-	AbstractLoader.prototype.constructor = AbstractLoader;
-	var s = AbstractLoader;
+	var p = createjs.extend(AbstractLoader, createjs.EventDispatcher);
 
 	/**
 	 * The Regular Expression used to test file URLS for an absolute path.
@@ -57,7 +106,7 @@ this.createjs = this.createjs||{};
 	 * @type {RegExp}
 	 * @since 0.4.2
 	 */
-	s.ABSOLUTE_PATT = /^(?:\w+:)?\/{2}/i;
+	AbstractLoader.ABSOLUTE_PATT = /^(?:\w+:)?\/{2}/i;
 
 	/**
 	 * The Regular Expression used to test file URLS for an absolute path.
@@ -66,7 +115,7 @@ this.createjs = this.createjs||{};
 	 * @type {RegExp}
 	 * @since 0.4.2
 	 */
-	s.RELATIVE_PATT = (/^[./]*?\//i);
+	AbstractLoader.RELATIVE_PATT = (/^[./]*?\//i);
 
 	/**
 	 * The Regular Expression used to test file URLS for an extension. Note that URIs must already have the query string
@@ -76,52 +125,7 @@ this.createjs = this.createjs||{};
 	 * @type {RegExp}
 	 * @since 0.4.2
 	 */
-	s.EXTENSION_PATT = /\/?[^/]+\.(\w{1,5})$/i;
-
-	/**
-	 * If the loader has completed loading. This provides a quick check, but also ensures that the different approaches
-	 * used for loading do not pile up resulting in more than one <code>complete</code> event.
-	 * @property loaded
-	 * @type {Boolean}
-	 * @default false
-	 */
-	p.loaded = false;
-
-	/**
-	 * Determine if the loader was canceled. Canceled loads will not fire complete events. Note that
-	 * {{#crossLink "LoadQueue"}}{{/crossLink}} queues should be closed using {{#crossLink "AbstractLoader/close"}}{{/crossLink}}
-	 * instead of setting this property.
-	 * @property canceled
-	 * @type {Boolean}
-	 * @default false
-	 */
-	p.canceled = false;
-
-	/**
-	 * The current load progress (percentage) for this item. This will be a number between 0 and 1.
-	 *
-	 * <h4>Example</h4>
-	 *
-	 *     var queue = new createjs.LoadQueue();
-	 *     queue.loadFile("largeImage.png");
-	 *     queue.on("progress", function() {
-	 *         console.log("Progress:", queue.progress, event.progress);
-	 *     });
-	 *
-	 * @property progress
-	 * @type {Number}
-	 * @default 0
-	 */
-	p.progress = 0;
-
-	/**
-	 * The item this loader represents. Note that this is null in a {{#crossLink "LoadQueue"}}{{/crossLink}}, but will
-	 * be available on loaders such as {{#crossLink "XHRLoader"}}{{/crossLink}} and {{#crossLink "TagLoader"}}{{/crossLink}}.
-	 * @property _item
-	 * @type {Object}
-	 * @private
-	 */
-	p._item = null;
+	AbstractLoader.EXTENSION_PATT = /\/?[^/]+\.(\w{1,5})$/i;
 
 // Events
 	/**
@@ -208,13 +212,6 @@ this.createjs = this.createjs||{};
 	};
 
 	/**
-	 * Initialize the loader. This is called by the constructor.
-	 * @method init
-	 * @private
-	 */
-	p.init = function () {};
-
-	/**
 	 * Begin loading the queued items. This method can be called when a {{#crossLink "LoadQueue"}}{{/crossLink}} is set
 	 * up but not started immediately.
 	 * @example
@@ -236,7 +233,7 @@ this.createjs = this.createjs||{};
 	p.close = function() {};
 
 
-//Callback proxies
+// Callback proxies
 	/**
 	 * Dispatch a loadstart event. Please see the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}} event
 	 * for details on the event payload.
@@ -333,7 +330,7 @@ this.createjs = this.createjs||{};
 	 * @private
 	 */
 	p._parseURI = function(path) {
-		var info = { absolute: false, relative:false };
+		var info = { absolute: false, relative: false };
 		if (path == null) { return info; };
 
 		// Drop the query string
@@ -344,16 +341,16 @@ this.createjs = this.createjs||{};
 
 		// Absolute
 		var match;
-		if (s.ABSOLUTE_PATT.test(path)) {
+		if (AbstractLoader.ABSOLUTE_PATT.test(path)) {
 			info.absolute = true;
 
 		// Relative
-		} else if (s.RELATIVE_PATT.test(path)) {
+		} else if (AbstractLoader.RELATIVE_PATT.test(path)) {
 			info.relative = true;
 		}
 
 		// Extension
-		if (match = path.match(s.EXTENSION_PATT)) {
+		if (match = path.match(AbstractLoader.EXTENSION_PATT)) {
 			info.extension = match[1].toLowerCase();
 		}
 		return info;
@@ -451,6 +448,6 @@ this.createjs = this.createjs||{};
 		return "[PreloadJS AbstractLoader]";
 	};
 
-	createjs.AbstractLoader = AbstractLoader;
+	createjs.AbstractLoader = createjs.promote(AbstractLoader);
 
 }());

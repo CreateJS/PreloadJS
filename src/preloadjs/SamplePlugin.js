@@ -1,6 +1,7 @@
 /** @module PreloadJS */
 
 (function() {
+	"use strict";
 
 	/**
 	 * A PreloadJS plugin provides a way to inject functionality into PreloadJS to load file types that are unsupported,

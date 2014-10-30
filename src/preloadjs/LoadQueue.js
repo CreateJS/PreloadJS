@@ -104,6 +104,7 @@ TODO: WINDOWS ISSUES
 (function() {
 	"use strict";
 
+// constructor
 	/**
 	 * The LoadQueue class is the main API for preloading content. LoadQueue is a load manager, which can preload either
 	 * a single file, or queue of files.
@@ -250,14 +251,261 @@ TODO: WINDOWS ISSUES
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
-	var LoadQueue = function(useXHR, basePath, crossOrigin) {
-		this.init(useXHR, basePath, crossOrigin);
+	function LoadQueue(useXHR, basePath, crossOrigin) {
+		this.AbstractLoader_constructor();
+		this.setUseXHR(useXHR);
+
+
+	// public properties
+		/**
+		 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
+		 * on the requirements for a media type. For example, HTML audio can not be loaded with XHR, and WebAudio can not be
+		 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
+		 *
+		 * <b>Note: This property is read-only.</b> To change it, please use the {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
+		 * method, or specify the `useXHR` argument in the LoadQueue constructor.
+		 *
+		 * @property useXHR
+		 * @type {Boolean}
+		 * @readOnly
+		 * @default true
+		 */
+		this.useXHR = true;
+
+		/**
+		 * Determines if the LoadQueue will stop processing the current queue when an error is encountered.
+		 * @property stopOnError
+		 * @type {Boolean}
+		 * @default false
+		 */
+		this.stopOnError = false;
+
+		/**
+		 * Ensure loaded scripts "complete" in the order they are specified. Loaded scripts are added to the document head
+		 * once they are loaded. Scripts loaded via tags will load one-at-a-time when this property is `true`, whereas
+		 * scripts loaded using XHR can load in any order, but will "finish" and be added to the document in the order
+		 * specified.
+		 *
+		 * Any items can be set to load in order by setting the `maintainOrder` property on the load item, or by ensuring
+		 * that only one connection can be open at a time using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}.
+		 * Note that when the `maintainScriptOrder` property is set to `true`, scripts items are automatically set to
+		 * `maintainOrder=true`, and changing the `maintainScriptOrder` to `false` during a load will not change items
+		 * already in a queue.
+		 *
+		 * <h4>Example</h4>
+		 *
+		 *      var queue = new createjs.LoadQueue();
+		 *      queue.setMaxConnections(3); // Set a higher number to load multiple items at once
+		 *      queue.maintainScriptOrder = true; // Ensure scripts are loaded in order
+		 *      queue.loadManifest([
+		 *          "script1.js",
+		 *          "script2.js",
+		 *          "image.png", // Load any time
+		 *          {src: "image2.png", maintainOrder: true} // Will wait for script2.js
+		 *          "image3.png",
+		 *          "script3.js" // Will wait for image2.png before loading (or completing when loading with XHR)
+		 *      ]);
+		 *
+		 * @property maintainScriptOrder
+		 * @type {Boolean}
+		 * @default true
+		 */
+		this.maintainScriptOrder = true;
+
+		/**
+		 * The next preload queue to process when this one is complete. If an error is thrown in the current queue, and
+		 * {{#crossLink "LoadQueue/stopOnError:property"}}{{/crossLink}} is `true`, the next queue will not be processed.
+		 * @property next
+		 * @type {LoadQueue}
+		 * @default null
+		 */
+		this.next = null;
+
+	// protected properties
+		/**
+		 * @todo
+		 * @type {boolean}
+		 * @private
+		 */
+		this._paused = false;
+
+		/**
+		 * A path that will be prepended on to the item's `src`. The `_basePath` property will only be used if an item's
+		 * source is relative, and does not include a protocol such as `http://`, or a relative path such as `../`.
+		 * @property _basePath
+		 * @type {String}
+		 * @private
+		 * @since 0.3.1
+		 */
+		this._basePath = basePath;
+
+		/**
+		 * An optional flag to set on images that are loaded using PreloadJS, which enables CORS support. Images loaded
+		 * cross-domain by servers that support CORS require the crossOrigin flag to be loaded and interacted with by
+		 * a canvas. When loading locally, or with a server with no CORS support, this flag can cause other security issues,
+		 * so it is recommended to only set it if you are sure the server supports it. Currently, supported values are ""
+		 * and "Anonymous".
+		 * @property _crossOrigin
+		 * @type {String}
+		 * @defaultValue ""
+		 * @private
+		 * @since 0.4.1
+		 */
+		this._crossOrigin = (crossOrigin === true)
+				? "Anonymous" : (crossOrigin === false || crossOrigin == null)
+				? "" : crossOrigin;
+
+		/**
+		 * An object hash of callbacks that are fired for each file type before the file is loaded, giving plugins the
+		 * ability to override properties of the load. Please see the {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}}
+		 * method for more information.
+		 * @property _typeCallbacks
+		 * @type {Object}
+		 * @private
+		 */
+		this._typeCallbacks = {};
+
+		/**
+		 * An object hash of callbacks that are fired for each file extension before the file is loaded, giving plugins the
+		 * ability to override properties of the load. Please see the {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}}
+		 * method for more information.
+		 * @property _extensionCallbacks
+		 * @type {null}
+		 * @private
+		 */
+		this._extensionCallbacks = {};
+
+		/**
+		 * Determines if the loadStart event was dispatched already. This event is only fired one time, when the first
+		 * file is requested.
+		 * @property _loadStartWasDispatched
+		 * @type {Boolean}
+		 * @default false
+		 * @private
+		 */
+		this._loadStartWasDispatched = false;
+
+		/**
+		 * The number of maximum open connections that a loadQueue tries to maintain. Please see
+		 * {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}} for more information.
+		 * @property _maxConnections
+		 * @type {Number}
+		 * @default 1
+		 * @private
+		 */
+		this._maxConnections = 1;
+
+		/**
+		 * Determines if there is currently a script loading. This helps ensure that only a single script loads at once when
+		 * using a script tag to do preloading.
+		 * @property _currentlyLoadingScript
+		 * @type {Boolean}
+		 * @private
+		 */
+		this._currentlyLoadingScript = null;
+
+		/**
+		 * An array containing the currently downloading files.
+		 * @property _currentLoads
+		 * @type {Array}
+		 * @private
+		 */
+		this._currentLoads = [];
+
+		/**
+		 * An array containing the queued items that have not yet started downloading.
+		 * @property _loadQueue
+		 * @type {Array}
+		 * @private
+		 */
+		this._loadQueue = [];
+
+		/**
+		 * An array containing downloads that have not completed, so that the LoadQueue can be properly reset.
+		 * @property _loadQueueBackup
+		 * @type {Array}
+		 * @private
+		 */
+		this._loadQueueBackup = [];
+
+		/**
+		 * An object hash of items that have finished downloading, indexed by item IDs.
+		 * @property _loadItemsById
+		 * @type {Object}
+		 * @private
+		 */
+		this._loadItemsById = {};
+
+		/**
+		 * An object hash of items that have finished downloading, indexed by item source.
+		 * @property _loadItemsBySrc
+		 * @type {Object}
+		 * @private
+		 */
+		this._loadItemsBySrc = {};
+
+		/**
+		 * An object hash of loaded items, indexed by the ID of the load item.
+		 * @property _loadedResults
+		 * @type {Object}
+		 * @private
+		 */
+		this._loadedResults = {};
+
+		/**
+		 * An object hash of un-parsed loaded items, indexed by the ID of the load item.
+		 * @property _loadedRawResults
+		 * @type {Object}
+		 * @private
+		 */
+		this._loadedRawResults = {};
+
+		/**
+		 * The number of items that have been requested. This helps manage an overall progress without knowing how large
+		 * the files are before they are downloaded.
+		 * @property _numItems
+		 * @type {Number}
+		 * @default 0
+		 * @private
+		 */
+		this._numItems = 0;
+
+		/**
+		 * The number of items that have completed loaded. This helps manage an overall progress without knowing how large
+		 * the files are before they are downloaded.
+		 * @property _numItemsLoaded
+		 * @type {Number}
+		 * @default 0
+		 * @private
+		 */
+		this._numItemsLoaded = 0;
+
+		/**
+		 * A list of scripts in the order they were requested. This helps ensure that scripts are "completed" in the right
+		 * order.
+		 * @property _scriptOrder
+		 * @type {Array}
+		 * @private
+		 */
+		this._scriptOrder = [];
+
+		/**
+		 * A list of scripts that have been loaded. Items are added to this list as <code>null</code> when they are
+		 * requested, contain the loaded item if it has completed, but not been dispatched to the user, and <code>true</true>
+		 * once they are complete and have been dispatched.
+		 * @property _loadedScripts
+		 * @type {Array}
+		 * @private
+		 */
+		this._loadedScripts = [];
+
 	};
 
-	var p = LoadQueue.prototype = new createjs.AbstractLoader();
-	LoadQueue.prototype.constructor = LoadQueue;
+	var p = createjs.extend(LoadQueue, createjs.AbstractLoader);
 	var s = LoadQueue;
 
+
+// static properties
 	/**
 	 * Time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
 	 * event is dispatched if the timeout is reached before any data is received.
@@ -410,96 +658,7 @@ TODO: WINDOWS ISSUES
 	s.GET = 'GET';
 
 
-// Prototype
-	/**
-	 * A path that will be prepended on to the item's `src`. The `_basePath` property will only be used if an item's
-	 * source is relative, and does not include a protocol such as `http://`, or a relative path such as `../`.
-	 * @property _basePath
-	 * @type {String}
-	 * @private
-	 * @since 0.3.1
-	 */
-	p._basePath = null;
-
-	/**
-	 * An optional flag to set on images that are loaded using PreloadJS, which enables CORS support. Images loaded
-	 * cross-domain by servers that support CORS require the crossOrigin flag to be loaded and interacted with by
-	 * a canvas. When loading locally, or with a server with no CORS support, this flag can cause other security issues,
-	 * so it is recommended to only set it if you are sure the server supports it. Currently, supported values are ""
-	 * and "Anonymous".
-	 * @property _crossOrigin
-	 * @type {String}
-	 * @defaultValue ""
-	 * @private
-	 * @since 0.4.1
-	 */
-	p._crossOrigin = "";
-
-	/**
-	 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
-	 * on the requirements for a media type. For example, HTML audio can not be loaded with XHR, and WebAudio can not be
-	 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
-	 *
-	 * <b>Note: This property is read-only.</b> To change it, please use the {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
-	 * method, or specify the `useXHR` argument in the LoadQueue constructor.
-	 *
-	 * @property useXHR
-	 * @type {Boolean}
-	 * @readOnly
-	 * @default true
-	 */
-	p.useXHR = true;
-
-	/**
-	 * Determines if the LoadQueue will stop processing the current queue when an error is encountered.
-	 * @property stopOnError
-	 * @type {Boolean}
-	 * @default false
-	 */
-	p.stopOnError = false;
-
-	/**
-	 * Ensure loaded scripts "complete" in the order they are specified. Loaded scripts are added to the document head
-	 * once they are loaded. Scripts loaded via tags will load one-at-a-time when this property is `true`, whereas
-	 * scripts loaded using XHR can load in any order, but will "finish" and be added to the document in the order
-	 * specified.
-	 *
-	 * Any items can be set to load in order by setting the `maintainOrder` property on the load item, or by ensuring
-	 * that only one connection can be open at a time using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}.
-	 * Note that when the `maintainScriptOrder` property is set to `true`, scripts items are automatically set to
-	 * `maintainOrder=true`, and changing the `maintainScriptOrder` to `false` during a load will not change items
-	 * already in a queue.
-	 *
-	 * <h4>Example</h4>
-	 *
-	 *      var queue = new createjs.LoadQueue();
-	 *      queue.setMaxConnections(3); // Set a higher number to load multiple items at once
-	 *      queue.maintainScriptOrder = true; // Ensure scripts are loaded in order
-	 *      queue.loadManifest([
-	 *          "script1.js",
-	 *          "script2.js",
-	 *          "image.png", // Load any time
-	 *          {src: "image2.png", maintainOrder: true} // Will wait for script2.js
-	 *          "image3.png",
-	 *          "script3.js" // Will wait for image2.png before loading (or completing when loading with XHR)
-	 *      ]);
-	 *
-	 * @property maintainScriptOrder
-	 * @type {Boolean}
-	 * @default true
-	 */
-	p.maintainScriptOrder = true;
-
-	/**
-	 * The next preload queue to process when this one is complete. If an error is thrown in the current queue, and
-	 * {{#crossLink "LoadQueue/stopOnError:property"}}{{/crossLink}} is `true`, the next queue will not be processed.
-	 * @property next
-	 * @type {LoadQueue}
-	 * @default null
-	 */
-	p.next = null;
-
-// Events
+// events
 	/**
 	 * This event is fired when an individual file has loaded, and been processed.
 	 * @event fileload
@@ -538,195 +697,8 @@ TODO: WINDOWS ISSUES
 	 * object will contain that value as a property.
 	 */
 
-	//TODO: Deprecated
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}
-	 * event.
-	 * @property onFileLoad
-	 * @type {Function}
-	 * @deprecated Use addEventListener and the "fileload" event.
-	 */
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "LoadQueue/fileprogress:event"}}{{/crossLink}}
-	 * event.
-	 * @property onFileProgress
-	 * @type {Function}
-	 * @deprecated Use addEventListener and the "fileprogress" event.
-	 */
 
-
-// Protected
-	/**
-	 * An object hash of callbacks that are fired for each file type before the file is loaded, giving plugins the
-	 * ability to override properties of the load. Please see the {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}}
-	 * method for more information.
-	 * @property _typeCallbacks
-	 * @type {Object}
-	 * @private
-	 */
-	p._typeCallbacks = null;
-
-	/**
-	 * An object hash of callbacks that are fired for each file extension before the file is loaded, giving plugins the
-	 * ability to override properties of the load. Please see the {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}}
-	 * method for more information.
-	 * @property _extensionCallbacks
-	 * @type {null}
-	 * @private
-	 */
-	p._extensionCallbacks = null;
-
-	/**
-	 * Determines if the loadStart event was dispatched already. This event is only fired one time, when the first
-	 * file is requested.
-	 * @property _loadStartWasDispatched
-	 * @type {Boolean}
-	 * @default false
-	 * @private
-	 */
-	p._loadStartWasDispatched = false;
-
-	/**
-	 * The number of maximum open connections that a loadQueue tries to maintain. Please see
-	 * {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}} for more information.
-	 * @property _maxConnections
-	 * @type {Number}
-	 * @default 1
-	 * @private
-	 */
-	p._maxConnections = 1;
-
-	/**
-	 * Determines if there is currently a script loading. This helps ensure that only a single script loads at once when
-	 * using a script tag to do preloading.
-	 * @property _currentlyLoadingScript
-	 * @type {Boolean}
-	 * @private
-	 */
-	p._currentlyLoadingScript = null;
-
-	/**
-	 * An array containing the currently downloading files.
-	 * @property _currentLoads
-	 * @type {Array}
-	 * @private
-	 */
-	p._currentLoads = null;
-
-	/**
-	 * An array containing the queued items that have not yet started downloading.
-	 * @property _loadQueue
-	 * @type {Array}
-	 * @private
-	 */
-	p._loadQueue = null;
-
-	/**
-	 * An array containing downloads that have not completed, so that the LoadQueue can be properly reset.
-	 * @property _loadQueueBackup
-	 * @type {Array}
-	 * @private
-	 */
-	p._loadQueueBackup = null;
-
-	/**
-	 * An object hash of items that have finished downloading, indexed by item IDs.
-	 * @property _loadItemsById
-	 * @type {Object}
-	 * @private
-	 */
-	p._loadItemsById = null;
-
-	/**
-	 * An object hash of items that have finished downloading, indexed by item source.
-	 * @property _loadItemsBySrc
-	 * @type {Object}
-	 * @private
-	 */
-	p._loadItemsBySrc = null;
-
-	/**
-	 * An object hash of loaded items, indexed by the ID of the load item.
-	 * @property _loadedResults
-	 * @type {Object}
-	 * @private
-	 */
-	p._loadedResults = null;
-
-	/**
-	 * An object hash of un-parsed loaded items, indexed by the ID of the load item.
-	 * @property _loadedRawResults
-	 * @type {Object}
-	 * @private
-	 */
-	p._loadedRawResults = null;
-
-	/**
-	 * The number of items that have been requested. This helps manage an overall progress without knowing how large
-	 * the files are before they are downloaded.
-	 * @property _numItems
-	 * @type {Number}
-	 * @default 0
-	 * @private
-	 */
-	p._numItems = 0;
-
-	/**
-	 * The number of items that have completed loaded. This helps manage an overall progress without knowing how large
-	 * the files are before they are downloaded.
-	 * @property _numItemsLoaded
-	 * @type {Number}
-	 * @default 0
-	 * @private
-	 */
-	p._numItemsLoaded = 0;
-
-	/**
-	 * A list of scripts in the order they were requested. This helps ensure that scripts are "completed" in the right
-	 * order.
-	 * @property _scriptOrder
-	 * @type {Array}
-	 * @private
-	 */
-	p._scriptOrder = null;
-
-	/**
-	 * A list of scripts that have been loaded. Items are added to this list as <code>null</code> when they are
-	 * requested, contain the loaded item if it has completed, but not been dispatched to the user, and <code>true</true>
-	 * once they are complete and have been dispatched.
-	 * @property _loadedScripts
-	 * @type {Array}
-	 * @private
-	 */
-	p._loadedScripts = null;
-
-	// Overrides abstract method in AbstractLoader
-	p.init = function(useXHR, basePath, crossOrigin) {
-		this._numItems = this._numItemsLoaded = 0;
-		this._paused = false;
-		this._loadStartWasDispatched = false;
-
-		this._currentLoads = [];
-		this._loadQueue = [];
-		this._loadQueueBackup = [];
-		this._scriptOrder = [];
-		this._loadedScripts = [];
-		this._loadItemsById = {};
-		this._loadItemsBySrc = {};
-		this._loadedResults = {};
-		this._loadedRawResults = {};
-
-		// Callbacks for plugins
-		this._typeCallbacks = {};
-		this._extensionCallbacks = {};
-
-		this._basePath = basePath;
-		this.setUseXHR(useXHR);
-		this._crossOrigin = (crossOrigin === true)
-				? "Anonymous" : (crossOrigin === false || crossOrigin == null)
-				? "" : crossOrigin;
-	};
-
+// public methods
 	/**
 	 * Change the usXHR value. Note that if this is set to true, it may fail depending on the browser's capabilities.
 	 * Additionally, some files require XHR in order to load, such as JSON (without JSONP), Text, and XML, so XHR will
@@ -884,7 +856,6 @@ TODO: WINDOWS ISSUES
 				return false;
 		}
 	};
-
 
 	/**
 	 * Determine if a specific type is a text based asset, and should be loaded as UTF-8.
@@ -1225,7 +1196,7 @@ TODO: WINDOWS ISSUES
 	};
 
 
-//Protected Methods
+// protected methods
 	/**
 	 * Add an item to the queue. Items are formatted into a usable object containing all the properties necessary to
 	 * load the content. The load queue is populated with the loader instance that handles preloading, and not the load
@@ -1873,25 +1844,14 @@ TODO: WINDOWS ISSUES
 		this.hasEventListener("filestart") && this.dispatchEvent(event);
 	};
 
-	/**
-	 * REMOVED.  Use createjs.proxy instead
-	 * @method proxy
-	 * @param {Function} method The function to call
-	 * @param {Object} scope The scope to call the method name on
-	 * @static
-	 * @private
-	 * @deprecated In favour of the createjs.proxy method (see LoadQueue source).
-	 */
-
 	p.toString = function() {
 		return "[PreloadJS LoadQueue]";
 	};
 
-	createjs.LoadQueue = LoadQueue;
+	createjs.LoadQueue = createjs.promote(LoadQueue);
 
 
-// Helper methods
-
+// helper classes
 	// An additional module to determine the current browser, version, operating system, and other environmental variables.
 	var BrowserDetect = function() {}
 

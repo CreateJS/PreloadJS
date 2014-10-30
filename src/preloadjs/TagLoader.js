@@ -36,6 +36,8 @@ this.createjs = this.createjs||{};
 
 (function() {
 	"use strict";
+
+// constructor
 	/**
 	 * A preloader that loads items using a tag-based approach. HTML audio and images can use this loader to load
 	 * content cross-domain without security errors, whereas anything loaded with XHR has potential issues with cross-
@@ -52,68 +54,62 @@ this.createjs = this.createjs||{};
 	 * @param {Object} item The item to load. Please see {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} for
 	 * information on load items.
 	 */
-	var TagLoader = function (item) {
-		this.init(item);
-	};
-
-	var p = TagLoader.prototype = new createjs.AbstractLoader();
-	TagLoader.prototype.constructor = TagLoader;
-
-// Protected
-
-	/**
-	 * The timeout that is fired if nothing is loaded after a certain delay. See the <code>LoadQueue.LOAD_TIMEOUT</code>
-	 * for the timeout duration.
-	 * @property _loadTimeout
-	 * @type {Number}
-	 * @private
-	 */
-	p._loadTimeout = null;
-
-	/**
-	 * A reference to a bound function, which we need in order to properly remove the event handler when the load
-	 * completes.
-	 * @property _tagCompleteProxy
-	 * @type {Function}
-	 * @private
-	 */
-	p._tagCompleteProxy = null;
-
-	/**
-	 * Determines if the load item is an audio tag, since we take some specific approaches to properly load audio.
-	 * @property _isAudio
-	 * @type {Boolean}
-	 * @default false
-	 * @protected
-	 */
-	p._isAudio = false;
-
-	/**
-	 * The HTML tag or JavaScript object this loader uses to preload content. Note that a tag may be a custom object
-	 * that matches the API of an HTML tag (load method, onload callback). For example, flash audio from SoundJS passes
-	 * in a custom object to handle preloading for Flash audio and WebAudio.
-	 * @property _tag
-	 * @type {HTMLAudioElement | Object}
-	 * @private
-	 */
-	p._tag = null;
-
-	/**
-	 * When loading a JSONP request this will be the parsed JSON result.
-	 *
-	 * @type {Object}
-	 * @private
-	 */
-	p._jsonResult = null;
-
-	// Overrides abstract method in AbstractLoader
-	p.init = function (item) {
+	function TagLoader(item) {
+		this.AbstractLoader_constructor();
+		
 		this._item = item;
-		this._tag = item.tag;
-		this._isAudio = (window.HTMLAudioElement && item.tag instanceof window.HTMLAudioElement);
+		
+	// protected properties
+		/**
+		 * The timeout that is fired if nothing is loaded after a certain delay. See the <code>LoadQueue.LOAD_TIMEOUT</code>
+		 * for the timeout duration.
+		 * @property _loadTimeout
+		 * @type {Number}
+		 * @private
+		 */
+		this._loadTimeout = null;
+	
+		/**
+		 * A reference to a bound function, which we need in order to properly remove the event handler when the load
+		 * completes.
+		 * @property _tagCompleteProxy
+		 * @type {Function}
+		 * @private
+		 */
 		this._tagCompleteProxy = createjs.proxy(this._handleLoad, this);
+	
+		/**
+		 * Determines if the load item is an audio tag, since we take some specific approaches to properly load audio.
+		 * @property _isAudio
+		 * @type {Boolean}
+		 * @default false
+		 * @protected
+		 */
+		this._isAudio = (window.HTMLAudioElement && item.tag instanceof window.HTMLAudioElement);
+	
+		/**
+		 * The HTML tag or JavaScript object this loader uses to preload content. Note that a tag may be a custom object
+		 * that matches the API of an HTML tag (load method, onload callback). For example, flash audio from SoundJS passes
+		 * in a custom object to handle preloading for Flash audio and WebAudio.
+		 * @property _tag
+		 * @type {HTMLAudioElement | Object}
+		 * @private
+		 */
+		this._tag = item.tag;
+	
+		/**
+		 * When loading a JSONP request this will be the parsed JSON result.
+		 *
+		 * @type {Object}
+		 * @private
+		 */
+		this._jsonResult = null;
 	};
 
+	var p = createjs.extend(TagLoader, createjs.AbstractLoader);
+
+
+// public methods	
 	/**
 	 * Get the loaded content. This is usually an HTML tag or other tag-style object that has been fully loaded. If the
 	 * loader is not complete, this will be null.
@@ -220,6 +216,8 @@ this.createjs = this.createjs||{};
 		}
 	};
 
+
+// protected methods
 	p._handleSVGError = function() {
 		this._clean();
 		var event = new createjs.Event("error");
@@ -227,6 +225,11 @@ this.createjs = this.createjs||{};
 		this._sendError(event);
 	};
 
+	/**
+	 * @todo
+	 * @param data
+	 * @private
+	 */
 	p._handleJSONPLoad = function(data) {
 		this._jsonResult = data;
 	};
@@ -361,6 +364,6 @@ this.createjs = this.createjs||{};
 		return "[PreloadJS TagLoader]";
 	};
 
-	createjs.TagLoader = TagLoader;
+	createjs.TagLoader = createjs.promote(TagLoader);
 
 }());

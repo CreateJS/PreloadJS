@@ -1,5 +1,5 @@
 /*
-* proxy
+* core
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
 * Copyright (c) 2010 gskinner.com, inc.
@@ -35,33 +35,35 @@
 this.createjs = this.createjs||{};
 
 /**
+ * Various utilities that the CreateJS Suite uses. Utilities are created as separate files, and will be available on the
+ * createjs namespace directly.
+ *
  * @class Utility Methods
+ * @main Utility Methods
  */
 
 /**
- * A function proxy for methods. By default, JavaScript methods do not maintain scope, so passing a method as a
- * callback will result in the method getting called in the scope of the caller. Using a proxy ensures that the
- * method gets called in the correct scope.
- *
- * Additional arguments can be passed that will be applied to the function when it is called.
+ * Sets up the prototype chain and constructor property for a new class.
+ * 
+ * This should be called right after creating the class constructor.
  *
  * <h4>Example</h4>
- *      myObject.addEventListener("event", createjs.proxy(myHandler, this, arg1, arg2));
  *
- *      function myHandler(arg1, arg2) {
- *           // This gets called when myObject.myCallback is executed.
- *      }
+ * 	function MySubClass() {}
+ * 	createjs.extend(MySubClass, MySuperClass); // returns the prototype
+ * 	ClassB.prototype.doSomething = function() { }
  *
- * @method proxy
- * @param {Function} method The function to call
- * @param {Object} scope The scope to call the method name on
- * @param {mixed} [arg] * Arguments that are appended to the callback for additional params.
- * @public
- * @static
+ * 	var foo = new MySubClass();
+ * 	console.log(foo instanceof MySuperClass); // true
+ * 	console.log(foo.prototype.constructor === MySubClass); // true
+ * 
+ * @method extends
+ * @param {Function} subclass The subclass.
+ * @param {Function} superclass The superclass to extend.
+ * @return {Function} Returns the subclass's new prototype.
  */
-createjs.proxy = function (method, scope) {
-	var aArgs = Array.prototype.slice.call(arguments, 2);
-	return function () {
-		return method.apply(scope, Array.prototype.slice.call(arguments, 0).concat(aArgs));
-	};
-}
+createjs.extend = function(subclass, superclass) {
+	function o() { this.constructor = subclass; }
+	o.prototype = superclass.prototype;
+	return (subclass.prototype = new o());
+};

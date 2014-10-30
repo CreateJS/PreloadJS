@@ -37,6 +37,7 @@ this.createjs = this.createjs || {};
 (function () {
 	"use strict";
 
+// constructor
 	/**
 	 * A preloader that loads items using XHR requests, usually XMLHttpRequest. However XDomainRequests will be used
 	 * for cross-domain requests if possible, and older versions of IE fall back on to ActiveX objects when necessary.
@@ -51,12 +52,75 @@ this.createjs = this.createjs || {};
 	 * {{#crossLink "LoadQueue/_crossOrigin:property"}}{{/crossLink}} for more info.
 	 * @extends AbstractLoader
 	 */
-	var XHRLoader = function (item, crossOrigin) {
-		this.init(item, crossOrigin);
+	function XHRLoader(item, crossOrigin) {
+		this.AbstractLoader_constructor();
+
+	// protected properties
+		/**
+		 * A reference to the XHR request used to load the content.
+		 * @property _request
+		 * @type {XMLHttpRequest | XDomainRequest | ActiveX.XMLHTTP}
+		 * @private
+		 */
+		this._request = null;
+
+		/**
+		 * A manual load timeout that is used for browsers that do not support the onTimeout event on XHR (XHR level 1,
+		 * typically IE9).
+		 * @property _loadTimeout
+		 * @type {Number}
+		 * @private
+		 */
+		this._loadTimeout = null;
+
+		/**
+		 * The browser's XHR (XMLHTTPRequest) version. Supported versions are 1 and 2. There is no official way to detect
+		 * the version, so we use capabilities to make a best guess.
+		 * @property _xhrLevel
+		 * @type {Number}
+		 * @default 1
+		 * @private
+		 */
+		this._xhrLevel = 1;
+
+		/**
+		 * The response of a loaded file. This is set because it is expensive to look up constantly. This property will be
+		 * null until the file is loaded.
+		 * @property _response
+		 * @type {mixed}
+		 * @private
+		 */
+		this._response = null;
+
+		/**
+		 * The response of the loaded file before it is modified. In most cases, content is converted from raw text to
+		 * an HTML tag or a formatted object which is set to the <code>result</code> property, but the developer may still
+		 * want to access the raw content as it was loaded.
+		 * @property _rawResponse
+		 * @type {String|Object}
+		 * @private
+		 */
+		this._rawResponse = null;
+
+		/**
+		 * See {{#crossLink "LoadQueue/_crossOrigin:property"}}{{/crossLink}}
+		 * @property _crossOrigin
+		 * @type {String}
+		 * @defaultValue ""
+		 * @private
+		 */
+		this._crossOrigin = crossOrigin;
+
+		this._item = item;
+		if (!this._createXHR(item)) {
+			//TODO: Throw error?
+		}
 	};
 
-	var s = XHRLoader;
+	var p = createjs.extend(XHRLoader, createjs.AbstractLoader);
 
+
+// static properties
 	/**
 	 * A list of XMLHTTP object IDs to try when building an ActiveX object for XHR requests in earlier versions of IE.
 	 * @property ACTIVEX_VERSIONS
@@ -64,7 +128,7 @@ this.createjs = this.createjs || {};
 	 * @since 0.4.2
 	 * @private
 	 */
-	s.ACTIVEX_VERSIONS = [
+	XHRLoader.ACTIVEX_VERSIONS = [
 		"Msxml2.XMLHTTP.6.0",
 		"Msxml2.XMLHTTP.5.0",
 		"Msxml2.XMLHTTP.4.0",
@@ -73,74 +137,8 @@ this.createjs = this.createjs || {};
 		"Microsoft.XMLHTTP"
 	];
 
-	var p = XHRLoader.prototype = new createjs.AbstractLoader();
-	XHRLoader.prototype.constructor = XHRLoader;
 
-	//Protected
-	/**
-	 * A reference to the XHR request used to load the content.
-	 * @property _request
-	 * @type {XMLHttpRequest | XDomainRequest | ActiveX.XMLHTTP}
-	 * @private
-	 */
-	p._request = null;
-
-	/**
-	 * A manual load timeout that is used for browsers that do not support the onTimeout event on XHR (XHR level 1,
-	 * typically IE9).
-	 * @property _loadTimeout
-	 * @type {Number}
-	 * @private
-	 */
-	p._loadTimeout = null;
-
-	/**
-	 * The browser's XHR (XMLHTTPRequest) version. Supported versions are 1 and 2. There is no official way to detect
-	 * the version, so we use capabilities to make a best guess.
-	 * @property _xhrLevel
-	 * @type {Number}
-	 * @default 1
-	 * @private
-	 */
-	p._xhrLevel = 1;
-
-	/**
-	 * The response of a loaded file. This is set because it is expensive to look up constantly. This property will be
-	 * null until the file is loaded.
-	 * @property _response
-	 * @type {mixed}
-	 * @private
-	 */
-	p._response = null;
-
-	/**
-	 * The response of the loaded file before it is modified. In most cases, content is converted from raw text to
-	 * an HTML tag or a formatted object which is set to the <code>result</code> property, but the developer may still
-	 * want to access the raw content as it was loaded.
-	 * @property _rawResponse
-	 * @type {String|Object}
-	 * @private
-	 */
-	p._rawResponse = null;
-
-	/**
-	 * See {{#crossLink "LoadQueue/_crossOrigin:property"}}{{/crossLink}}
-	 * @property _crossOrigin
-	 * @type {String}
-	 * @defaultValue ""
-	 * @private
-	 */
-	p._crossOrigin = "";
-
-	// Overrides abstract method in AbstractLoader
-	p.init = function (item, crossOrigin) {
-		this._item = item;
-		this._crossOrigin = crossOrigin;
-		if (!this._createXHR(item)) {
-			//TODO: Throw error?
-		}
-	};
-
+// Public methods
 	/**
 	 * Look up the loaded result.
 	 * @method getResult
@@ -254,6 +252,8 @@ this.createjs = this.createjs || {};
 		}
 	};
 
+
+// protected methods
 	/**
 	 * The XHR request has reported progress.
 	 * @method _handleProgress
@@ -645,7 +645,7 @@ this.createjs = this.createjs || {};
 		return "[PreloadJS XHRLoader]";
 	};
 
-	createjs.XHRLoader = XHRLoader;
+	createjs.XHRLoader = createjs.promote(XHRLoader);
 
 }());
 
