@@ -1848,7 +1848,7 @@ TODO: WINDOWS ISSUES
 		return "[PreloadJS LoadQueue]";
 	};
 
-	createjs.LoadQueue = createjs.promote(LoadQueue);
+	createjs.LoadQueue = createjs.promote(LoadQueue, "AbstractLoader");
 
 
 // helper classes

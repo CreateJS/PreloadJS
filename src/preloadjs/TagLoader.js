@@ -364,6 +364,6 @@ this.createjs = this.createjs||{};
 		return "[PreloadJS TagLoader]";
 	};
 
-	createjs.TagLoader = createjs.promote(TagLoader);
+	createjs.TagLoader = createjs.promote(TagLoader, "AbstractLoader");
 
 }());

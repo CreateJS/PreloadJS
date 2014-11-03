@@ -1,5 +1,5 @@
 /*
-* core
+* extend
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
 * Copyright (c) 2010 gskinner.com, inc.
@@ -35,24 +35,18 @@
 this.createjs = this.createjs||{};
 
 /**
- * Various utilities that the CreateJS Suite uses. Utilities are created as separate files, and will be available on the
- * createjs namespace directly.
- *
  * @class Utility Methods
- * @main Utility Methods
  */
 
 /**
  * Sets up the prototype chain and constructor property for a new class.
  * 
  * This should be called right after creating the class constructor.
- *
- * <h4>Example</h4>
- *
+ * 
  * 	function MySubClass() {}
- * 	createjs.extend(MySubClass, MySuperClass); // returns the prototype
+ * 	createjs.extend(MySubClass, MySuperClass);
  * 	ClassB.prototype.doSomething = function() { }
- *
+ * 	
  * 	var foo = new MySubClass();
  * 	console.log(foo instanceof MySuperClass); // true
  * 	console.log(foo.prototype.constructor === MySubClass); // true

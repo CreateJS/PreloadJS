@@ -448,6 +448,6 @@ this.createjs = this.createjs||{};
 		return "[PreloadJS AbstractLoader]";
 	};
 
-	createjs.AbstractLoader = createjs.promote(AbstractLoader);
+	createjs.AbstractLoader = createjs.promote(AbstractLoader, "EventDispatcher");
 
 }());

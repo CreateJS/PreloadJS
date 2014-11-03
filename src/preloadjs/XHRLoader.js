@@ -645,7 +645,7 @@ this.createjs = this.createjs || {};
 		return "[PreloadJS XHRLoader]";
 	};
 
-	createjs.XHRLoader = createjs.promote(XHRLoader);
+	createjs.XHRLoader = createjs.promote(XHRLoader, "AbstractLoader");s
 
 }());
 
