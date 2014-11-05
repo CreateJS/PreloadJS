@@ -1341,6 +1341,7 @@ TODO: WINDOWS ISSUES
 			// Result is a loader class:
 			} else {
 				if (result.src != null) { item.src = result.src; }
+				if (result.data != null) { item.data = result.data; }
 				if (result.id != null) { item.id = result.id; } // TODO: Evaluate this. An overridden ID could be problematic
 				if (result.tag != null) { // Assumes that the returned tag either has a load method or a src setter.
 					item.tag = result.tag;
