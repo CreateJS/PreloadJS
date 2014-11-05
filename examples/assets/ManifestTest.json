@@ -1,0 +1,14 @@
+maps({
+	"path": "examples/assets/",
+	"manifest": [
+		{"id":"Texas.jpg", "src":"Texas.jpg"},
+		{"id":"scriptExample", "src":"scriptExample.js"},
+		{"id":"grant.xml", "src":"grant.xml"},
+		{"id":"gbot.svg", "src":"gbot.svg"},
+		{"id":"grant.json", "src":"grant.json"},
+		{"id":"font.css", "src":"font.css"},
+		{"id":"Thunder.mp3", "src":"Thunder.mp3"},
+		{"id":"jsonpSample.json", "callback":"x", "type":"jsonp", "src":"jsonpSample.json"},
+		{"id":"Autumn.png", "src":"Autumn.png"},
+	]
+});
