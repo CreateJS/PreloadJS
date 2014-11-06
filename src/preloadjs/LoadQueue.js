@@ -616,6 +616,16 @@ TODO: WINDOWS ISSUES
 	s.SOUND = "sound";
 
 	/**
+	 * The preload type for video files, usually mp4, ts, or ogg. When loading via tags, video is loaded into an
+	 * &lt;video&gt; tag.
+	 * @property VIDEO
+	 * @type {String}
+	 * @default video
+	 * @static
+	 */
+	s.VIDEO = "video";
+
+	/**
      * The preload type for SVG files.
 	 * @property SVG
 	 * @type {String}
@@ -1388,6 +1398,7 @@ TODO: WINDOWS ISSUES
 			case createjs.LoadQueue.TEXT:
 				useXHR = true; // Always use XHR2 with text/XML
 				break;
+			case createjs.LoadQueue.VIDEO:
 			case createjs.LoadQueue.SOUND:
 			case createjs.LoadQueue.JSONP:
 				useXHR = false; // Never load audio using XHR. WebAudio will provide its own loader.
@@ -1717,6 +1728,9 @@ TODO: WINDOWS ISSUES
 				tag.autoplay = false;
 				// Note: The type property doesn't seem necessary.
 				return tag;
+			case createjs.LoadQueue.VIDEO:
+				tag = document.createElement("video");
+				return tag;
 			case createjs.LoadQueue.JSON:
 			case createjs.LoadQueue.JSONP:
 			case createjs.LoadQueue.JAVASCRIPT:
@@ -1767,8 +1781,12 @@ TODO: WINDOWS ISSUES
 				return createjs.LoadQueue.IMAGE;
 			case "ogg":
 			case "mp3":
-			case "wav":
+			case "webm":
 				return createjs.LoadQueue.SOUND;
+			case "mp4":
+			case "webm":
+			case "ts":
+				return createjs.LoadQueue.VIDEO;
 			case "json":
 				return createjs.LoadQueue.JSON;
 			case "xml":

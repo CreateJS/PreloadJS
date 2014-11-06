@@ -56,9 +56,9 @@ this.createjs = this.createjs||{};
 	 */
 	function TagLoader(item) {
 		this.AbstractLoader_constructor();
-		
+
 		this._item = item;
-		
+
 	// protected properties
 		/**
 		 * The timeout that is fired if nothing is loaded after a certain delay. See the <code>LoadQueue.LOAD_TIMEOUT</code>
@@ -68,7 +68,7 @@ this.createjs = this.createjs||{};
 		 * @private
 		 */
 		this._loadTimeout = null;
-	
+
 		/**
 		 * A reference to a bound function, which we need in order to properly remove the event handler when the load
 		 * completes.
@@ -77,26 +77,26 @@ this.createjs = this.createjs||{};
 		 * @private
 		 */
 		this._tagCompleteProxy = createjs.proxy(this._handleLoad, this);
-	
+
 		/**
-		 * Determines if the load item is an audio tag, since we take some specific approaches to properly load audio.
-		 * @property _isAudio
+		 * Determines if the load item is an HTMLMedia tag (Audio or Video) tag, since we take some specific approaches to properly load media elements.
+		 * @property _isMedia
 		 * @type {Boolean}
 		 * @default false
 		 * @protected
 		 */
-		this._isAudio = (window.HTMLAudioElement && item.tag instanceof window.HTMLAudioElement);
-	
+		this._isMedia = (window.HTMLMediaElement && item.tag instanceof window.HTMLMediaElement);
+
 		/**
 		 * The HTML tag or JavaScript object this loader uses to preload content. Note that a tag may be a custom object
 		 * that matches the API of an HTML tag (load method, onload callback). For example, flash audio from SoundJS passes
 		 * in a custom object to handle preloading for Flash audio and WebAudio.
 		 * @property _tag
-		 * @type {HTMLAudioElement | Object}
+		 * @type {HTMLMediaElement | Object}
 		 * @private
 		 */
 		this._tag = item.tag;
-	
+
 		/**
 		 * When loading a JSONP request this will be the parsed JSON result.
 		 *
@@ -109,12 +109,12 @@ this.createjs = this.createjs||{};
 	var p = createjs.extend(TagLoader, createjs.AbstractLoader);
 
 
-// public methods	
+// public methods
 	/**
 	 * Get the loaded content. This is usually an HTML tag or other tag-style object that has been fully loaded. If the
 	 * loader is not complete, this will be null.
 	 * @method getResult
-	 * @return {HTMLImageElement | HTMLAudioElement | Object} The loaded and parsed content.
+	 * @return {HTMLImageElement | HTMLMediaElement | Object} The loaded and parsed content.
 	 */
 	p.getResult = function() {
 		if (this._item.type == createjs.LoadQueue.JSONP || this._item.type == createjs.LoadQueue.MANIFEST) {
@@ -140,7 +140,7 @@ this.createjs = this.createjs||{};
 		if (duration == 0) { duration = createjs.LoadQueue.loadTimeout; }
 		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), duration);
 
-		if (this._isAudio) {
+		if (this._isMedia) {
 			tag.src = null; // Unset the source so we can set the preload type to "auto" without kicking off a load. This is only necessary for audio tags passed in by the developer.
 			tag.preload = "auto";
 		}
@@ -149,7 +149,7 @@ this.createjs = this.createjs||{};
 		tag.onerror = createjs.proxy(this._handleError,  this);
 		// Note: We only get progress events in Chrome, but do not fully load tags in Chrome due to its behaviour, so we ignore progress.
 
-		if (this._isAudio) {
+		if (this._isMedia) {
 			tag.onstalled = createjs.proxy(this._handleStalled,  this);
 			// This will tell us when audio is buffered enough to play through, but not when its loaded.
 			// The tag doesn't keep loading in Chrome once enough has buffered, and we have decided that behaviour is sufficient.
@@ -300,7 +300,7 @@ this.createjs = this.createjs||{};
 		var item = this.getItem();
 		var tag = item.tag;
 
-		if (this.loaded || this._isAudio && tag.readyState !== 4) { return; } //LM: Not sure if we still need the audio check.
+		if (this.loaded || this._isMedia && tag.readyState !== 4) { return; } //LM: Not sure if we still need the audio check.
 		this.loaded = true;
 
 		// Remove from the DOM
