@@ -968,6 +968,7 @@ TODO: WINDOWS ISSUES
 	 *         <li>headers: Optional object hash of headers to attach to an XHR request. PreloadJS will automatically
 	 *         attach some default headers when required, including Origin, Content-Type, and X-Requested-With. You may
 	 *         override the default headers if needed.</li>
+	 *         <li>withCredentials: Default false; Set to true if you need to enable credentials for XHR requests.</li>
 	 *     </ul>
      * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default

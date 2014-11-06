@@ -500,6 +500,10 @@ this.createjs = this.createjs || {};
 			req.setRequestHeader(n, headers[n])
 		}
 
+		if (req instanceof XMLHttpRequest && item.withCredentials !== undefined) {
+			req.withCredentials = item.withCredentials;
+		}
+
 		this._request = req;
 
 		return true;
