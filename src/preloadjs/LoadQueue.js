@@ -979,6 +979,7 @@ TODO: WINDOWS ISSUES
 	 *         attach some default headers when required, including Origin, Content-Type, and X-Requested-With. You may
 	 *         override the default headers if needed.</li>
 	 *         <li>withCredentials: Default false; Set to true if you need to enable credentials for XHR requests.</li>
+	 *         <li>mimeType: String, Default for text bases files (json, xml, text, css, js) "text/plain; charset=utf-8"; Sets the mime type of XHR. loads.</li>
 	 *     </ul>
      * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
