@@ -85,6 +85,14 @@ this.createjs = this.createjs||{};
 		 */
 		this.progress = 0;
 
+		/**
+		 * The type of this item.
+		 * See {{#crossLink}}DataTypes{{/crossLink}} for a full list of supported types.
+		 *
+		 * @type {null}
+		 */
+		this.type = null;
+
 	// protected properties
 		/**
 		 * The item this loader represents. Note that this is null in a {{#crossLink "LoadQueue"}}{{/crossLink}}, but will
@@ -181,6 +189,10 @@ this.createjs = this.createjs||{};
 	 */
 	p.getItem = function() {
 		return this._item;
+	};
+
+	p.getResult = function(raw) {
+		return raw?this._rawResult:this._result;
 	};
 
 	/**
@@ -287,7 +299,7 @@ this.createjs = this.createjs||{};
 	 */
 	p.buildPath = function(src, data) {
 		return createjs.RequestUtils.buildPath(src, data);
-	}
+	};
 
 	/**
 	 * @method toString

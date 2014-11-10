@@ -455,7 +455,7 @@ this.createjs = this.createjs || {};
 		}
 
 		// IE9 doesn't support overrideMimeType(), so we need to check for it.
-		if (!item.mimeType && createjs.LoadQueue.isText(item.type) && req.overrideMimeType) {
+		if (!item.mimeType && createjs.RequestUtils.isText(item.type) && req.overrideMimeType) {
 			req.overrideMimeType("text/plain; charset=utf-8");
 		} else if (item.mimeType && req.overrideMimeType) {
 			req.overrideMimeType(item.mimeType);
@@ -465,21 +465,21 @@ this.createjs = this.createjs || {};
 		this._xhrLevel = (typeof req.responseType === "string") ? 2 : 1;
 
 		var src = null;
-		if (item.method == createjs.LoadQueue.GET) {
+		if (item.method == createjs.RequestMethods.GET) {
 			src = createjs.RequestUtils.buildPath(item.src, item.values);
 		} else {
 			src = item.src;
 		}
 
 		// Open the request.  Set cross-domain flags if it is supported (XHR level 1 only)
-		req.open(item.method || createjs.LoadQueue.GET, src, true);
+		req.open(item.method || createjs.RequestMethods.GET, src, true);
 
 		if (crossdomain && req instanceof XMLHttpRequest && this._xhrLevel == 1) {
 			headers["Origin"] = location.origin;
 		}
 
 		// To send data we need to set the Content-type header)
-		if (item.values && item.method == createjs.LoadQueue.POST) {
+		if (item.values && item.method == createjs.RequestMethods.POST) {
 			headers["Content-Type"] = "application/x-www-form-urlencoded";
 		}
 
@@ -494,7 +494,7 @@ this.createjs = this.createjs || {};
 		}
 
 		// Binary files are loaded differently.
-		if (createjs.LoadQueue.isBinary(item.type)) {
+		if (createjs.RequestUtils.isBinary(item.type)) {
 			req.responseType = "arraybuffer";
 		}
 
@@ -544,7 +544,7 @@ this.createjs = this.createjs || {};
 
 		switch (type) {
 			// Note: Images need to wait for onload, but do use the cache.
-			case createjs.LoadQueue.IMAGE:
+			case createjs.DataTypes.IMAGE:
 				tag.onload = createjs.proxy(this._handleTagReady, this);
 				if (this._crossOrigin != "") { tag.crossOrigin = "Anonymous"; }// We can assume this, since XHR images are always loaded on a server.
 				tag.src = createjs.RequestUtils.buildPath(this._item.src, this._item.values);
@@ -553,7 +553,7 @@ this.createjs = this.createjs || {};
 				this._response = tag;
 				return false; // Images need to get an onload event first
 
-			case createjs.LoadQueue.JAVASCRIPT:
+			case createjs.DataTypes.JAVASCRIPT:
 				tag = document.createElement("script");
 				tag.text = this._response;
 
@@ -561,7 +561,7 @@ this.createjs = this.createjs || {};
 				this._response = tag;
 				return true;
 
-			case createjs.LoadQueue.CSS:
+			case createjs.DataTypes.CSS:
 				// Maybe do this conditionally?
 				var head = document.getElementsByTagName("head")[0]; //Note: This is unavoidable in IE678
 				head.appendChild(tag);
@@ -577,14 +577,14 @@ this.createjs = this.createjs || {};
 				this._response = tag;
 				return true;
 
-			case createjs.LoadQueue.XML:
-				var xml = this._parseXML(this._response, "text/xml");
+			case createjs.DataTypes.XML:
+				var xml = createjs.DataUtils.parseXML(this._response, "text/xml");
 				this._rawResponse = this._response;
 				this._response = xml;
 				return true;
 
-			case createjs.LoadQueue.SVG:
-				var xml = this._parseXML(this._response, "image/svg+xml");
+			case createjs.DataTypes.SVG:
+				var xml = createjs.DataUtils.parseXML(this._response, "image/svg+xml");
 				this._rawResponse = this._response;
 				if (xml.documentElement != null) {
 					tag.appendChild(xml.documentElement);
@@ -594,8 +594,8 @@ this.createjs = this.createjs || {};
 				}
 				return true;
 
-			case createjs.LoadQueue.JSON:
-			case createjs.LoadQueue.MANIFEST:
+			case createjs.DataTypes.JSON:
+			case createjs.DataTypes.MANIFEST:
 				var json = {};
 				try {
 					json = JSON.parse(this._response);
@@ -609,31 +609,6 @@ this.createjs = this.createjs || {};
 
 		}
 		return true;
-	};
-
-	/**
-	 * Parse XML using the DOM. This is required when preloading XML or SVG.
-	 * @method _parseXML
-	 * @param {String} text The raw text or XML that is loaded by XHR.
-	 * @param {String} type The mime type of the XML.
-	 * @return {XML} An XML document.
-	 * @private
-	 */
-	p._parseXML = function (text, type) {
-		var xml = null;
-		try {
-			// CocoonJS does not support XML parsing with either method.
-			// Windows (?) Opera DOMParser throws DOMException: NOT_SUPPORTED_ERR  // potential solution https://gist.github.com/1129031
-			if (window.DOMParser) {
-				var parser = new DOMParser();
-				xml = parser.parseFromString(text, type);
-			} else { // IE
-				xml = new ActiveXObject("Microsoft.XMLDOM");
-				xml.async = false;
-				xml.loadXML(text);
-			}
-		} catch (e) {}
-		return xml;
 	};
 
 	/**

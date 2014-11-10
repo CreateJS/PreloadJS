@@ -532,7 +532,7 @@ TODO: WINDOWS ISSUES
 	 * @default binary
 	 * @static
 	 */
-	s.BINARY = "binary";
+	s.BINARY = createjs.DataTypes.BINARY;
 
 	/**
 	 * The preload type for css files. CSS files are loaded using a &lt;link&gt; when loaded with XHR, or a
@@ -542,7 +542,7 @@ TODO: WINDOWS ISSUES
 	 * @default css
 	 * @static
 	 */
-	s.CSS = "css";
+	s.CSS = createjs.DataTypes.CSS;
 
 	/**
 	 * The preload type for image files, usually png, gif, or jpg/jpeg. Images are loaded into an &lt;image&gt; tag.
@@ -551,7 +551,7 @@ TODO: WINDOWS ISSUES
 	 * @default image
 	 * @static
 	 */
-	s.IMAGE = "image";
+	s.IMAGE = createjs.DataTypes.IMAGE;
 
 	/**
 	 * The preload type for javascript files, usually with the "js" file extension. JavaScript files are loaded into a
@@ -565,7 +565,7 @@ TODO: WINDOWS ISSUES
 	 * @default javascript
 	 * @static
 	 */
-	s.JAVASCRIPT = "javascript";
+	s.JAVASCRIPT = createjs.DataTypes.JAVASCRIPT;
 
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
@@ -577,7 +577,7 @@ TODO: WINDOWS ISSUES
 	 * @default json
 	 * @static
 	 */
-	s.JSON = "json";
+	s.JSON = createjs.DataTypes.JSON;
 
 	/**
 	 * The preload type for jsonp files, usually with the "json" file extension. JSON data is loaded and parsed into a
@@ -589,7 +589,7 @@ TODO: WINDOWS ISSUES
 	 * @default jsonp
 	 * @static
 	 */
-	s.JSONP = "jsonp";
+	s.JSONP = createjs.DataTypes.JSONP;
 
 	/**
 	 * The preload type for json-based manifest files, usually with the "json" file extension. The JSON data is loaded
@@ -603,7 +603,7 @@ TODO: WINDOWS ISSUES
 	 * @static
 	 * @since 0.4.1
 	 */
-	s.MANIFEST = "manifest";
+	s.MANIFEST = createjs.DataTypes.MANIFEST;
 
 	/**
 	 * The preload type for sound files, usually mp3, ogg, or wav. When loading via tags, audio is loaded into an
@@ -613,7 +613,7 @@ TODO: WINDOWS ISSUES
 	 * @default sound
 	 * @static
 	 */
-	s.SOUND = "sound";
+	s.SOUND = createjs.DataTypes.SOUND;
 
 	/**
 	 * The preload type for video files, usually mp4, ts, or ogg. When loading via tags, video is loaded into an
@@ -623,7 +623,7 @@ TODO: WINDOWS ISSUES
 	 * @default video
 	 * @static
 	 */
-	s.VIDEO = "video";
+	s.VIDEO = createjs.DataTypes.VIDEO;
 
 	/**
      * The preload type for SVG files.
@@ -632,7 +632,7 @@ TODO: WINDOWS ISSUES
 	 * @default svg
 	 * @static
 	 */
-	s.SVG = "svg";
+	s.SVG = createjs.DataTypes.SVG;
 
 	/**
 	 * The preload type for text files, which is also the default file type if the type can not be determined. Text is
@@ -642,7 +642,7 @@ TODO: WINDOWS ISSUES
 	 * @default text
 	 * @static
 	 */
-	s.TEXT = "text";
+	s.TEXT = createjs.DataTypes.TEXT;
 
 	/**
 	 * The preload type for xml files. XML is loaded into an XML document.
@@ -651,21 +651,21 @@ TODO: WINDOWS ISSUES
 	 * @default xml
 	 * @static
 	 */
-	s.XML = "xml";
+	s.XML = createjs.DataTypes.XML;
 
 	/**
 	 * Defines a POST request, use for a method value when loading data.
 	 *
 	 * @type {string}
 	 */
-	s.POST = 'POST';
+	s.POST = createjs.RequestMethods.POST;
 
 	/**
 	 * Defines a GET request, use for a method value when loading data.
 	 *
 	 * @type {string}
 	 */
-	s.GET = 'GET';
+	s.GET = createjs.RequestMethods.GET;
 
 
 // events
@@ -848,49 +848,6 @@ TODO: WINDOWS ISSUES
 	};
 
 	/**
-	 * Determine if a specific type should be loaded as a binary file. Currently, only images and items marked
-	 * specifically as "binary" are loaded as binary. Note that audio is <b>not</b> a binary type, as we can not play
-	 * back using an audio tag if it is loaded as binary. Plugins can change the item type to binary to ensure they get
-	 * a binary result to work with. Binary files are loaded using XHR2.
-	 * @method isBinary
-	 * @param {String} type The item type.
-	 * @return {Boolean} If the specified type is binary.
-	 * @private
-	 */
-	s.isBinary = function(type) {
-		switch (type) {
-			case createjs.LoadQueue.IMAGE:
-			case createjs.LoadQueue.BINARY:
-				return true;
-			default:
-				return false;
-		}
-	};
-
-	/**
-	 * Determine if a specific type is a text based asset, and should be loaded as UTF-8.
-	 * @method isText
-	 * @param {String} type The item type.
-	 * @return {Boolean} If the specified type is text.
-	 * @private
-	 */
-	s.isText = function(type) {
-		switch (type) {
-			case createjs.LoadQueue.TEXT:
-			case createjs.LoadQueue.JSON:
-			case createjs.LoadQueue.MANIFEST:
-			case createjs.LoadQueue.XML:
-			case createjs.LoadQueue.HTML:
-			case createjs.LoadQueue.CSS:
-			case createjs.LoadQueue.SVG:
-			case createjs.LoadQueue.JAVASCRIPT:
-				return true;
-			default:
-				return false;
-		}
-	};
-
-	/**
 	 * Register a plugin. Plugins can map to load types (sound, image, etc), or specific extensions (png, mp3, etc).
 	 * Currently, only one plugin can exist per type/extension.
 	 *
@@ -958,29 +915,7 @@ TODO: WINDOWS ISSUES
      * <ul>
      *     <li>A string path to a resource. Note that this kind of load item will be converted to an object (see below)
 	 *     in the background.</li>
-     *     <li>OR an object that contains:<ul>
-     *         <li>src: The source of the file that is being loaded. This property is <b>required</b>. The source can
-	 *         either be a string (recommended), or an HTML tag.</li>
-     *         <li>type: The type of file that will be loaded (image, sound, json, etc). PreloadJS does auto-detection
-	 *         of types using the extension. Supported types are defined on LoadQueue, such as <code>LoadQueue.IMAGE</code>.
-	 *         It is recommended that a type is specified when a non-standard file URI (such as a php script) us used.</li>
-     *         <li>id: A string identifier which can be used to reference the loaded object.</li>
-	 *         <li>maintainOrder: Set to `true` to ensure this asset loads in the order defined in the manifest. This
-	 *         will happen when the max connections has been set above 1 (using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}),
-	 *         and will only affect other assets also defined as `maintainOrder`. Everything else will finish as it is
-	 *         loaded. Ordered items are combined with script tags loading in order when {{#crossLink "LoadQueue/maintainScriptOrder:property"}}{{/crossLink}}
-	 *         is set to `true`.</li>
-	 *         <li>callback: Optional, used for JSONP requests, to define what method to call when the JSONP is loaded.</li>
-     *         <li>data: An arbitrary data object, which is included with the loaded object</li>
-	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. The default
-	 *         value is "GET"</li>
-	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
-	 *         <li>headers: Optional object hash of headers to attach to an XHR request. PreloadJS will automatically
-	 *         attach some default headers when required, including Origin, Content-Type, and X-Requested-With. You may
-	 *         override the default headers if needed.</li>
-	 *         <li>withCredentials: Default false; Set to true if you need to enable credentials for XHR requests.</li>
-	 *         <li>mimeType: String, Default for text bases files (json, xml, text, css, js) "text/plain; charset=utf-8"; Sets the mime type of XHR. loads.</li>
-	 *     </ul>
+     *     <li>OR an {{#crossLink "LoadItem"}}LoadItem{{/crossLink}}</li>
      * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is

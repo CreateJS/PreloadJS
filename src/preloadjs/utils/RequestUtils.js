@@ -160,6 +160,50 @@
 		return target.hostname == "" && target.protocol == "file:";
 	};
 
+
+	/**
+	 * Determine if a specific type should be loaded as a binary file. Currently, only images and items marked
+	 * specifically as "binary" are loaded as binary. Note that audio is <b>not</b> a binary type, as we can not play
+	 * back using an audio tag if it is loaded as binary. Plugins can change the item type to binary to ensure they get
+	 * a binary result to work with. Binary files are loaded using XHR2.
+	 * @method isBinary
+	 * @param {String} type The item type.
+	 * @return {Boolean} If the specified type is binary.
+	 * @private
+	 */
+	s.isBinary = function(type) {
+		switch (type) {
+			case createjs.DataTypes.IMAGE:
+			case createjs.DataTypes.BINARY:
+				return true;
+			default:
+				return false;
+		}
+	};
+
+	/**
+	 * Determine if a specific type is a text based asset, and should be loaded as UTF-8.
+	 * @method isText
+	 * @param {String} type The item type.
+	 * @return {Boolean} If the specified type is text.
+	 * @private
+	 */
+	s.isText = function(type) {
+		switch (type) {
+			case createjs.DataTypes.TEXT:
+			case createjs.DataTypes.JSON:
+			case createjs.DataTypes.MANIFEST:
+			case createjs.DataTypes.XML:
+			case createjs.DataTypes.HTML:
+			case createjs.DataTypes.CSS:
+			case createjs.DataTypes.SVG:
+			case createjs.DataTypes.JAVASCRIPT:
+				return true;
+			default:
+				return false;
+		}
+	};
+
 	createjs.RequestUtils = s;
 
 }());
