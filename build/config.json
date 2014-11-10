@@ -16,7 +16,7 @@
 		"../src/preloadjs/BinaryLoader.js",
 		"../src/preloadjs/CSSLoader.js",
 		"../src/preloadjsImageLoader.js",
-		"../src/preloadjs/JavascriptLoader.js",
+		"../src/preloadjs/JavaScriptLoader.js",
 		"../src/preloadjs/JSONLoader.js",
 		"../src/preloadjs/JSONPLoader.js",
 		"../src/preloadjs/ManifestLoader.js",
