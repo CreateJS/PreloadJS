@@ -223,6 +223,20 @@ module.exports = function (grunt) {
 		grunt.config.set('docsFolder', "./output/<%= docsName %>/");
 	});
 
+	grunt.registerTask('exportScriptTags', function(){
+		var source = grunt.option("path") || "";
+
+		var config = getBuildConfig();
+		var scripts = config.source;
+		var tags = [];
+		for (var i=0;i<scripts.length;i++) {
+			var script = '<script src="<%=src %>"></script>';
+			var realPath =scripts[i].replace("../src/", "");
+			tags.push(grunt.template.process(script, {data: {src:source+realPath}}));
+		}
+		console.log(tags.join("\n"));
+	});
+
 	/**
 	 * Build the docs using YUIdocs.
 	 */
