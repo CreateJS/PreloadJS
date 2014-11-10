@@ -1290,7 +1290,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		// Determine Extension, etc.
-		var match = this._parseURI(item.src);
+		var match = createjs.RequestUtils.parseURI(item.src);
 		if (match.extension) { item.ext = match.extension; }
 		if (item.type == null) {
 			item.type = this._getTypeByExtension(item.ext);
@@ -1303,7 +1303,7 @@ TODO: WINDOWS ISSUES
 		if (!match.absolute && !match.relative) {
 			if (path) {
 				bp = path;
-				var pathMatch = this._parseURI(path);
+				var pathMatch = createjs.RequestUtils.parseURI(path);
 				autoId = path + autoId;
 				// Also append basePath
 				if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
@@ -1364,7 +1364,7 @@ TODO: WINDOWS ISSUES
 				if (result.type) { item.type = result.type; }
 
 				// Update the extension in case the type changed:
-				match = this._parseURI(item.src);
+				match = createjs.RequestUtils.parseURI(item.src);
 				if (match.extension != null) {
 					item.ext = match.extension;
 				}
@@ -1722,7 +1722,7 @@ TODO: WINDOWS ISSUES
 		switch (item.type) {
 			case createjs.LoadQueue.IMAGE:
 				tag = document.createElement("img");
-				if (this._crossOrigin != "" && !this._isLocal(item)) { tag.crossOrigin = this._crossOrigin; }
+				if (this._crossOrigin != "" && !tcreatejs.RequestUtils.isLocal(item)) { tag.crossOrigin = this._crossOrigin; }
 				return tag;
 			case createjs.LoadQueue.SOUND:
 				tag = document.createElement("audio");
