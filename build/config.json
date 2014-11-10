@@ -12,7 +12,17 @@
 		"../src/preloadjs/AbstractLoader.js",
 		"../src/preloadjs/LoadQueue.js",
 		"../src/preloadjs/TagLoader.js",
-		"../src/preloadjs/XHRLoader.js"
+		"../src/preloadjs/XHRLoader.js",
+		"../src/preloadjs/BinaryLoader.js",
+		"../src/preloadjs/CSSLoader.js",
+		"../src/preloadjsImageLoader.js",
+		"../src/preloadjs/JavascriptLoader.js",
+		"../src/preloadjs/JSONLoader.js",
+		"../src/preloadjs/JSONPLoader.js",
+		"../src/preloadjs/ManifestLoader.js",
+		"../src/preloadjs/SoundLoader.js",
+		"../src/preloadjs/SVGLoader.js",
+		"../src/preloadjs/XMLLoader.js"
 	],
 
 	"docs_out_path":"./output/PreloadJSDocs/"

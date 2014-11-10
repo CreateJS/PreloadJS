@@ -1,6 +1,4 @@
-describe("PreloadJS", function () {
-
-	var baseAssetsPath = "../examples/assets/";
+describe("PreloadJS.LoadQueue", function () {
 
 	beforeEach(function () {
 		this.queue = new createjs.LoadQueue();
@@ -8,9 +6,9 @@ describe("PreloadJS", function () {
 		var _this = this;
 		this.loadFile = function (fileObj) {
 			if (typeof fileObj == "string") {
-				_this.queue.loadFile(baseAssetsPath + fileObj);
+				_this.queue.loadFile(this.baseAssetsPath + fileObj);
 			} else {
-				fileObj.src = baseAssetsPath + fileObj.src;
+				fileObj.src = this.baseAssetsPath + fileObj.src;
 				_this.queue.loadFile(fileObj);
 			}
 		}
