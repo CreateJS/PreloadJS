@@ -6,9 +6,9 @@ describe("PreloadJS.LoadQueue", function () {
 		var _this = this;
 		this.loadFile = function (fileObj) {
 			if (typeof fileObj == "string") {
-				_this.queue.loadFile(this.baseAssetsPath + fileObj);
+				_this.queue.loadFile(this.getFilePath(fileObj));
 			} else {
-				fileObj.src = this.baseAssetsPath + fileObj.src;
+				fileObj.src = this.getFilePath(fileObj.src);
 				_this.queue.loadFile(fileObj);
 			}
 		}
