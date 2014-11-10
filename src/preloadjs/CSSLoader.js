@@ -39,6 +39,8 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function CSSLoader(src, useXHR) {
+		this.AbstractLoader_constructor();
+
 		// public properties
 
 		// protected properties

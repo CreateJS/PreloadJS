@@ -39,6 +39,8 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function ManifestLoader(src) {
+		this.AbstractLoader_constructor();
+
 		// public properties
 
 		// protected properties

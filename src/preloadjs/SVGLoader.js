@@ -39,6 +39,8 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function SVGLoader(src, useXHR) {
+		this.AbstractLoader_constructor();
+
 		// public properties
 
 		// protected properties
