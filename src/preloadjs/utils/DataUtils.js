@@ -44,6 +44,7 @@
 		try {
 			return JSON.parse(value);
 		} catch (e) {
+			// TODO; Handle this with a custom error?
 			throw e;
 		}
 	};

@@ -35,16 +35,28 @@ this.createjs = this.createjs||{};
 
 	// constructor
 	/**
-	* The SoundLoader class description goes here.
-	*
-	*/
-	function SoundLoader(src, useXHR) {
+	 * The SoundLoader class description goes here.
+	 *
+	 */
+	function SoundLoader(loadItem, useXHR) {
 		this.AbstractLoader_constructor();
+		this._init(loadItem, useXHR, createjs.DataTypes.SOUND);
 
 		// public properties
 
 		// protected properties
+		this._tagSrcAttribute = "src";
 
+		this._tag = document.createElement("audio");
+		this._tag.preload = "auto";
+
+		// this._tag.autoplay = false;
+		// Note: The type property doesn't seem necessary.
+
+		this._tag.onstalled = createjs.proxy(this._handleStalled, this);
+		// This will tell us when audio is buffered enough to play through, but not when its loaded.
+		// The tag doesn't keep loading in Chrome once enough has buffered, and we have decided that behaviour is sufficient.
+		this._tag.addEventListener("canplaythrough", createjs.proxy(this._handleTagComplete, this), false); // canplaythrough callback doesn't work in Chrome, so we use an event.
 	};
 
 	var p = createjs.extend(SoundLoader, createjs.AbstractLoader);
@@ -55,6 +67,16 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
+
+	/**
+	 * Handle a stalled audio event. The main place we seem to get these is with HTMLAudio in Chrome when we try and
+	 * playback audio that is already in a load, but not complete.
+	 * @method _handleStalled
+	 * @private
+	 */
+	p._handleStalled = function () {
+		//Ignore, let the timeout take care of it. Sometimes its not really stopped.
+	};
 
 	createjs.SoundLoader = createjs.promote(SoundLoader, "AbstractLoader");
 

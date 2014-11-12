@@ -38,23 +38,19 @@ this.createjs = this.createjs||{};
 	* The BinaryLoader class description goes here.
 	*
 	*/
-	function BinaryLoader(src) {
+	function BinaryLoader(loadItem) {
 		this.AbstractLoader_constructor();
 
-		// public properties
-
-		// protected properties
+		this._init(loadItem, true, createjs.DataTypes.BINARY);
 
 	};
 
 	var p = createjs.extend(BinaryLoader, createjs.AbstractLoader);
 	var s = BinaryLoader;
 
-	// static properties
-
-	// public methods
-
-	// protected methods
+	p._updateXHR = function() {
+		this._xhr.setResponseType("arraybuffer");
+	};
 
 	createjs.BinaryLoader = createjs.promote(BinaryLoader, "AbstractLoader");
 

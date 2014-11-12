@@ -35,16 +35,26 @@ this.createjs = this.createjs||{};
 
 	// constructor
 	/**
-	* The CSSLoader class description goes here.
-	*
-	*/
-	function CSSLoader(src, useXHR) {
+	 * The CSSLoader class description goes here.
+	 *
+	 */
+	function CSSLoader(loadItem, useXHR) {
 		this.AbstractLoader_constructor();
+		this._init(loadItem, useXHR, createjs.DataTypes.CSS);
 
 		// public properties
 
 		// protected properties
+		this._tagSrcAttribute = "href";
 
+		if (useXHR) {
+			this._tag = document.createElement("style");
+		} else {
+			this._tag = document.createElement("link");
+		}
+
+		this._tag.rel  = "stylesheet";
+		this._tag.type = "text/css";
 	};
 
 	var p = createjs.extend(CSSLoader, createjs.AbstractLoader);
@@ -55,6 +65,21 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
+	p._formatResult = function() {
+		if (this._useXHR) {
+			var head = document.getElementsByTagName("head")[0]; //Note: This is unavoidable in IE678
+			head.appendChild(this._tag);
+
+			if (this._tag.styleSheet) { // IE
+				this._tag.styleSheet.cssText = this._rawResult;
+			} else {
+				var textNode = document.createTextNode(this._rawResult);
+				this._tag.appendChild(textNode);
+			}
+		}
+
+		return this._tag;
+	};
 
 	createjs.CSSLoader = createjs.promote(CSSLoader, "AbstractLoader");
 

@@ -1,5 +1,5 @@
 /*
-* ImageLoader
+* TextLoader
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
 *
@@ -35,41 +35,23 @@ this.createjs = this.createjs||{};
 
 	// constructor
 	/**
-	* The ImageLoader class description goes here.
+	* The TextLoader class description goes here.
 	*
 	*/
-	function ImageLoader(loadItem, useXHR) {
+	function TextLoader(loadItem) {
 		this.AbstractLoader_constructor();
-		this._init(loadItem, useXHR, createjs.DataTypes.IMAGE);
 
-		// public properties
+		this._init(loadItem, true, createjs.DataTypes.TEXT);
 
-		// protected properties
-		this._tagSrcAttribute = "src";
-
-		this._tag = document.createElement("img");
 	};
 
-	var p = createjs.extend(ImageLoader, createjs.AbstractLoader);
-	var s = ImageLoader;
+	var p = createjs.extend(TextLoader, createjs.AbstractLoader);
+	var s = TextLoader;
 
-	// static properties
+	p._updateXHR = function() {
 
-	// public methods
-	p.load = function() {
-		if (this._crossOrigin != "") { this._tag.crossOrigin = "Anonymous"; } // We can assume this, since XHR images are always loaded on a server.
-		this.AbstractLoader_load();
 	};
 
-	// protected methods
-	p._formatResult = function() {
-		if (!this._useXHR) {
-			document.body.removeChild(this._tag);
-		}
-
-		return this._tag;
-	};
-
-	createjs.ImageLoader = createjs.promote(ImageLoader, "AbstractLoader");
+	createjs.TextLoader = createjs.promote(TextLoader, "AbstractLoader");
 
 }());

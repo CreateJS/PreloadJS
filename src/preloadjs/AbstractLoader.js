@@ -45,7 +45,7 @@ this.createjs = this.createjs||{};
 	 * @class AbstractLoader
 	 * @extends EventDispatcher
 	 */
-	function AbstractLoader() {
+	function AbstractLoader(loadItem, useXHR) {
 		this.EventDispatcher_constructor();
 
 	// public properties
@@ -102,10 +102,15 @@ this.createjs = this.createjs||{};
 		 * @private
 		 */
 		this._item = null;
-
 	};
 
 	var p = createjs.extend(AbstractLoader, createjs.EventDispatcher);
+
+	p._init = function(loadItem, useXHR, type) {
+		this._item = createjs.LoadItem.create(loadItem);
+		this._useXHR = useXHR;
+		this.type = type;
+	};
 
 // Events
 	/**
@@ -205,7 +210,13 @@ this.createjs = this.createjs||{};
 	 *      queue.load();
 	 * @method load
 	 */
-	p.load = function() {};
+	p.load = function() {
+		if (!this._useXHR) {
+			this._loadTag()
+		} else {
+			this._loadWithXHR();
+		}
+	};
 
 	/**
 	 * Close the active queue. Closing a queue completely empties the queue, and prevents any remaining items from
@@ -216,6 +227,17 @@ this.createjs = this.createjs||{};
 	 */
 	p.close = function() {};
 
+	/**
+	 *
+	 */
+	p.cancel = function() {
+		this.canceled = true;
+
+		if (this._xhr != null) {
+			this._xhr.off("complete", this, this);
+			this._xhr.off("progress", this, this);
+		}
+	};
 
 // Callback proxies
 	/**
@@ -262,7 +284,15 @@ this.createjs = this.createjs||{};
 	 */
 	p._sendComplete = function() {
 		if (this._isCanceled()) { return; }
-		this.dispatchEvent("complete");
+
+		var event = new createjs.Event("complete");
+		event.rawResult = this._rawResult;
+
+		if (this._result != null) {
+			event.result = this._result;
+		}
+
+		this.dispatchEvent(event);
 	};
 
 	/**
@@ -293,6 +323,79 @@ this.createjs = this.createjs||{};
 		}
 		return false;
 	};
+
+	p._loadWithXHR = function() {
+		this._xhr = new createjs.XHRRequest(this._item, false, this.type);
+		this._updateXHR();
+		this._xhr.on("complete", this, this);
+		this._xhr.on("progress", this, this);
+		this._xhr.load();
+	};
+
+	/**
+	 * Called right after our XHRRequest is created
+	 * Used to update XHR for specific landing needs (ex, Binary loading)
+	 *
+	 * @private
+	 */
+	p._updateXHR = function() {
+
+	};
+
+	p.handleEvent = function(event) {
+		switch (event.type) {
+			case "complete":
+				this._rawResult = event.target._response;
+				this._result = this._formatResult() || this._rawResult;
+				this._sendComplete();
+				break;
+			case "progress":
+				this._sendProgress(event);
+				break;
+		}
+	};
+
+	p._loadTag = function() {
+		window.document.body.appendChild(this._tag);
+
+		this._tag.onload = createjs.proxy(this._handleTagComplete,  this);
+		this._tag.onreadystatechange = createjs.proxy(this._handleReadyStateChange,  this);
+		this._tag[this._tagSrcAttribute] = this._item.src;
+	};
+
+	/**
+	 * Handle the readyStateChange event from a tag. We sometimes need this in place of the onload event (mainly SCRIPT
+	 * and LINK tags), but other cases may exist.
+	 * @method _handleReadyStateChange
+	 * @private
+	 */
+	p._handleReadyStateChange = function () {
+		clearTimeout(this._loadTimeout);
+		// This is strictly for tags in browsers that do not support onload.
+		var tag = this._tag;
+
+		// Complete is for old IE support.
+		if (tag.readyState == "loaded" || tag.readyState == "complete") {
+			this._handleTagComplete();
+		}
+	};
+
+	p._handleTagComplete = function() {
+		this._rawResult = this._tag;
+		this._result = this._formatResult() || this._rawResult;
+		this._sendComplete();
+	};
+
+	/**
+	 * Called just before an XHR request dispatches complete.
+	 * Allows plugins to set a custom _result.
+	 *
+	 * @returns {Object}
+	 * @private
+	 */
+	p._formatResult = function() {
+		return null;
+	}
 
 	/**
 	 * @deprecated Prefer RequestUtils.buildPath instead of this method.

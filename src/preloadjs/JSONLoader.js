@@ -33,18 +33,18 @@ this.createjs = this.createjs||{};
 (function () {
 	"use strict";
 
-	// constructor
 	/**
 	* The JSONLoader class description goes here.
 	*
+	 * @constructor
 	*/
-	function JSONLoader(src) {
+	function JSONLoader(loadItem) {
 		this.AbstractLoader_constructor();
+		this._init(loadItem, true, createjs.DataTypes.JSON);
 
 		// public properties
 
 		// protected properties
-
 	};
 
 	var p = createjs.extend(JSONLoader, createjs.AbstractLoader);
@@ -55,6 +55,20 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
+	p._formatResult = function() {
+		var json = null;
+		try {
+			json = createjs.DataUtils.parseJSON(this._rawResult);
+		} catch (e) {
+			var event = new createjs.Event("error");
+			event.error = e;
+
+			this._sendError(event);
+			return;
+		}
+
+		return json;
+	};
 
 	createjs.JSONLoader = createjs.promote(JSONLoader, "AbstractLoader");
 

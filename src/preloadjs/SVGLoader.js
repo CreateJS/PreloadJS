@@ -38,13 +38,23 @@ this.createjs = this.createjs||{};
 	* The SVGLoader class description goes here.
 	*
 	*/
-	function SVGLoader(src, useXHR) {
+	function SVGLoader(loadItem, useXHR) {
 		this.AbstractLoader_constructor();
+		this._init(loadItem, useXHR, createjs.DataTypes.SVG);
 
 		// public properties
 
 		// protected properties
+		this._tagSrcAttribute = "data";
 
+		if (useXHR) {
+			this._tag = document.createElement("svg");
+		} else {
+			this._tag = document.createElement("object");
+			this._tag.type = "image/svg+xml";
+		}
+
+		this._tag.style.visibility = "hidden";
 	};
 
 	var p = createjs.extend(SVGLoader, createjs.AbstractLoader);
@@ -55,6 +65,21 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
+	p._formatResult = function() {
+		var xml = createjs.DataUtils.parseXML(this._rawResult, "image/svg+xml");
+
+		if (!this._useXHR) {
+			document.body.removeChild(this._tag);
+		}
+
+		if (xml.documentElement != null) {
+			this._tag.appendChild(xml.documentElement);
+			this._tag.style.visibility = "visible";
+			return this._tag;
+		} else { // For browsers that don't support SVG, just give them the XML. (IE 9-8)
+			return xml;
+		}
+	}
 
 	createjs.SVGLoader = createjs.promote(SVGLoader, "AbstractLoader");
 

@@ -1331,6 +1331,7 @@ TODO: WINDOWS ISSUES
 				useXHR = !item._loadAsJSONP;
 				break;
 			case createjs.LoadQueue.XML:
+				return new createjs.XMLLoader(item);
 			case createjs.LoadQueue.TEXT:
 				useXHR = true; // Always use XHR2 with text/XML
 				break;

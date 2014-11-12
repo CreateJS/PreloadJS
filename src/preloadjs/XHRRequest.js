@@ -210,6 +210,10 @@ this.createjs = this.createjs || {};
 		}
 	};
 
+	p.setResponseType = function (type) {
+		this._request.responseType = type;
+	};
+
 	/**
 	 * Get all the response headers from the XmlHttpRequest.
 	 *
@@ -484,11 +488,6 @@ this.createjs = this.createjs || {};
 			for (var n in item.headers) {
 				headers[n] = item.headers[n];
 			}
-		}
-
-		// Binary files are loaded differently.
-		if (createjs.RequestUtils.isBinary(item.type)) {
-			req.responseType = "arraybuffer";
 		}
 
 		for (n in headers) {

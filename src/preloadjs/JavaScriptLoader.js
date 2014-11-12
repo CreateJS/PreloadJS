@@ -38,13 +38,18 @@ this.createjs = this.createjs||{};
 	* The JavascriptLoader class description goes here.
 	*
 	*/
-	function JavascriptLoader(src, useXHR) {
+	function JavascriptLoader(loadItem, useXHR) {
 		this.AbstractLoader_constructor();
+
+		this._init(loadItem, useXHR);
+
+		this.type = createjs.DataTypes.JAVASCRIPT;
 
 		// public properties
 
 		// protected properties
-
+		this._tagSrcAttribute = "src";
+		this._tag = document.createElement("script");
 	};
 
 	var p = createjs.extend(JavascriptLoader, createjs.AbstractLoader);

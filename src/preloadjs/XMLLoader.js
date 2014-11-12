@@ -39,19 +39,12 @@ this.createjs = this.createjs||{};
 	 * @constructor
 	*/
 	function XMLLoader(loadItem) {
-		this.AbstractLoader_constructor();
-
-		this.type = createjs.DataTypes.XML;
-		this._item = createjs.LoadItem.create(loadItem);
-
+		this.AbstractLoader_constructor(loadItem);
+		this._init(loadItem, true, createjs.DataTypes.XML);
 
 		// public properties
 
-
 		// protected properties
-		this._xhr = new createjs.XHRRequest(this._item);
-		this._xhr.addEventListener("complete", this);
-		this._xhr.addEventListener("progress", this);
 	};
 
 	var p = createjs.extend(XMLLoader, createjs.AbstractLoader);
@@ -60,27 +53,10 @@ this.createjs = this.createjs||{};
 	// static properties
 
 	// public methods
-	p.load = function() {
-		this._xhr.load();
-	};
-
-	p.cancel = function() {
-		this._xhr.cancel();
-	};
 
 	// protected methods
-	p.handleEvent = function(evt) {
-		switch (evt.type) {
-			case "complete":
-				var event = new createjs.Event(evt.type);
-				this._rawResult = event.rawResult = evt.target._response;
-				this._result = event.result = createjs.DataUtils.parseXML(event.rawResult, "text/xml");
-				this.dispatchEvent(event);
-				break;
-			case "progress":
-				this._sendProgress(evt);
-				break;
-		}
+	p._formatResult = function() {
+		return createjs.DataUtils.parseXML(this._rawResult, "text/xml");
 	};
 
 	createjs.XMLLoader = createjs.promote(XMLLoader, "AbstractLoader");

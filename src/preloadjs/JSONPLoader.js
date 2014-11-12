@@ -35,16 +35,20 @@ this.createjs = this.createjs||{};
 
 	// constructor
 	/**
-	* The JSONPLoader class description goes here.
-	*
-	*/
-	function JSONPLoader(src) {
+	 * The JSONPLoader class description goes here.
+	 *
+	 */
+	function JSONPLoader(loadItem) {
 		this.AbstractLoader_constructor();
+
+		this.type = createjs.DataTypes.JSONP;
+		this._item = createjs.LoadItem.create(loadItem);
 
 		// public properties
 
 		// protected properties
-
+		this._tag = document.createElement("script");
+		this._tag.type = "text/javascript";
 	};
 
 	var p = createjs.extend(JSONPLoader, createjs.AbstractLoader);
@@ -53,8 +57,52 @@ this.createjs = this.createjs||{};
 	// static properties
 
 	// public methods
+	p.cancel = function () {
+		this.AbstractLoader_cancel();
+		this._dispose();
+	}
+
+	p.load = function () {
+		if (this._item.callback == null) {
+			throw new Error('callback is required for loading JSONP requests.');
+		}
+
+		// TODO: Look into creating our own iFrame to handle the load
+		// In the first attempt, FF did not get the result
+		//   result instanceof Object did not work either
+		//   so we would need to clone the result.
+		if (window[this._item.callback] != null) {
+			throw new Error(
+				'JSONP callback "' +
+				item.callback +
+				'" already exists on window.' +
+				' You need to specify a different callback.' +
+				' Or re-name the current one.');
+		}
+
+		window[this._item.callback] = createjs.proxy(this._handleLoad, this);
+		window.document.body.appendChild(this._tag);
+
+		// Load the tag
+		this._tag.src = this._item.src;
+	};
 
 	// protected methods
+	/**
+	 * @todo
+	 * @param data
+	 * @private
+	 */
+	p._handleLoad = function (data) {
+		this._result = this._rawResult = data;
+		this._sendComplete();
+
+		this._dispose();
+	};
+
+	p._dispose = function() {
+		window.document.body.removeChild(this._tag);
+	}
 
 	createjs.JSONPLoader = createjs.promote(JSONPLoader, "AbstractLoader");
 
