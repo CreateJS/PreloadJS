@@ -339,14 +339,15 @@ this.createjs = this.createjs||{};
 			tag.onerror = null;
 
 			//TODO: Test this
-			if (tag.parentNode != null
-					&& item.type == createjs.LoadQueue.SVG
-					&& item.type == createjs.LoadQueue.JSON
-					&& item.type == createjs.LoadQueue.MANIFEST
-					&& item.type == createjs.LoadQueue.CSS
-					&& item.type == createjs.LoadQueue.JSONP) {
-				 // Note: Removing script tags is a fool's errand.
-				tag.parentNode.removeChild(tag);
+			switch (item.type) {
+				case createjs.LoadQueue.SVG:
+				case createjs.LoadQueue.JSON:
+				case createjs.LoadQueue.JSONP: // Note: Removing script tags is a fool's errand.
+				case createjs.LoadQueue.MANIFEST:
+				case createjs.LoadQueue.CSS:
+					tag.parentNode && tag.parentNode.contains(tag) && tag.parentNode.removeChild(tag);
+					break;
+				default:
 			}
 		}
 
