@@ -74,7 +74,7 @@ this.createjs = this.createjs||{};
 		if (window[this._item.callback] != null) {
 			throw new Error(
 				'JSONP callback "' +
-				item.callback +
+				this.item.callback +
 				'" already exists on window.' +
 				' You need to specify a different callback.' +
 				' Or re-name the current one.');
