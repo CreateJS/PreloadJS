@@ -39,8 +39,7 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function ImageLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor();
-		this._init(loadItem, useXHR, createjs.DataTypes.IMAGE);
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.IMAGE);
 
 		// public properties
 

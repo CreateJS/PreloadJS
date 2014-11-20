@@ -39,8 +39,7 @@ this.createjs = this.createjs||{};
 	 *
 	 */
 	function CSSLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor();
-		this._init(loadItem, useXHR, createjs.DataTypes.CSS);
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.CSS);
 
 		// public properties
 

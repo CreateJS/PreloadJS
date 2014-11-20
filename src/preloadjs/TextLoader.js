@@ -39,9 +39,7 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function TextLoader(loadItem) {
-		this.AbstractLoader_constructor();
-
-		this._init(loadItem, true, createjs.DataTypes.TEXT);
+		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.TEXT);
 	};
 
 	var p = createjs.extend(TextLoader, createjs.AbstractLoader);

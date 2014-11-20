@@ -39,10 +39,7 @@ this.createjs = this.createjs||{};
 	 *
 	 */
 	function JSONPLoader(loadItem) {
-		this.AbstractLoader_constructor();
-
-		this.type = createjs.DataTypes.JSONP;
-		this._item = createjs.LoadItem.create(loadItem);
+		this.AbstractLoader_constructor(loadItem, false, createjs.DataTypes.JSONP);
 
 		// public properties
 

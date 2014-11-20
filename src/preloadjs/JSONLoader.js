@@ -39,8 +39,7 @@ this.createjs = this.createjs||{};
 	 * @constructor
 	*/
 	function JSONLoader(loadItem) {
-		this.AbstractLoader_constructor();
-		this._init(loadItem, true, createjs.DataTypes.JSON);
+		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.JSON);
 
 		// public properties
 

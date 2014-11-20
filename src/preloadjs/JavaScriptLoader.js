@@ -39,11 +39,7 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function JavascriptLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor();
-
-		this._init(loadItem, useXHR);
-
-		this.type = createjs.DataTypes.JAVASCRIPT;
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.JAVASCRIPT);
 
 		// public properties
 

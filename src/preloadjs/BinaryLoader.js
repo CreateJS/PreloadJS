@@ -39,9 +39,7 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function BinaryLoader(loadItem) {
-		this.AbstractLoader_constructor();
-
-		this._init(loadItem, true, createjs.DataTypes.BINARY);
+		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.BINARY);
 
 		this.on("initialize", this._updateXHR, this);
 	};

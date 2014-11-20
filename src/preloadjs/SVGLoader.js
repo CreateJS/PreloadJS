@@ -39,8 +39,7 @@ this.createjs = this.createjs||{};
 	*
 	*/
 	function SVGLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor();
-		this._init(loadItem, useXHR, createjs.DataTypes.SVG);
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.SVG);
 
 		// public properties
 

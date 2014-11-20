@@ -45,7 +45,7 @@ this.createjs = this.createjs||{};
 	 * @class AbstractLoader
 	 * @extends EventDispatcher
 	 */
-	function AbstractLoader(loadItem, useXHR) {
+	function AbstractLoader(loadItem, useXHR, type) {
 		this.EventDispatcher_constructor();
 
 	// public properties
@@ -91,7 +91,7 @@ this.createjs = this.createjs||{};
 		 *
 		 * @type {null}
 		 */
-		this.type = null;
+		this.type = type;
 
 	// protected properties
 		/**
@@ -101,16 +101,14 @@ this.createjs = this.createjs||{};
 		 * @type {Object}
 		 * @private
 		 */
-		this._item = null;
+		if (loadItem) {
+			this._item = createjs.LoadItem.create(loadItem);
+		}
+
+		this._useXHR = useXHR;
 	};
 
 	var p = createjs.extend(AbstractLoader, createjs.EventDispatcher);
-
-	p._init = function(loadItem, useXHR, type) {
-		this._item = createjs.LoadItem.create(loadItem);
-		this._useXHR = useXHR;
-		this.type = type;
-	};
 
 // Events
 	/**
@@ -358,7 +356,7 @@ this.createjs = this.createjs||{};
 	 * Optional; Called just before a request dispatches its complete event.
 	 * Allows plugins to set a custom result value.
 	 * Will be passed a single loader parameter, which is the current loader in use.
-	 * 
+	 *
 	 * @type Function
 	 * @returns {Object}
 	 * @private
@@ -378,7 +376,7 @@ this.createjs = this.createjs||{};
 			case "error":
 				this._sendError(event);
 				break;
-			case "loadStart":
+			case "loadstart":
 			case "abort":
 			case "timeout":
 				console.warn("Event not supported yet.");

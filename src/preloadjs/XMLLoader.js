@@ -39,8 +39,7 @@ this.createjs = this.createjs||{};
 	 * @constructor
 	*/
 	function XMLLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem);
-		this._init(loadItem, true, createjs.DataTypes.XML);
+		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.XML);
 
 		// public properties
 

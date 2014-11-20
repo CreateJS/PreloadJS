@@ -41,9 +41,9 @@ this.createjs = this.createjs||{};
 	 * @constructor
 	 */
 	function ManifestLoader(itemSrc, useXHR) {
-		this.AbstractLoader_constructor();
 		useXHR = useXHR !== false;
-		this._init(itemSrc, useXHR, useXHR ? createjs.DataTypes.JSON : createjs.DataTypes.JSONP);
+
+		this.AbstractLoader_constructor(itemSrc, useXHR, useXHR ? createjs.DataTypes.JSON : createjs.DataTypes.JSONP);
 
 		// public properties
 
