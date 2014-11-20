@@ -42,15 +42,10 @@ this.createjs = this.createjs||{};
 		this.AbstractLoader_constructor();
 
 		this._init(loadItem, true, createjs.DataTypes.TEXT);
-
 	};
 
 	var p = createjs.extend(TextLoader, createjs.AbstractLoader);
 	var s = TextLoader;
-
-	p._updateXHR = function() {
-
-	};
 
 	createjs.TextLoader = createjs.promote(TextLoader, "AbstractLoader");
 

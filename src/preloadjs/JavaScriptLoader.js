@@ -50,6 +50,8 @@ this.createjs = this.createjs||{};
 		// protected properties
 		this._tagSrcAttribute = "src";
 		this._tag = document.createElement("script");
+
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(JavascriptLoader, createjs.AbstractLoader);
@@ -60,6 +62,13 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
+	p._formatResult = function(loader) {
+		var tag = loader.getTag();
+		if (this._useXHR) {
+			tag.text = loader.getResult(true);
+		}
+		return tag;
+	}
 
 	createjs.JavascriptLoader = createjs.promote(JavascriptLoader, "AbstractLoader");
 

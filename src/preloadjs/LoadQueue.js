@@ -1321,37 +1321,55 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._createLoader = function(item) {
+		var loader = null;
 		// Initially, try and use the provided/supported XHR mode:
 		var useXHR = this.useXHR;
 
 		// Determine the XHR usage overrides:
 		switch (item.type) {
-			case createjs.LoadQueue.JSON:
-			case createjs.LoadQueue.MANIFEST:
+			case createjs.DataTypes.JSON:
+			case createjs.DataTypes.MANIFEST:
 				useXHR = !item._loadAsJSONP;
+				if (useXHR) {
+					loader = new createjs.JSONLoader(item);
+				} else {
+					loader = new createjs.JSONPLoader(item);
+				}
 				break;
-			case createjs.LoadQueue.XML:
-				return new createjs.XMLLoader(item);
-			case createjs.LoadQueue.TEXT:
-				useXHR = true; // Always use XHR2 with text/XML
+			case createjs.DataTypes.JSONP:
+				loader = new createjs.JSONPLoader(item);
 				break;
-			case createjs.LoadQueue.VIDEO:
-			case createjs.LoadQueue.SOUND:
-			case createjs.LoadQueue.JSONP:
-				useXHR = false; // Never load audio using XHR. WebAudio will provide its own loader.
+			case createjs.DataTypes.XML:
+				loader = new createjs.XMLLoader(item);
 				break;
-			case null:
-				return null;
-			// Note: IMAGE, CSS, SCRIPT, SVG can all use TAGS or XHR.
+			case createjs.DataTypes.SOUND:
+				loader = new createjs.SoundLoader(item, useXHR);
+				break;
+			case createjs.DataTypes.IMAGE:
+				loader = new createjs.ImageLoader(item, useXHR);
+				break;
+			case createjs.DataTypes.CSS:
+				loader = new createjs.CSSLoader(item, useXHR);
+				break;
+			case createjs.DataTypes.JAVASCRIPT:
+				loader = new createjs.JavascriptLoader(item, useXHR);
+				break;
+			case createjs.DataTypes.SVG:
+				loader = new createjs.SVGLoader(item, useXHR);
+				break;
+			case createjs.DataTypes.BINARY:
+				loader = new createjs.BinaryLoader(item, useXHR);
+				break;
+			case createjs.DataTypes.VIDEO:
+				console.error("Not supported yet.");
+				break;
+			case createjs.DataTypes.TEXT:
+			default:
+				loader = new createjs.TextLoader(item);
 		}
 
-		if (useXHR) {
-			return new createjs.XHRLoader(item, this._crossOrigin);
-		} else {
-			return new createjs.TagLoader(item);
-		}
+		return loader;
 	};
-
 
 	/**
 	 * Load the next item in the queue. If the queue is empty (all items have been loaded), then the complete event

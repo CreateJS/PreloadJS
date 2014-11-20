@@ -43,13 +43,14 @@ this.createjs = this.createjs||{};
 
 		this._init(loadItem, true, createjs.DataTypes.BINARY);
 
+		this.on("initialize", this._updateXHR, this);
 	};
 
 	var p = createjs.extend(BinaryLoader, createjs.AbstractLoader);
 	var s = BinaryLoader;
 
-	p._updateXHR = function() {
-		this._xhr.setResponseType("arraybuffer");
+	p._updateXHR = function(evt) {
+		evt.loader.setResponseType("arraybuffer");
 	};
 
 	createjs.BinaryLoader = createjs.promote(BinaryLoader, "AbstractLoader");

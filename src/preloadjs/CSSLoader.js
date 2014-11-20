@@ -55,6 +55,8 @@ this.createjs = this.createjs||{};
 
 		this._tag.rel  = "stylesheet";
 		this._tag.type = "text/css";
+
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(CSSLoader, createjs.AbstractLoader);
@@ -65,20 +67,21 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
-	p._formatResult = function() {
+	p._formatResult = function(loader) {
 		if (this._useXHR) {
+			var tag = loader.getTag();
 			var head = document.getElementsByTagName("head")[0]; //Note: This is unavoidable in IE678
-			head.appendChild(this._tag);
+			head.appendChild(tag);
 
-			if (this._tag.styleSheet) { // IE
-				this._tag.styleSheet.cssText = this._rawResult;
+			if (tag.styleSheet) { // IE
+				tag.styleSheet.cssText = loader.getResult(true);
 			} else {
-				var textNode = document.createTextNode(this._rawResult);
-				this._tag.appendChild(textNode);
+				var textNode = document.createTextNode(loader.getResult(true));
+				tag.appendChild(textNode);
 			}
 		}
 
-		return this._tag;
+		return tag;
 	};
 
 	createjs.CSSLoader = createjs.promote(CSSLoader, "AbstractLoader");

@@ -45,6 +45,7 @@ this.createjs = this.createjs||{};
 		// public properties
 
 		// protected properties
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(XMLLoader, createjs.AbstractLoader);
@@ -55,8 +56,8 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
-	p._formatResult = function() {
-		return createjs.DataUtils.parseXML(this._rawResult, "text/xml");
+	p._formatResult = function(loader) {
+		return createjs.DataUtils.parseXML(loader.getResult(true), "text/xml");
 	};
 
 	createjs.XMLLoader = createjs.promote(XMLLoader, "AbstractLoader");

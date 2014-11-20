@@ -35,11 +35,15 @@ this.createjs = this.createjs||{};
 
 	// constructor
 	/**
-	* The ManifestLoader class description goes here.
-	*
-	*/
-	function ManifestLoader(src) {
+	 *
+	 * @param itemSrc
+	 * @param useXHR Default true; Specifies whether or not to load the manifest as JSONP (false), or to use XHR (true/default).
+	 * @constructor
+	 */
+	function ManifestLoader(itemSrc, useXHR) {
 		this.AbstractLoader_constructor();
+		useXHR = useXHR !== false;
+		this._init(itemSrc, useXHR, useXHR ? createjs.DataTypes.JSON : createjs.DataTypes.JSONP);
 
 		// public properties
 
@@ -53,6 +57,9 @@ this.createjs = this.createjs||{};
 	// static properties
 
 	// public methods
+	p.load = function () {
+		// TODO: How much should be in LoadQueue? vs in here?
+	};
 
 	// protected methods
 

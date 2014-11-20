@@ -155,6 +155,16 @@ this.createjs = this.createjs||{};
 	 * @since 0.3.0
 	 */
 
+	/**
+	 * Dispatched after our XHRRequest is created, but before a load.
+	 * Allows updates to the loader for specific loading needs (ex, Binary loading, or XHR image loading.)
+	 *
+	 * @event initialize
+	 * @param {Object} target The object that dispatched the event.
+	 * @param {String} type The event type.
+	 * @param {AbstractLoader} loader The loader that has been initialized.
+	 */
+
 	//TODO: Deprecated
 	/**
 	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/progress:event"}}{{/crossLink}}
@@ -198,6 +208,10 @@ this.createjs = this.createjs||{};
 
 	p.getResult = function(raw) {
 		return raw?this._rawResult:this._result;
+	};
+
+	p.getTag = function() {
+		return this._tag;
 	};
 
 	/**
@@ -326,32 +340,48 @@ this.createjs = this.createjs||{};
 
 	p._loadWithXHR = function() {
 		this._xhr = new createjs.XHRRequest(this._item, false, this.type);
-		this._updateXHR();
 		this._xhr.on("complete", this, this);
 		this._xhr.on("progress", this, this);
+		this._xhr.on("loadStart", this, this);
+		this._xhr.on("abort", this, this);
+		this._xhr.on("timeout", this, this);
+		this._xhr.on("error", this, this);
+
+		var evt = new createjs.Event("initialize");
+		evt.loader = this._xhr;
+		this.dispatchEvent(evt);
+
 		this._xhr.load();
 	};
 
 	/**
-	 * Called right after our XHRRequest is created
-	 * Used to update XHR for specific landing needs (ex, Binary loading)
-	 *
+	 * Optional; Called just before a request dispatches its complete event.
+	 * Allows plugins to set a custom result value.
+	 * Will be passed a single loader parameter, which is the current loader in use.
+	 * 
+	 * @type Function
+	 * @returns {Object}
 	 * @private
 	 */
-	p._updateXHR = function() {
-
-	};
+	p.resultFormatter = null;
 
 	p.handleEvent = function(event) {
 		switch (event.type) {
 			case "complete":
 				this._rawResult = event.target._response;
-				this._result = this._formatResult() || this._rawResult;
+				this._result = this.resultFormatter && this.resultFormatter(this) || this._rawResult;
 				this._sendComplete();
 				break;
 			case "progress":
 				this._sendProgress(event);
 				break;
+			case "error":
+				this._sendError(event);
+				break;
+			case "loadStart":
+			case "abort":
+			case "timeout":
+				console.warn("Event not supported yet.");
 		}
 	};
 
@@ -360,6 +390,11 @@ this.createjs = this.createjs||{};
 
 		this._tag.onload = createjs.proxy(this._handleTagComplete,  this);
 		this._tag.onreadystatechange = createjs.proxy(this._handleReadyStateChange,  this);
+
+		var evt = new createjs.Event("initialize");
+		evt.loader = this._tag;
+		this.dispatchEvent(evt);
+
 		this._tag[this._tagSrcAttribute] = this._item.src;
 	};
 
@@ -382,20 +417,9 @@ this.createjs = this.createjs||{};
 
 	p._handleTagComplete = function() {
 		this._rawResult = this._tag;
-		this._result = this._formatResult() || this._rawResult;
+		this._result = this.resultFormatter && this.resultFormatter(this) || this._rawResult;
 		this._sendComplete();
 	};
-
-	/**
-	 * Called just before an XHR request dispatches complete.
-	 * Allows plugins to set a custom _result.
-	 *
-	 * @returns {Object}
-	 * @private
-	 */
-	p._formatResult = function() {
-		return null;
-	}
 
 	/**
 	 * @deprecated Prefer RequestUtils.buildPath instead of this method.

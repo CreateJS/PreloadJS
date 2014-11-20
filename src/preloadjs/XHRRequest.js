@@ -142,7 +142,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * Look up the loaded result.
 	 * @method getResult
-	 * @param {Boolean} [rawResult=false] Return a raw result instead of a formatted result. This applies to content
+	 * @param {Boolean} [raw=false] Return a raw result instead of a formatted result. This applies to content
 	 * loaded via XHR such as scripts, XML, CSS, and Images. If there is no raw result, the formatted result will be
 	 * returned instead.
 	 * @return {Object} A result object containing the content that was loaded, such as:
@@ -158,8 +158,8 @@ this.createjs = this.createjs || {};
 	 * </ul>
 	 * Note that if a raw result is requested, but not found, the result will be returned instead.
 	 */
-	p.getResult = function (rawResult) {
-		if (rawResult && this._rawResponse) {
+	p.getResult = function (raw) {
+		if (raw && this._rawResponse) {
 			return this._rawResponse;
 		}
 		return this._response;

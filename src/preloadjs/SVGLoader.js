@@ -55,6 +55,8 @@ this.createjs = this.createjs||{};
 		}
 
 		this._tag.style.visibility = "hidden";
+
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(SVGLoader, createjs.AbstractLoader);
@@ -65,17 +67,18 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
-	p._formatResult = function() {
-		var xml = createjs.DataUtils.parseXML(this._rawResult, "image/svg+xml");
+	p._formatResult = function(loader) {
+		var xml = createjs.DataUtils.parseXML(loader.getResult(true), "image/svg+xml");
+		var tag = loader.getTag();
 
 		if (!this._useXHR) {
-			document.body.removeChild(this._tag);
+			document.body.removeChild(tag);
 		}
 
 		if (xml.documentElement != null) {
-			this._tag.appendChild(xml.documentElement);
-			this._tag.style.visibility = "visible";
-			return this._tag;
+			tag.appendChild(xml.documentElement);
+			tag.style.visibility = "visible";
+			return tag;
 		} else { // For browsers that don't support SVG, just give them the XML. (IE 9-8)
 			return xml;
 		}

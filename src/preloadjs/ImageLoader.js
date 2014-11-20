@@ -48,6 +48,9 @@ this.createjs = this.createjs||{};
 		this._tagSrcAttribute = "src";
 
 		this._tag = document.createElement("img");
+
+		this.on("initialize", this._updateXHR, this);
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(ImageLoader, createjs.AbstractLoader);
@@ -62,9 +65,23 @@ this.createjs = this.createjs||{};
 	};
 
 	// protected methods
-	p._formatResult = function() {
+	p._updateXHR = function(evt) {
+		evt.loader.mimeType = 'text/plain; charset=x-user-defined-binary';
+
+		// Only exists for XHR
+		if (evt.loader.setResponseType) {
+			evt.loader.setResponseType("blob");
+		}
+	};
+
+	p._formatResult = function(loader) {
 		if (!this._useXHR) {
-			document.body.removeChild(this._tag);
+			document.body.removeChild(loader.getTag());
+		} else if (window.URL && window.URL.createObjectURL) {
+			this._tag.src = window.URL.createObjectURL(loader.getResult(true));
+		} else {
+			// TODO: Should we just prevent XHR image loading when Object URL's are not supported?
+			loader.getTag().src = loader.getItem().src;
 		}
 
 		return this._tag;

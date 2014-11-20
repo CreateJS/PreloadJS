@@ -45,6 +45,7 @@ this.createjs = this.createjs||{};
 		// public properties
 
 		// protected properties
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(JSONLoader, createjs.AbstractLoader);
@@ -55,16 +56,16 @@ this.createjs = this.createjs||{};
 	// public methods
 
 	// protected methods
-	p._formatResult = function() {
+	p._formatResult = function(loader) {
 		var json = null;
 		try {
-			json = createjs.DataUtils.parseJSON(this._rawResult);
+			json = createjs.DataUtils.parseJSON(loader.getResult(true));
 		} catch (e) {
 			var event = new createjs.Event("error");
 			event.error = e;
 
 			this._sendError(event);
-			return;
+			return e;
 		}
 
 		return json;

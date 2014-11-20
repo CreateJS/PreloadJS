@@ -1,10 +1,16 @@
 describe("PreloadJS.LoadQueue", function () {
 
 	beforeEach(function () {
+		jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+
 		this.queue = new createjs.LoadQueue();
 
 		var _this = this;
-		this.loadFile = function (fileObj) {
+		this.loadFile = function (fileObj, useXHR) {
+			if (useXHR === false || useXHR === true) {
+				_this.queue.useXHR = useXHR;
+			}
+
 			if (typeof fileObj == "string") {
 				_this.queue.loadFile(this.getFilePath(fileObj));
 			} else {
@@ -27,7 +33,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof Object).toBe(true);
 			done();
 		});
-		this.loadFile("MediaGridManifest.json");
+		this.loadFile("grant.json");
 	});
 
 	it("should load JSONp", function (done) {
@@ -42,12 +48,20 @@ describe("PreloadJS.LoadQueue", function () {
 					  });
 	});
 
-	it("should load and execute Javascript", function (done) {
+	it("should load and execute Javascript (tag)", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
 			expect(window.foo).toBe(true);
 			done();
 		});
-		this.loadFile("scriptExample.js");
+		this.loadFile("scriptExample.js", false);
+	});
+
+	it("should load and execute Javascript (xhr)", function (done) {
+		this.queue.addEventListener("fileload", function (evt) {
+			expect(window.foo).toBe(true);
+			done();
+		});
+		this.loadFile("scriptExample.js", true);
 	});
 
 	it("should load css", function (done) {
@@ -90,15 +104,17 @@ describe("PreloadJS.LoadQueue", function () {
 		this.loadFile({src: "gbot.svg", type: createjs.LoadQueue.TEXT});
 	});
 
-	it("should load sounds", function (done) {
+	it("should load sounds (tag)", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
+			console.log(evt);
 			expect(evt.result instanceof HTMLMediaElement).toBe(true);
 			done();
 		});
-		this.loadFile({src: "Thunder.mp3", type: createjs.LoadQueue.SOUND});
+
+		this.loadFile({src: "Thunder.mp3", type: createjs.DataTypes.SOUND}, false);
 	});
 
-	it("should load a manifest and its children", function (done) {
+	xit("should load a manifest and its children", function (done) {
 		var fileCount = 0;
 
 		this.queue.addEventListener("fileload", function (evt) {
