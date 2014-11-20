@@ -72,12 +72,20 @@ describe("PreloadJS.LoadQueue", function () {
 		this.loadFile("font.css");
 	});
 
-	it("should load images", function (done) {
+	it("should load images (xhr)", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
 			expect(evt.result instanceof HTMLImageElement).toBe(true);
 			done();
 		});
-		this.loadFile("image0.jpg");
+		this.loadFile("Autumn.png", true);
+	});
+
+	it("should load images (tag)", function (done) {
+		this.queue.addEventListener("fileload", function (evt) {
+			expect(evt.result instanceof HTMLImageElement).toBe(true);
+			done();
+		});
+		this.loadFile("image0.jpg", false);
 	});
 
 	it("should load binary data", function (done) {

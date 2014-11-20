@@ -77,9 +77,12 @@ this.createjs = this.createjs||{};
 		if (!this._useXHR) {
 			document.body.removeChild(loader.getTag());
 		} else if (window.URL && window.URL.createObjectURL) {
-			this._tag.src = window.URL.createObjectURL(loader.getResult(true));
+			var objURL = window.URL.createObjectURL(loader.getResult(true));
+			this._tag.src = objURL;
+			this._tag.onLoad = function() {
+				window.URL.revokeObjectURL(this.src);
+			}
 		} else {
-			// TODO: Should we just prevent XHR image loading when Object URL's are not supported?
 			loader.getTag().src = loader.getItem().src;
 		}
 
