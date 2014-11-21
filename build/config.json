@@ -27,6 +27,7 @@
 		"../src/preloadjs/JSONPLoader.js",
 		"../src/preloadjs/ManifestLoader.js",
 		"../src/preloadjs/SoundLoader.js",
+		"../src/preloadjs/VideoLoader.js",
 		"../src/preloadjs/SVGLoader.js",
 		"../src/preloadjs/XMLLoader.js"
 	],
