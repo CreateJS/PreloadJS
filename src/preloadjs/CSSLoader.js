@@ -60,6 +60,17 @@ this.createjs = this.createjs||{};
 
 	var p = createjs.extend(CSSLoader, createjs.AbstractLoader);
 	var s = CSSLoader;
+	/**
+	 * LoadQueue calls this when it creates loaders.
+	 * Each loader has the option to say either yes (true) or no (false).
+	 *
+	 * @private
+	 * @param item The LoadItem LoadQueue is trying to load.
+	 * @returns {boolean}
+	 */
+	s.canLoadItem = function(item) {
+		return item.type == createjs.DataTypes.CSS;
+	};
 
 	// static properties
 

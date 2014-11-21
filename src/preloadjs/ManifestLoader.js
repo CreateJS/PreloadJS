@@ -53,6 +53,17 @@ this.createjs = this.createjs||{};
 
 	var p = createjs.extend(ManifestLoader, createjs.AbstractLoader);
 	var s = ManifestLoader;
+	/**
+	 * LoadQueue calls this when it creates loaders.
+	 * Each loader has the option to say either yes (true) or no (false).
+	 *
+	 * @private
+	 * @param item The LoadItem LoadQueue is trying to load.
+	 * @returns {boolean}
+	 */
+	s.canLoadItem = function(item) {
+		return item.type == createjs.DataTypes.MANIFEST;
+	};
 
 	// static properties
 

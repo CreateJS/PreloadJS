@@ -51,13 +51,26 @@ this.createjs = this.createjs||{};
 	var p = createjs.extend(JSONPLoader, createjs.AbstractLoader);
 	var s = JSONPLoader;
 
+	/**
+	 * LoadQueue calls this when it creates loaders.
+	 * Each loader has the option to say either yes (true) or no (false).
+	 *
+	 * @private
+	 * @param item The LoadItem LoadQueue is trying to load.
+	 * @param useXHR
+	 * @returns {boolean}
+	 */
+	s.canLoadItem = function(item) {
+		return item.type == createjs.DataTypes.JSONP || item._loadAsJSONP;
+	};
+
 	// static properties
 
 	// public methods
 	p.cancel = function () {
 		this.AbstractLoader_cancel();
 		this._dispose();
-	}
+	};
 
 	p.load = function () {
 		if (this._item.callback == null) {

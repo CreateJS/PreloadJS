@@ -255,8 +255,7 @@ TODO: WINDOWS ISSUES
 		this.AbstractLoader_constructor();
 		this.setUseXHR(useXHR);
 
-
-	// public properties
+		// public properties
 		/**
 		 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
 		 * on the requirements for a media type. For example, HTML audio can not be loaded with XHR, and WebAudio can not be
@@ -321,7 +320,7 @@ TODO: WINDOWS ISSUES
 		 */
 		this.next = null;
 
-	// protected properties
+		// protected properties
 		/**
 		 * @todo
 		 * @type {boolean}
@@ -352,8 +351,8 @@ TODO: WINDOWS ISSUES
 		 * @since 0.4.1
 		 */
 		this._crossOrigin = (crossOrigin === true)
-				? "Anonymous" : (crossOrigin === false || crossOrigin == null)
-				? "" : crossOrigin;
+			? "Anonymous" : (crossOrigin === false || crossOrigin == null)
+			? "" : crossOrigin;
 
 		/**
 		 * An object hash of callbacks that are fired for each file type before the file is loaded, giving plugins the
@@ -499,6 +498,27 @@ TODO: WINDOWS ISSUES
 		 */
 		this._loadedScripts = [];
 
+		/**
+		 * Hash of all our types, each with an array of possible loaders.
+		 * The default PreloadJS loaders will always be last in the array.
+		 * @type {{}}
+		 */
+		this._availableLoaders = [
+			createjs.JSONLoader,
+			createjs.ManifestLoader,
+			createjs.JSONPLoader,
+			createjs.XMLLoader,
+			createjs.SoundLoader,
+			createjs.ImageLoader,
+			createjs.CSSLoader,
+			createjs.JavascriptLoader,
+			createjs.SVGLoader,
+			createjs.BinaryLoader,
+			createjs.VideoLoader,
+			createjs.TextLoader
+		];
+
+		this._defaultLoaderLength = this._availableLoaders.length;
 	};
 
 	var p = createjs.extend(LoadQueue, createjs.AbstractLoader);
@@ -709,6 +729,36 @@ TODO: WINDOWS ISSUES
 
 
 // public methods
+	/**
+	 * Register custom loaders.  Each new loader will take priority for each datatype.
+	 *
+	 * TO-DO: Docs for writing a custom loader.
+	 *
+	 * @param loader
+	 */
+	p.registerLoader = function(loader) {
+		if (!loader || !loader.canLoadItem) {
+			throw new Error("loader is of an incorrect type.");
+		} else if (this._availableLoaders.indexOf(loader) != -1) {
+			throw new Error("loader already exists.");
+		}
+
+		this._availableLoaders.unshift(loader);
+	};
+
+	/**
+	 * Remove a custom loader.
+	 * ** Note, you can only un-register custom loaders, the defaults will always stay.
+	 *
+	 * @param loader
+	 */
+	p.unregisterLoader = function(loader) {
+		var idx = this._availableLoaders.indexOf(loader);
+		if (idx != -1 && idx < this._defaultLoaderLength-1) {
+			this._availableLoaders.splice(idx, 1);
+		}
+	};
+
 	/**
 	 * Change the usXHR value. Note that if this is set to true, it may fail depending on the browser's capabilities.
 	 * Additionally, some files require XHR in order to load, such as JSON (without JSONP), Text, and XML, so XHR will
@@ -1321,54 +1371,18 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._createLoader = function(item) {
-		var loader = null;
 		// Initially, try and use the provided/supported XHR mode:
 		var useXHR = this.useXHR;
 
-		// Determine the XHR usage overrides:
-		switch (item.type) {
-			case createjs.DataTypes.JSON:
-			case createjs.DataTypes.MANIFEST:
-				useXHR = !item._loadAsJSONP;
-				if (useXHR) {
-					loader = new createjs.JSONLoader(item);
-				} else {
-					loader = new createjs.JSONPLoader(item);
-				}
-				break;
-			case createjs.DataTypes.JSONP:
-				loader = new createjs.JSONPLoader(item);
-				break;
-			case createjs.DataTypes.XML:
-				loader = new createjs.XMLLoader(item);
-				break;
-			case createjs.DataTypes.SOUND:
-				loader = new createjs.SoundLoader(item, useXHR);
-				break;
-			case createjs.DataTypes.IMAGE:
-				loader = new createjs.ImageLoader(item, useXHR);
-				break;
-			case createjs.DataTypes.CSS:
-				loader = new createjs.CSSLoader(item, useXHR);
-				break;
-			case createjs.DataTypes.JAVASCRIPT:
-				loader = new createjs.JavascriptLoader(item, useXHR);
-				break;
-			case createjs.DataTypes.SVG:
-				loader = new createjs.SVGLoader(item, useXHR);
-				break;
-			case createjs.DataTypes.BINARY:
-				loader = new createjs.BinaryLoader(item, useXHR);
-				break;
-			case createjs.DataTypes.VIDEO:
-				console.error("Not supported yet.");
-				break;
-			case createjs.DataTypes.TEXT:
-			default:
-				loader = new createjs.TextLoader(item);
+		for (var i=0;i<this._availableLoaders.length;i++) {
+			var loader = this._availableLoaders[i];
+			if (loader.canLoadItem(item)) {
+				return new loader(item, useXHR);
+			}
 		}
-
-		return loader;
+		
+		// TODO Throw error?
+		return null;
 	};
 
 	/**
