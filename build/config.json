@@ -16,8 +16,6 @@
 		"../src/preloadjs/AbstractLoader.js",
 		"../src/preloadjs/XHRRequest.js",
 		"../src/preloadjs/LoadQueue.js",
-		"../src/preloadjs/TagLoader.js",
-		"../src/preloadjs/XHRLoader.js",
 		"../src/preloadjs/TextLoader.js",
 		"../src/preloadjs/BinaryLoader.js",
 		"../src/preloadjs/CSSLoader.js",

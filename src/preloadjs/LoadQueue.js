@@ -1380,7 +1380,7 @@ TODO: WINDOWS ISSUES
 				return new loader(item, useXHR);
 			}
 		}
-		
+
 		// TODO Throw error?
 		return null;
 	};
@@ -1484,7 +1484,7 @@ TODO: WINDOWS ISSUES
 		var item = loader.getItem();
 
 		this._loadedResults[item.id] = loader.getResult();
-		if (loader instanceof createjs.XHRLoader) {
+		if (loader.useXHR) {
 			this._loadedRawResults[item.id] = loader.getResult(true);
 		}
 
@@ -1512,7 +1512,7 @@ TODO: WINDOWS ISSUES
 				|| item.maintainOrder) {
 
 			//TODO: Evaluate removal of the _currentlyLoadingScript
-			if (loader instanceof createjs.TagLoader && item.type == createjs.LoadQueue.JAVASCRIPT) {
+			if (loader instanceof createjs.JavascriptLoader) {
 				this._currentlyLoadingScript = false;
 			}
 
@@ -1588,7 +1588,7 @@ TODO: WINDOWS ISSUES
 	 * @private
 	 */
 	p._canStartLoad = function(loader) {
-		if (!this.maintainScriptOrder || loader instanceof createjs.XHRLoader) { return true; }
+		if (!this.maintainScriptOrder || loader.useXHR) { return true; }
 		var item = loader.getItem();
 		if (item.type != createjs.LoadQueue.JAVASCRIPT) { return true; }
 		if (this._currentlyLoadingScript) { return false; }
