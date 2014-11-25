@@ -1,31 +1,31 @@
 /*
-* LoadQueue
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-*
-* Copyright (c) 2012 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * LoadQueue
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ *
+ * Copyright (c) 2012 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 /**
  * PreloadJS provides a consistent way to preload content for use in HTML applications. Preloading can be done using
  * HTML tags, as well as XHR.
@@ -87,21 +87,21 @@
  */
 
 // namespace:
-this.createjs = this.createjs||{};
+this.createjs = this.createjs || {};
 
 /*
-TODO: WINDOWS ISSUES
-	* No error for HTML audio in IE 678
-	* SVG no failure error in IE 67 (maybe 8) TAGS AND XHR
-	* No script complete handler in IE 67 TAGS (XHR is fine)
-	* No XML/JSON in IE6 TAGS
-	* Need to hide loading SVG in Opera TAGS
-	* No CSS onload/readystatechange in Safari or Android TAGS (requires rule checking)
-	* SVG no load or failure in Opera XHR
-	* Reported issues with IE7/8
+ TODO: WINDOWS ISSUES
+ * No error for HTML audio in IE 678
+ * SVG no failure error in IE 67 (maybe 8) TAGS AND XHR
+ * No script complete handler in IE 67 TAGS (XHR is fine)
+ * No XML/JSON in IE6 TAGS
+ * Need to hide loading SVG in Opera TAGS
+ * No CSS onload/readystatechange in Safari or Android TAGS (requires rule checking)
+ * SVG no load or failure in Opera XHR
+ * Reported issues with IE7/8
  */
 
-(function() {
+(function () {
 	"use strict";
 
 // constructor
@@ -529,7 +529,6 @@ TODO: WINDOWS ISSUES
 	var p = createjs.extend(LoadQueue, createjs.AbstractLoader);
 	var s = LoadQueue;
 
-
 // static properties
 	/**
 	 * Time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
@@ -653,7 +652,7 @@ TODO: WINDOWS ISSUES
 	s.VIDEO = createjs.DataTypes.VIDEO;
 
 	/**
-     * The preload type for SVG files.
+	 * The preload type for SVG files.
 	 * @property SVG
 	 * @type {String}
 	 * @default svg
@@ -694,7 +693,6 @@ TODO: WINDOWS ISSUES
 	 */
 	s.GET = createjs.RequestMethods.GET;
 
-
 // events
 	/**
 	 * This event is fired when an individual file has loaded, and been processed.
@@ -734,7 +732,6 @@ TODO: WINDOWS ISSUES
 	 * object will contain that value as a property.
 	 */
 
-
 // public methods
 	/**
 	 * Register custom loaders.  Each new loader will take priority for each datatype.
@@ -743,7 +740,7 @@ TODO: WINDOWS ISSUES
 	 *
 	 * @param loader
 	 */
-	p.registerLoader = function(loader) {
+	p.registerLoader = function (loader) {
 		if (!loader || !loader.canLoadItem) {
 			throw new Error("loader is of an incorrect type.");
 		} else if (this._availableLoaders.indexOf(loader) != -1) {
@@ -759,9 +756,9 @@ TODO: WINDOWS ISSUES
 	 *
 	 * @param loader
 	 */
-	p.unregisterLoader = function(loader) {
+	p.unregisterLoader = function (loader) {
 		var idx = this._availableLoaders.indexOf(loader);
-		if (idx != -1 && idx < this._defaultLoaderLength-1) {
+		if (idx != -1 && idx < this._defaultLoaderLength - 1) {
 			this._availableLoaders.splice(idx, 1);
 		}
 	};
@@ -776,7 +773,7 @@ TODO: WINDOWS ISSUES
 	 * the provided value argument was true.
 	 * @since 0.3.0
 	 */
-	p.setUseXHR = function(value) {
+	p.setUseXHR = function (value) {
 		// Determine if we can use XHR. XHR defaults to TRUE, but the browser may not support it.
 		//TODO: Should we be checking for the other XHR types? Might have to do a try/catch on the different types similar to createXHR.
 		this.useXHR = (value != false && window.XMLHttpRequest != null);
@@ -789,7 +786,7 @@ TODO: WINDOWS ISSUES
 	 * @method removeAll
 	 * @since 0.3.0
 	 */
-	p.removeAll = function() {
+	p.removeAll = function () {
 		this.remove();
 	};
 
@@ -813,7 +810,7 @@ TODO: WINDOWS ISSUES
 	 * items, or multiple items as arguments.
 	 * @since 0.3.0
 	 */
-	p.remove = function(idsOrUrls) {
+	p.remove = function (idsOrUrls) {
 		var args = null;
 
 		if (idsOrUrls && !(idsOrUrls instanceof Array)) {
@@ -834,26 +831,26 @@ TODO: WINDOWS ISSUES
 			}
 			this.init(this.useXHR, this._basePath, this._crossOrigin);
 
-		// Remove specific items
+			// Remove specific items
 		} else {
 			while (args.length) {
 				var item = args.pop();
 				var r = this.getResult(item);
 
 				//Remove from the main load Queue
-				for (i = this._loadQueue.length-1;i>=0;i--) {
+				for (i = this._loadQueue.length - 1; i >= 0; i--) {
 					loadItem = this._loadQueue[i].getItem();
 					if (loadItem.id == item || loadItem.src == item) {
-						this._loadQueue.splice(i,1)[0].cancel();
+						this._loadQueue.splice(i, 1)[0].cancel();
 						break;
 					}
 				}
 
 				//Remove from the backup queue
-				for (i = this._loadQueueBackup.length-1;i>=0;i--) {
+				for (i = this._loadQueueBackup.length - 1; i >= 0; i--) {
 					loadItem = this._loadQueueBackup[i].getItem();
 					if (loadItem.id == item || loadItem.src == item) {
-						this._loadQueueBackup.splice(i,1)[0].cancel();
+						this._loadQueueBackup.splice(i, 1)[0].cancel();
 						break;
 					}
 				}
@@ -863,10 +860,10 @@ TODO: WINDOWS ISSUES
 					delete this._loadItemsBySrc[r.src];
 					this._disposeItem(r);
 				} else {
-					for (var i=this._currentLoads.length-1;i>=0;i--) {
+					for (var i = this._currentLoads.length - 1; i >= 0; i--) {
 						var loadItem = this._currentLoads[i].getItem();
 						if (loadItem.id == item || loadItem.src == item) {
-							this._currentLoads.splice(i,1)[0].cancel();
+							this._currentLoads.splice(i, 1)[0].cancel();
 							itemsWereRemoved = true;
 							break;
 						}
@@ -889,7 +886,7 @@ TODO: WINDOWS ISSUES
 	 * @method reset
 	 * @since 0.3.0
 	 */
-	p.reset = function() {
+	p.reset = function () {
 		this.close();
 		for (var n in this._loadItemsById) {
 			this._disposeItem(this._loadItemsById[n]);
@@ -897,7 +894,7 @@ TODO: WINDOWS ISSUES
 
 		//Reset the queue to its start state
 		var a = [];
-		for (var i=0, l=this._loadQueueBackup.length; i<l; i++) {
+		for (var i = 0, l = this._loadQueueBackup.length; i < l; i++) {
 			a.push(this._loadQueueBackup[i].getItem());
 		}
 
@@ -922,18 +919,18 @@ TODO: WINDOWS ISSUES
 	 * @method installPlugin
 	 * @param {Function} plugin The plugin class to install.
 	 */
-	p.installPlugin = function(plugin) {
+	p.installPlugin = function (plugin) {
 		if (plugin == null || plugin.getPreloadHandlers == null) { return; }
 		var map = plugin.getPreloadHandlers();
 		map.scope = plugin;
 
 		if (map.types != null) {
-			for (var i=0, l=map.types.length; i<l; i++) {
+			for (var i = 0, l = map.types.length; i < l; i++) {
 				this._typeCallbacks[map.types[i]] = map;
 			}
 		}
 		if (map.extensions != null) {
-			for (i=0, l=map.extensions.length; i<l; i++) {
+			for (i = 0, l = map.extensions.length; i < l; i++) {
 				this._extensionCallbacks[map.extensions[i]] = map;
 			}
 		}
@@ -969,11 +966,11 @@ TODO: WINDOWS ISSUES
 	 * To clear the queue first, use the {{#crossLink "AbstractLoader/close"}}{{/crossLink}} method.
 	 * @method loadFile
 	 * @param {Object | String} file The file object or path to load. A file can be either
-     * <ul>
-     *     <li>A string path to a resource. Note that this kind of load item will be converted to an object (see below)
+	 * <ul>
+	 *     <li>A string path to a resource. Note that this kind of load item will be converted to an object (see below)
 	 *     in the background.</li>
-     *     <li>OR an {{#crossLink "LoadItem"}}LoadItem{{/crossLink}}</li>
-     * </ul>
+	 *     <li>OR an {{#crossLink "LoadItem"}}LoadItem{{/crossLink}}</li>
+	 * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
 	 * `true`, the queue will resume automatically.
@@ -983,7 +980,7 @@ TODO: WINDOWS ISSUES
 	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
 	 * constructor, or a `path` property in a manifest definition.
 	 */
-	p.loadFile = function(file, loadNow, basePath) {
+	p.loadFile = function (file, loadNow, basePath) {
 		if (file == null) {
 			var event = new createjs.Event("error");
 			event.text = "PRELOAD_NO_FILE";
@@ -1058,7 +1055,7 @@ TODO: WINDOWS ISSUES
 	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
 	 * constructor, or a `path` property in a manifest definition.
 	 */
-	p.loadManifest = function(manifest, loadNow, basePath) {
+	p.loadManifest = function (manifest, loadNow, basePath) {
 		var fileList = null;
 		var path = null;
 
@@ -1072,12 +1069,14 @@ TODO: WINDOWS ISSUES
 			}
 			fileList = manifest;
 
-		// String-based. Only file manifests can be specified this way. Any other types will cause an error when loaded.
+			// String-based. Only file manifests can be specified this way. Any other types will cause an error when loaded.
 		} else if (typeof(manifest) === "string") {
-			fileList = [{
-				src: manifest,
-				type: s.MANIFEST
-			}];
+			fileList = [
+				{
+					src: manifest,
+					type: s.MANIFEST
+				}
+			];
 
 		} else if (typeof(manifest) == "object") {
 
@@ -1092,13 +1091,13 @@ TODO: WINDOWS ISSUES
 				}
 				fileList = [manifest];
 
-			// An object that defines a manifest
+				// An object that defines a manifest
 			} else if (manifest.manifest !== undefined) {
 				fileList = manifest.manifest;
 				path = manifest.path;
 			}
 
-		// Unsupported. This will throw an error.
+			// Unsupported. This will throw an error.
 		} else {
 			var event = new createjs.Event("error");
 			event.text = "PRELOAD_MANIFEST_NULL";
@@ -1106,7 +1105,7 @@ TODO: WINDOWS ISSUES
 			return;
 		}
 
-		for (var i=0, l=fileList.length; i<l; i++) {
+		for (var i = 0, l = fileList.length; i < l; i++) {
 			this._addItem(fileList[i], path, basePath);
 		}
 
@@ -1119,7 +1118,7 @@ TODO: WINDOWS ISSUES
 	};
 
 	// Overrides abstract method in AbstractLoader
-	p.load = function() {
+	p.load = function () {
 		this.setPaused(false);
 	};
 
@@ -1133,7 +1132,7 @@ TODO: WINDOWS ISSUES
 	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}. This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}
 	 * event as the `item` parameter.
 	 */
-	p.getItem = function(value) {
+	p.getItem = function (value) {
 		return this._loadItemsById[value] || this._loadItemsBySrc[value];
 	};
 
@@ -1147,7 +1146,7 @@ TODO: WINDOWS ISSUES
 	 * loaded via XHR such as scripts, XML, CSS, and Images. If there is no raw result, the formatted result will be
 	 * returned instead.
 	 * @return {Object} A result object containing the content that was loaded, such as:
-     * <ul>
+	 * <ul>
 	 *      <li>An image tag (&lt;image /&gt;) for images</li>
 	 *      <li>A script tag for JavaScript (&lt;script /&gt;). Note that scripts are automatically added to the HTML
 	 *      DOM.</li>
@@ -1160,10 +1159,10 @@ TODO: WINDOWS ISSUES
 	 *      loaded audio. Specifically, audio loaded by Flash and WebAudio will return a loader object using this method
 	 *      which can not be used to play audio back.</li>
 	 * </ul>
-     * This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}  event as the 'item`
+	 * This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}  event as the 'item`
 	 * parameter. Note that if a raw result is requested, but not found, the result will be returned instead.
 	 */
-	p.getResult = function(value, rawResult) {
+	p.getResult = function (value, rawResult) {
 		var item = this._loadItemsById[value] || this._loadItemsBySrc[value];
 		if (item == null) { return null; }
 		var id = item.id;
@@ -1182,7 +1181,7 @@ TODO: WINDOWS ISSUES
 	 * @method setPaused
 	 * @param {Boolean} value Whether the queue should be paused or not.
 	 */
-	p.setPaused = function(value) {
+	p.setPaused = function (value) {
 		this._paused = value;
 		if (!this._paused) {
 			this._loadNext();
@@ -1190,7 +1189,7 @@ TODO: WINDOWS ISSUES
 	};
 
 	// Overrides abstract method in AbstractLoader
-	p.close = function() {
+	p.close = function () {
 		while (this._currentLoads.length) {
 			this._currentLoads.pop().cancel();
 		}
@@ -1198,7 +1197,6 @@ TODO: WINDOWS ISSUES
 		this._loadedScripts.length = 0;
 		this.loadStartWasDispatched = false;
 	};
-
 
 // protected methods
 	/**
@@ -1216,7 +1214,7 @@ TODO: WINDOWS ISSUES
 	 * version.
 	 * @private
 	 */
-	p._addItem = function(value, path, basePath) {
+	p._addItem = function (value, path, basePath) {
 		var item = this._createLoadItem(value, path, basePath); // basePath and manifest path are added to the src.
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
 		var loader = this._createLoader(item);
@@ -1230,10 +1228,10 @@ TODO: WINDOWS ISSUES
 
 			// Only worry about script order when using XHR to load scripts. Tags are only loading one at a time.
 			if ((this.maintainScriptOrder
-					&& item.type == createjs.LoadQueue.JAVASCRIPT
+				 && item.type == createjs.LoadQueue.JAVASCRIPT
 					//&& loader instanceof createjs.XHRLoader //NOTE: Have to track all JS files this way
-					)
-					|| item.maintainOrder === true) {
+				)
+				|| item.maintainOrder === true) {
 				this._scriptOrder.push(item);
 				this._loadedScripts.push(null);
 			}
@@ -1249,7 +1247,7 @@ TODO: WINDOWS ISSUES
 	 * alter the load item.
 	 * @method _createLoadItem
 	 * @param {String | Object | HTMLAudioElement | HTMLImageElement} value The item that needs to be preloaded.
- 	 * @param {String} [path] A path to prepend to the item's source. Sources beginning with http:// or similar will
+	 * @param {String} [path] A path to prepend to the item's source. Sources beginning with http:// or similar will
 	 * not receive a path. Since PreloadJS 0.4.1, the src will be modified to include the `path` and {{#crossLink "LoadQueue/_basePath:property"}}{{/crossLink}}
 	 * when it is added.
 	 * @param {String} [basePath] <strong>Deprectated</strong> A base path to prepend to the items source in addition to
@@ -1257,15 +1255,16 @@ TODO: WINDOWS ISSUES
 	 * @return {Object} The loader instance that will be used.
 	 * @private
 	 */
-	p._createLoadItem = function(value, path, basePath) {
+	p._createLoadItem = function (value, path, basePath) {
 		var item = null;
 
 		// Create/modify a load item
-		switch(typeof(value)) {
+		switch (typeof(value)) {
 			case "string":
 				item = {
 					src: value
-				}; break;
+				};
+				break;
 			case "object":
 				if (window.HTMLAudioElement && value instanceof window.HTMLAudioElement) {
 					item = {
@@ -1315,7 +1314,7 @@ TODO: WINDOWS ISSUES
 
 		// If there's no id, set one now.
 		if (item.id === undefined || item.id === null || item.id === "") {
-            item.id = autoId;
+			item.id = autoId;
 		}
 
 		// Give plugins a chance to modify the loadItem:
@@ -1323,18 +1322,18 @@ TODO: WINDOWS ISSUES
 		if (customHandler) {
 			// Plugins are now passed both the full source, as well as a combined path+basePath (appropriately)
 			var result = customHandler.callback.call(customHandler.scope, item.src, item.type, item.id, item.data,
-					bp, this);
+													 bp, this);
 			// NOTE: BasePath argument is deprecated. We pass it to plugins.allow SoundJS to modify the file. The full path is sent to the plugin
 
 			// The plugin will handle the load, or has canceled it. Ignore it.
 			if (result === false) {
 				return null;
 
-			// Load as normal:
+				// Load as normal:
 			} else if (result === true) {
 				// Do Nothing
 
-			// Result is a loader class:
+				// Result is a loader class:
 			} else {
 				if (result.src != null) { item.src = result.src; }
 				if (result.data != null) { item.data = result.data; }
@@ -1342,7 +1341,7 @@ TODO: WINDOWS ISSUES
 				if (result.tag != null) { // Assumes that the returned tag either has a load method or a src setter.
 					item.tag = result.tag;
 				}
-                if (result.completeHandler != null) { item.completeHandler = result.completeHandler; }
+				if (result.completeHandler != null) { item.completeHandler = result.completeHandler; }
 
 				// Allow type overriding:
 				if (result.type) { item.type = result.type; }
@@ -1371,11 +1370,11 @@ TODO: WINDOWS ISSUES
 	 * @return {AbstractLoader} A loader that can be used to load content.
 	 * @private
 	 */
-	p._createLoader = function(item) {
+	p._createLoader = function (item) {
 		// Initially, try and use the provided/supported XHR mode:
 		var useXHR = this.useXHR;
 
-		for (var i=0;i<this._availableLoaders.length;i++) {
+		for (var i = 0; i < this._availableLoaders.length; i++) {
 			var loader = this._availableLoaders[i];
 			if (loader.canLoadItem(item)) {
 				return new loader(item, useXHR);
@@ -1394,7 +1393,7 @@ TODO: WINDOWS ISSUES
 	 * @method _loadNext
 	 * @private
 	 */
-	p._loadNext = function() {
+	p._loadNext = function () {
 		if (this._paused) { return; }
 
 		// Only dispatch loadstart event when the first file is loaded.
@@ -1417,7 +1416,7 @@ TODO: WINDOWS ISSUES
 		}
 
 		// Must iterate forwards to load in the right order.
-		for (var i=0; i<this._loadQueue.length; i++) {
+		for (var i = 0; i < this._loadQueue.length; i++) {
 			if (this._currentLoads.length >= this._maxConnections) { break; }
 			var loader = this._loadQueue[i];
 
@@ -1425,8 +1424,8 @@ TODO: WINDOWS ISSUES
 			// Note: maintainOrder items don't do anything here because we can hold onto their loaded value
 			if (!this._canStartLoad(loader)) { continue; }
 			this._loadQueue.splice(i, 1);
-  			i--;
-            this._loadItem(loader);
+			i--;
+			this._loadItem(loader);
 		}
 	};
 
@@ -1436,7 +1435,7 @@ TODO: WINDOWS ISSUES
 	 * @param {AbstractLoader} loader The loader instance to start. Currently, this will be an XHRLoader or TagLoader.
 	 * @private
 	 */
-	p._loadItem = function(loader) {
+	p._loadItem = function (loader) {
 		loader.on("progress", this._handleProgress, this);
 		loader.on("complete", this._handleFileComplete, this);
 		loader.on("error", this._handleFileError, this);
@@ -1452,7 +1451,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Object} event The error event, containing relevant error information.
 	 * @private
 	 */
-	p._handleFileError = function(event) {
+	p._handleFileError = function (event) {
 		var loader = event.target;
 		this._numItemsLoaded++;
 
@@ -1480,7 +1479,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Object} event The event object from the loader.
 	 * @private
 	 */
-	p._handleFileComplete = function(event) {
+	p._handleFileComplete = function (event) {
 		var loader = event.target;
 		var item = loader.getItem();
 
@@ -1506,11 +1505,11 @@ TODO: WINDOWS ISSUES
 	 * behaviour if it is.
 	 * @private
 	 */
-	p._finishOrderedItem = function(loader, loadFailed) {
+	p._finishOrderedItem = function (loader, loadFailed) {
 		var item = loader.getItem();
 
 		if ((this.maintainScriptOrder && item.type == createjs.LoadQueue.JAVASCRIPT)
-				|| item.maintainOrder) {
+			|| item.maintainOrder) {
 
 			//TODO: Evaluate removal of the _currentlyLoadingScript
 			if (loader instanceof createjs.JavascriptLoader) {
@@ -1540,10 +1539,10 @@ TODO: WINDOWS ISSUES
 	p._checkScriptLoadOrder = function () {
 		var l = this._loadedScripts.length;
 
-		for (var i=0;i<l;i++) {
+		for (var i = 0; i < l; i++) {
 			var item = this._loadedScripts[i];
 			if (item === null) { break; } // This is still loading. Do not process further.
- 			if (item === true) { continue; } // This has completed, and been processed. Move on.
+			if (item === true) { continue; } // This has completed, and been processed. Move on.
 
 			var loadItem = this._loadedResults[item.id];
 			if (item.type == createjs.LoadQueue.JAVASCRIPT) {
@@ -1563,7 +1562,7 @@ TODO: WINDOWS ISSUES
 	 * @param {AbstractLoader} loader
 	 * @protected
 	 */
-	p._processFinishedLoad = function(item, loader) {
+	p._processFinishedLoad = function (item, loader) {
 		// If the item was a manifest, then queue it up!
 		if (item.type == createjs.LoadQueue.MANIFEST) {
 			var result = loader.getResult();
@@ -1588,7 +1587,7 @@ TODO: WINDOWS ISSUES
 	 * @return {Boolean} Whether the item can start a load or not.
 	 * @private
 	 */
-	p._canStartLoad = function(loader) {
+	p._canStartLoad = function (loader) {
 		if (!this.maintainScriptOrder || loader.useXHR) { return true; }
 		var item = loader.getItem();
 		if (item.type != createjs.LoadQueue.JAVASCRIPT) { return true; }
@@ -1611,15 +1610,16 @@ TODO: WINDOWS ISSUES
 	 * @param {AbstractLoader} loader A loader instance to remove.
 	 * @private
 	 */
-	p._removeLoadItem = function(loader) {
+	p._removeLoadItem = function (loader) {
 		var item = loader.getItem();
 		delete item._loader;
 		delete item._loadAsJSONP;
 
 		var l = this._currentLoads.length;
-		for (var i=0;i<l;i++) {
+		for (var i = 0; i < l; i++) {
 			if (this._currentLoads[i] == loader) {
-				this._currentLoads.splice(i,1); break;
+				this._currentLoads.splice(i, 1);
+				break;
 			}
 		}
 	};
@@ -1630,7 +1630,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Object} event The progress event from the item.
 	 * @private
 	 */
-	p._handleProgress = function(event) {
+	p._handleProgress = function (event) {
 		var loader = event.target;
 		this._sendFileProgress(loader.getItem(), loader.progress);
 		this._updateProgress();
@@ -1651,13 +1651,13 @@ TODO: WINDOWS ISSUES
 	 */
 	p._updateProgress = function () {
 		var loaded = this._numItemsLoaded / this._numItems; // Fully Loaded Progress
-		var remaining = this._numItems-this._numItemsLoaded;
+		var remaining = this._numItems - this._numItemsLoaded;
 		if (remaining > 0) {
 			var chunk = 0;
-			for (var i=0, l=this._currentLoads.length; i<l; i++) {
+			for (var i = 0, l = this._currentLoads.length; i < l; i++) {
 				chunk += this._currentLoads[i].progress;
 			}
-			loaded += (chunk / remaining) * (remaining/this._numItems);
+			loaded += (chunk / remaining) * (remaining / this._numItems);
 		}
 		this._sendProgress(loaded);
 	};
@@ -1669,7 +1669,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Object} item The item that was passed in for preloading.
 	 * @private
 	 */
-	p._disposeItem = function(item) {
+	p._disposeItem = function (item) {
 		delete this._loadedResults[item.id];
 		delete this._loadedRawResults[item.id];
 		delete this._loadItemsById[item.id];
@@ -1684,7 +1684,7 @@ TODO: WINDOWS ISSUES
 	 * @param {Number} progress The amount the item has been loaded (between 0 and 1).
 	 * @protected
 	 */
-	p._sendFileProgress = function(item, progress) {
+	p._sendFileProgress = function (item, progress) {
 		if (this._isCanceled()) {
 			this._cleanUp();
 			return;
@@ -1708,7 +1708,7 @@ TODO: WINDOWS ISSUES
 	 * @param {TagLoader | XHRLoader} loader
 	 * @protected
 	 */
-	p._sendFileComplete = function(item, loader) {
+	p._sendFileComplete = function (item, loader) {
 		if (this._isCanceled()) { return; }
 
 		var event = new createjs.Event("fileload");
@@ -1717,10 +1717,10 @@ TODO: WINDOWS ISSUES
 		event.result = this._loadedResults[item.id];
 		event.rawResult = this._loadedRawResults[item.id];
 
-        // This calls a handler specified on the actual load item. Currently, the SoundJS plugin uses this.
-        if (item.completeHandler) {
-            item.completeHandler(event);
-        }
+		// This calls a handler specified on the actual load item. Currently, the SoundJS plugin uses this.
+		if (item.completeHandler) {
+			item.completeHandler(event);
+		}
 
 		this.hasEventListener("fileload") && this.dispatchEvent(event);
 	};
@@ -1732,13 +1732,13 @@ TODO: WINDOWS ISSUES
 	 * @param {Object} item The item that is being loaded.
 	 * @protected
 	 */
-	p._sendFileStart = function(item) {
+	p._sendFileStart = function (item) {
 		var event = new createjs.Event("filestart");
 		event.item = item;
 		this.hasEventListener("filestart") && this.dispatchEvent(event);
 	};
 
-	p.toString = function() {
+	p.toString = function () {
 		return "[PreloadJS LoadQueue]";
 	};
 

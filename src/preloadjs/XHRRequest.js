@@ -55,7 +55,7 @@ this.createjs = this.createjs || {};
 	function XHRRequest(item, crossOrigin) {
 		this.AbstractLoader_constructor();
 
-	// protected properties
+		// protected properties
 		/**
 		 * A reference to the XHR request used to load the content.
 		 * @property _request
@@ -119,7 +119,6 @@ this.createjs = this.createjs || {};
 
 	var p = createjs.extend(XHRRequest, createjs.AbstractLoader);
 
-
 // static properties
 	/**
 	 * A list of XMLHTTP object IDs to try when building an ActiveX object for XHR requests in earlier versions of IE.
@@ -136,7 +135,6 @@ this.createjs = this.createjs || {};
 		"MSXML2.XMLHTTP",
 		"Microsoft.XMLHTTP"
 	];
-
 
 // Public methods
 	/**
@@ -226,7 +224,7 @@ this.createjs = this.createjs || {};
 	 * @since 0.4.1
 	 */
 	p.getAllResponseHeaders = function () {
-		if  (this._request.getAllResponseHeaders instanceof Function) {
+		if (this._request.getAllResponseHeaders instanceof Function) {
 			return this._request.getAllResponseHeaders();
 		} else {
 			return null;
@@ -250,7 +248,6 @@ this.createjs = this.createjs || {};
 			return null;
 		}
 	};
-
 
 // protected methods
 	/**
@@ -361,7 +358,6 @@ this.createjs = this.createjs || {};
 		this._sendError(event);
 	};
 
-
 // Protected
 	/**
 	 * Determine if there is an error in the current load. This checks the status of the request for problem codes. Note
@@ -443,13 +439,13 @@ this.createjs = this.createjs || {};
 				req = new XDomainRequest();
 			}
 		} else { // Old IE versions use a different approach
-			for (var i = 0, l=s.ACTIVEX_VERSIONS.length; i<l; i++) {
-	            var axVersion = s.ACTIVEX_VERSIONS[i];
-	            try {
-	                req = new ActiveXObject(axVersions);
-		            break;
-	            } catch (e) {}
-	        }
+			for (var i = 0, l = s.ACTIVEX_VERSIONS.length; i < l; i++) {
+				var axVersion = s.ACTIVEX_VERSIONS[i];
+				try {
+					req = new ActiveXObject(axVersions);
+					break;
+				} catch (e) {}
+			}
 			if (req == null) { return false; }
 		}
 

@@ -1,6 +1,6 @@
-this.createjs = this.createjs||{};
+this.createjs = this.createjs || {};
 
-(function() {
+(function () {
 	"use strict";
 
 	/**

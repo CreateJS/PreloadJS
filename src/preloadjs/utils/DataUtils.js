@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
 	var s = {};
 
@@ -36,7 +36,7 @@
 	 * @param value
 	 * @returns {*}
 	 */
-	s.parseJSON = function(value) {
+	s.parseJSON = function (value) {
 		if (value == null) {
 			return null;
 		}

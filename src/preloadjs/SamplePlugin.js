@@ -1,6 +1,6 @@
 /** @module PreloadJS */
 
-(function() {
+(function () {
 	"use strict";
 
 	/**
@@ -43,22 +43,23 @@
 	 * @class SamplePlugin
 	 * @static
 	 */
-	var SamplePlugin = function() {}
+	var SamplePlugin = function () {
+	}
 	var s = SamplePlugin;
 
 	/**
 	 * When a plugin is installed, this method will be called to let PreloadJS know when to invoke the plugin.
 	 *
 	 * PreloadJS expects this method to return an object containing:
-     * <ul>
-     *     <li><strong>callback:</strong> The function to call on the plugin class right before an item is loaded. Check
+	 * <ul>
+	 *     <li><strong>callback:</strong> The function to call on the plugin class right before an item is loaded. Check
 	 *     out the {{#crossLink "SamplePlugin/preloadHandler"}}{{/crossLink}} method for more information. The callback
 	 *     is automatically called in the scope of the plugin.</li>
-     *     <li><strong>types:</strong> An array of recognized PreloadJS load types to handle. Supported load types are
+	 *     <li><strong>types:</strong> An array of recognized PreloadJS load types to handle. Supported load types are
 	 *     "binary","image", "javascript", "json", "jsonp", "sound", "svg", "text", and "xml".</li>
-     *     <li><strong>extensions:</strong> An array of strings containing file extensions to handle, such as "jpg",
+	 *     <li><strong>extensions:</strong> An array of strings containing file extensions to handle, such as "jpg",
 	 *     "mp3", etc. This only fires if an applicable type handler is not found by the plugin.</li>
-     * </ul>
+	 * </ul>
 	 *
 	 * Note that currently, PreloadJS only supports a single handler for each extension or file type.
 	 *
@@ -79,7 +80,7 @@
 	 * @method getPreloadHandlers
 	 * @return {Object} An object defining a callback, type handlers, and extension handlers (see description)
 	 */
-	s.getPreloadHandlers = function() {
+	s.getPreloadHandlers = function () {
 		return {
 			callback: s.preloadHandler, // Proxy the method to maintain scope
 			types: ["image"],
@@ -155,7 +156,7 @@
 	 * @param queue {LoadQueue} The {{#crossLink "LoadQueue"}}{{/crossLink}} instance that is preloading the item.
 	 * @return {Boolean|Object} How PreloadJS should handle the load. See the main description for more info.
 	 */
-	s.preloadHandler = function(src, type, id, data, basePath, queue) {
+	s.preloadHandler = function (src, type, id, data, basePath, queue) {
 		var options = {};
 
 		// Tell PreloadJS to skip this file
@@ -182,7 +183,7 @@
 	 * @method fileLoadHandler
 	 * @param event {Object} A {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event.
 	 */
-	s.fileLoadHandler = function(event) {
+	s.fileLoadHandler = function (event) {
 		// Do something with the result.
 	};
 
