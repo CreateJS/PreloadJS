@@ -518,6 +518,11 @@ TODO: WINDOWS ISSUES
 			createjs.TextLoader
 		];
 
+		/**
+		 * Store off how many built in loaders we have, so they can't be removed by unregisterLoader().
+		 *
+		 * @private
+		 */
 		this._defaultLoaderLength = this._availableLoaders.length;
 	};
 
@@ -529,11 +534,13 @@ TODO: WINDOWS ISSUES
 	/**
 	 * Time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
 	 * event is dispatched if the timeout is reached before any data is received.
+	 *
 	 * @property loadTimeout
 	 * @type {Number}
 	 * @default 8000
 	 * @static
 	 * @since 0.4.1
+	 * @depricated In favour of LoadItem.loadTimeout
 	 */
 	s.loadTimeout = 8000;
 
@@ -1351,6 +1358,8 @@ TODO: WINDOWS ISSUES
 		// Store the item for lookup. This also helps clean-up later.
 		this._loadItemsById[item.id] = item;
 		this._loadItemsBySrc[item.src] = item;
+
+		item.loadTimeout = s.loadTimeout;
 
 		return item;
 	};
