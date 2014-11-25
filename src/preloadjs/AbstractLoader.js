@@ -337,7 +337,7 @@ this.createjs = this.createjs || {};
 	};
 
 	p._loadWithXHR = function () {
-		this._xhr = new createjs.XHRRequest(this._item, false, this.type);
+		this._xhr = new createjs.XHRRequest(this._item, false);
 		this._xhr.on("complete", this, this);
 		this._xhr.on("progress", this, this);
 		this._xhr.on("loadStart", this, this);
