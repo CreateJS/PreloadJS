@@ -377,9 +377,14 @@ this.createjs = this.createjs||{};
 				this._sendError(event);
 				break;
 			case "loadstart":
+				this._sendLoadStart();
+				break;
 			case "abort":
 			case "timeout":
-				console.warn("Event not supported yet.");
+				if (!this._isCanceled()) {
+					this.dispatchEvent(event.type);
+				}
+				break;
 		}
 	};
 
