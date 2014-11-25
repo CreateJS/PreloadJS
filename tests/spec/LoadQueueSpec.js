@@ -96,12 +96,20 @@ describe("PreloadJS.LoadQueue", function () {
 		this.loadFile({src: "Thunder.mp3", type: createjs.LoadQueue.BINARY});
 	});
 
-	it("should load svg", function (done) {
+	it("should load svg (tag)", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
 			expect(typeof evt.result).toBe("object");
 			done();
 		});
 		this.loadFile("gbot.svg");
+	});
+
+	it("should load svg (xhr)", function (done) {
+		this.queue.addEventListener("fileload", function (evt) {
+			expect(typeof evt.result).toBe("object");
+			done();
+		});
+		this.loadFile("gbot.svg", true);
 	});
 
 	it("should load text", function (done) {
