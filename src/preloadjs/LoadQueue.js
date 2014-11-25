@@ -1838,22 +1838,4 @@ TODO: WINDOWS ISSUES
 	};
 
 	createjs.LoadQueue = createjs.promote(LoadQueue, "AbstractLoader");
-
-
-// helper classes
-	// An additional module to determine the current browser, version, operating system, and other environmental variables.
-	var BrowserDetect = function() {}
-
-	BrowserDetect.init = function() {
-		var agent = navigator.userAgent;
-		BrowserDetect.isFirefox = (agent.indexOf("Firefox") > -1);
-		BrowserDetect.isOpera = (window.opera != null);
-		BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);
-		BrowserDetect.isIOS = agent.indexOf("iPod") > -1 || agent.indexOf("iPhone") > -1 || agent.indexOf("iPad") > -1;
-	};
-
-	BrowserDetect.init();
-
-	createjs.LoadQueue.BrowserDetect = BrowserDetect;
-
 }());
