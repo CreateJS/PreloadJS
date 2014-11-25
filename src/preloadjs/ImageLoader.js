@@ -47,6 +47,7 @@ this.createjs = this.createjs||{};
 		this._tagSrcAttribute = "src";
 
 		this._tag = document.createElement("img");
+		this._tag.style.visibility = "hidden";
 
 		this.on("initialize", this._updateXHR, this);
 		this.resultFormatter = this._formatResult;
@@ -86,10 +87,11 @@ this.createjs = this.createjs||{};
 	};
 
 	p._formatResult = function(loader) {
+		var URL = window.URL || window.webkitURL;
 		if (!this._useXHR) {
 			document.body.removeChild(loader.getTag());
-		} else if (window.URL && window.URL.createObjectURL) {
-			var objURL = window.URL.createObjectURL(loader.getResult(true));
+		} else if (URL) {
+			var objURL = URL.createObjectURL(loader.getResult(true));
 			this._tag.src = objURL;
 			this._tag.onLoad = function() {
 				window.URL.revokeObjectURL(this.src);
@@ -98,6 +100,7 @@ this.createjs = this.createjs||{};
 			loader.getTag().src = loader.getItem().src;
 		}
 
+		this._tag.style.visibility = "visible";
 		return this._tag;
 	};
 
