@@ -49,14 +49,14 @@
 	 * property, which is the lowercase extension.
 	 * @private
 	 */
-	s.parseURI = function(path) {
-		var info = { absolute: false, relative: false };
-		if (path == null) { return info; };
+	s.parseURI = function (path) {
+		var info = {absolute: false, relative: false};
+		if (path == null) { return info; }
 
 		// Drop the query string
 		var queryIndex = path.indexOf("?");
 		if (queryIndex > -1) {
-			path = path.substr(0,queryIndex);
+			path = path.substr(0, queryIndex);
 		}
 
 		// Absolute
@@ -64,7 +64,7 @@
 		if (s.ABSOLUTE_PATT.test(path)) {
 			info.absolute = true;
 
-		// Relative
+			// Relative
 		} else if (s.RELATIVE_PATT.test(path)) {
 			info.relative = true;
 		}
@@ -83,13 +83,13 @@
 	 * @param {Array} [query] Existing name/value pairs to append on to this query.
 	 * @private
 	 */
-	s.formatQueryString = function(data, query) {
+	s.formatQueryString = function (data, query) {
 		if (data == null) {
 			throw new Error('You must specify data.');
 		}
 		var params = [];
 		for (var n in data) {
-			params.push(n+'='+escape(data[n]));
+			params.push(n + '=' + escape(data[n]));
 		}
 		if (query) {
 			params = params.concat(query);
@@ -107,7 +107,7 @@
 	 * @returns {string} A formatted string that contains the path and the supplied parameters.
 	 * @since 0.3.1
 	 */
-	s.buildPath = function(src, data) {
+	s.buildPath = function (src, data) {
 		if (data == null) {
 			return src;
 		}
@@ -116,7 +116,7 @@
 		var idx = src.indexOf('?');
 
 		if (idx != -1) {
-			var q = src.slice(idx+1);
+			var q = src.slice(idx + 1);
 			query = query.concat(q.split('&'));
 		}
 
@@ -133,7 +133,7 @@
 	 * @return {Boolean} If the load item is loading from a different domain than the current location.
 	 * @private
 	 */
-	s.isCrossDomain = function(item) {
+	s.isCrossDomain = function (item) {
 		var target = document.createElement("a");
 		target.href = item.src;
 
@@ -141,9 +141,9 @@
 		host.href = location.href;
 
 		var crossdomain = (target.hostname != "") &&
-				(target.port != host.port ||
-						target.protocol != host.protocol ||
-						target.hostname != host.hostname);
+						  (target.port != host.port ||
+						   target.protocol != host.protocol ||
+						   target.hostname != host.hostname);
 		return crossdomain;
 	};
 
@@ -154,12 +154,11 @@
 	 * well.
 	 * @private
 	 */
-	s.isLocal = function(item) {
+	s.isLocal = function (item) {
 		var target = document.createElement("a");
 		target.href = item.src;
 		return target.hostname == "" && target.protocol == "file:";
 	};
-
 
 	/**
 	 * Determine if a specific type should be loaded as a binary file. Currently, only images and items marked
@@ -171,7 +170,7 @@
 	 * @return {Boolean} If the specified type is binary.
 	 * @private
 	 */
-	s.isBinary = function(type) {
+	s.isBinary = function (type) {
 		switch (type) {
 			case createjs.DataTypes.IMAGE:
 			case createjs.DataTypes.BINARY:
@@ -188,7 +187,7 @@
 	 * @return {Boolean} If the specified type is text.
 	 * @private
 	 */
-	s.isText = function(type) {
+	s.isText = function (type) {
 		switch (type) {
 			case createjs.DataTypes.TEXT:
 			case createjs.DataTypes.JSON:
@@ -201,6 +200,49 @@
 				return true;
 			default:
 				return false;
+		}
+	};
+
+	/**
+	 * Determine the type of the object using common extensions. Note that the type can be passed in with the load item
+	 * if it is an unusual extension.
+	 * @param {String} extension The file extension to use to determine the load type.
+	 * @return {String} The determined load type (for example, <code>LoadQueue.IMAGE</code> or null if it can not be
+	 * determined by the extension.
+	 * @private
+	 */
+	s.getTypeByExtension = function (extension) {
+		if (extension == null) {
+			return createjs.LoadQueue.TEXT;
+		}
+		switch (extension.toLowerCase()) {
+			case "jpeg":
+			case "jpg":
+			case "gif":
+			case "png":
+			case "webp":
+			case "bmp":
+				return createjs.LoadQueue.IMAGE;
+			case "ogg":
+			case "mp3":
+			case "webm":
+				return createjs.LoadQueue.SOUND;
+			case "mp4":
+			case "webm":
+			case "ts":
+				return createjs.LoadQueue.VIDEO;
+			case "json":
+				return createjs.LoadQueue.JSON;
+			case "xml":
+				return createjs.LoadQueue.XML;
+			case "css":
+				return createjs.LoadQueue.CSS;
+			case "js":
+				return createjs.LoadQueue.JAVASCRIPT;
+			case 'svg':
+				return createjs.LoadQueue.SVG;
+			default:
+				return createjs.LoadQueue.TEXT;
 		}
 	};
 

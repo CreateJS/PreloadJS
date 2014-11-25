@@ -1278,7 +1278,7 @@ TODO: WINDOWS ISSUES
 		var match = createjs.RequestUtils.parseURI(item.src);
 		if (match.extension) { item.ext = match.extension; }
 		if (item.type == null) {
-			item.type = this._getTypeByExtension(item.ext);
+			item.type = createjs.RequestUtils.getTypeByExtension(item.ext);
 		}
 
 		// Inject path & basePath
@@ -1301,17 +1301,9 @@ TODO: WINDOWS ISSUES
 		item.src = bp + item.src;
 		item.path = bp;
 
+		//TODO: Move into ManifestLoader
 		if (item.type == createjs.LoadQueue.JSON || item.type == createjs.LoadQueue.MANIFEST) {
 			item._loadAsJSONP = (item.callback != null);
-		}
-
-		if (item.type == createjs.LoadQueue.JSONP && item.callback == null) {
-			throw new Error('callback is required for loading JSONP requests.');
-		}
-
-		// Create a tag for the item. This ensures there is something to either load with or populate when finished.
-		if (item.tag === undefined || item.tag === null) {
-			item.tag = this._createTag(item);
 		}
 
 		// If there's no id, set one now.
@@ -1325,7 +1317,7 @@ TODO: WINDOWS ISSUES
 			// Plugins are now passed both the full source, as well as a combined path+basePath (appropriately)
 			var result = customHandler.callback.call(customHandler.scope, item.src, item.type, item.id, item.data,
 					bp, this);
-			// NOTE: BasePath argument is deprecated. We pass it to plugins.allow SoundJS to modify the file. to sanymore. The full path is sent to the plugin
+			// NOTE: BasePath argument is deprecated. We pass it to plugins.allow SoundJS to modify the file. The full path is sent to the plugin
 
 			// The plugin will handle the load, or has canceled it. Ignore it.
 			if (result === false) {
@@ -1673,102 +1665,6 @@ TODO: WINDOWS ISSUES
 		delete this._loadedRawResults[item.id];
 		delete this._loadItemsById[item.id];
 		delete this._loadItemsBySrc[item.src];
-	};
-
-
-	/**
-	 * Create an HTML tag. This is in LoadQueue instead of {{#crossLink "TagLoader"}}{{/crossLink}} because no matter
-	 * how we load the data, we may need to return it in a tag.
-	 * @method _createTag
-	 * @param {String} type The item type. Items are passed in by the developer, or deteremined by the extension.
-	 * @return {HTMLImageElement|HTMLAudioElement|HTMLScriptElement|HTMLLinkElement|Object} The tag that is created.
-	 * Note that tags are not appended to the HTML body.
-	 * @private
-	 */
-	p._createTag = function(item) {
-		var tag = null;
-		switch (item.type) {
-			case createjs.LoadQueue.IMAGE:
-				tag = document.createElement("img");
-				if (this._crossOrigin != "" && !tcreatejs.RequestUtils.isLocal(item)) { tag.crossOrigin = this._crossOrigin; }
-				return tag;
-			case createjs.LoadQueue.SOUND:
-				tag = document.createElement("audio");
-				tag.autoplay = false;
-				// Note: The type property doesn't seem necessary.
-				return tag;
-			case createjs.LoadQueue.VIDEO:
-				tag = document.createElement("video");
-				return tag;
-			case createjs.LoadQueue.JSON:
-			case createjs.LoadQueue.JSONP:
-			case createjs.LoadQueue.JAVASCRIPT:
-			case createjs.LoadQueue.MANIFEST:
-				tag = document.createElement("script");
-				tag.type = "text/javascript";
-				return tag;
-			case createjs.LoadQueue.CSS:
-				if (this.useXHR) {
-					tag = document.createElement("style");
-				} else {
-					tag = document.createElement("link");
-				}
-				tag.rel  = "stylesheet";
-				tag.type = "text/css";
-				return tag;
-			case createjs.LoadQueue.SVG:
-				if (this.useXHR) {
-					tag = document.createElement("svg");
-				} else {
-					tag = document.createElement("object");
-					tag.type = "image/svg+xml";
-				}
-				return tag;
-		}
-		return null;
-	};
-
-	/**
-	 * Determine the type of the object using common extensions. Note that the type can be passed in with the load item
-	 * if it is an unusual extension.
-	 * @param {String} extension The file extension to use to determine the load type.
-	 * @return {String} The determined load type (for example, <code>LoadQueue.IMAGE</code> or null if it can not be
-	 * determined by the extension.
-	 * @private
-	 */
-	p._getTypeByExtension = function(extension) {
-		if (extension == null) {
-			return createjs.LoadQueue.TEXT;
-		}
-		switch (extension.toLowerCase()) {
-			case "jpeg":
-			case "jpg":
-			case "gif":
-			case "png":
-			case "webp":
-			case "bmp":
-				return createjs.LoadQueue.IMAGE;
-			case "ogg":
-			case "mp3":
-			case "webm":
-				return createjs.LoadQueue.SOUND;
-			case "mp4":
-			case "webm":
-			case "ts":
-				return createjs.LoadQueue.VIDEO;
-			case "json":
-				return createjs.LoadQueue.JSON;
-			case "xml":
-				return createjs.LoadQueue.XML;
-			case "css":
-				return createjs.LoadQueue.CSS;
-			case "js":
-				return createjs.LoadQueue.JAVASCRIPT;
-			case 'svg':
-				return createjs.LoadQueue.SVG;
-			default:
-				return createjs.LoadQueue.TEXT;
-		}
 	};
 
 	/**
