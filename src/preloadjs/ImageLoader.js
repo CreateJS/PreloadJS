@@ -94,14 +94,14 @@ this.createjs = this.createjs||{};
 			var objURL = URL.createObjectURL(loader.getResult(true));
 			this._tag.src = objURL;
 			this._tag.onLoad = function() {
-				window.URL.revokeObjectURL(this.src);
+				URL.revokeObjectURL(this.src);
 			}
 		} else {
 			loader.getTag().src = loader.getItem().src;
 		}
 
-		this._tag.style.visibility = "visible";
-		return this._tag;
+		loader.getTag().style.visibility = "visible";
+		return loader.getTag();
 	};
 
 	createjs.ImageLoader = createjs.promote(ImageLoader, "AbstractLoader");
