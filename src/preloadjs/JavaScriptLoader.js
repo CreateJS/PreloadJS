@@ -45,7 +45,7 @@ this.createjs = this.createjs || {};
 
 		// protected properties
 		this._tagSrcAttribute = "src";
-		this._tag = document.createElement("script");
+		this.setTag(document.createElement("script"));
 
 		this.resultFormatter = this._formatResult;
 	};

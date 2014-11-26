@@ -44,8 +44,8 @@ this.createjs = this.createjs || {};
 		// public properties
 
 		// protected properties
-		this._tag = document.createElement("script");
-		this._tag.type = "text/javascript";
+		this.setTag(document.createElement("script"));
+		this.getTag().type = "text/javascript";
 	};
 
 	var p = createjs.extend(JSONPLoader, createjs.AbstractLoader);

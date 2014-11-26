@@ -46,18 +46,19 @@ this.createjs = this.createjs || {};
 		// protected properties
 		this._tagSrcAttribute = "src";
 
-		this._tag = document.createElement("audio");
-		this._tag.preload = "auto";
+		this.setTag(document.createElement("audio"));
+		var tag = this.getTag();
+		tag.preload = "auto";
 
 		// this._tag.autoplay = false;
 		// Note: The type property doesn't seem necessary.
 
 		this.resultFormatter = this._formatResult;
 
-		this._tag.onstalled = createjs.proxy(this._handleStalled, this);
+		tag.onstalled = createjs.proxy(this._handleStalled, this);
 		// This will tell us when audio is buffered enough to play through, but not when its loaded.
 		// The tag doesn't keep loading in Chrome once enough has buffered, and we have decided that behaviour is sufficient.
-		this._tag.addEventListener("canplaythrough", createjs.proxy(this._handleTagComplete, this), false); // canplaythrough callback doesn't work in Chrome, so we use an event.
+		tag.addEventListener("canplaythrough", createjs.proxy(this._handleTagComplete, this), false); // canplaythrough callback doesn't work in Chrome, so we use an event.
 	};
 
 	var p = createjs.extend(SoundLoader, createjs.AbstractLoader);

@@ -47,13 +47,13 @@ this.createjs = this.createjs || {};
 		this._tagSrcAttribute = "data";
 
 		if (useXHR) {
-			this._tag = document.createElement("svg");
+			this.setTag(document.createElement("svg"));
 		} else {
-			this._tag = document.createElement("object");
-			this._tag.type = "image/svg+xml";
+			this.setTag(document.createElement("object"));
+			this.getTag().type = "image/svg+xml";
 		}
 
-		this._tag.style.visibility = "hidden";
+		this.getTag().style.visibility = "hidden";
 
 		this.resultFormatter = this._formatResult;
 	};

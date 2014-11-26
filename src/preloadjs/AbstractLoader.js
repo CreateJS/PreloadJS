@@ -216,6 +216,10 @@ this.createjs = this.createjs || {};
 		return this._tag;
 	};
 
+	p.setTag = function(tag) {
+	  this._tag = tag;
+	};
+
 	/**
 	 * Begin loading the queued items. This method can be called when a {{#crossLink "LoadQueue"}}{{/crossLink}} is set
 	 * up but not started immediately.
