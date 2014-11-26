@@ -39,29 +39,14 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function VideoLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.VIDEO);
-
-		// public properties
-
-		// protected properties
-		this._tagSrcAttribute = "src";
-
 		this.setTag(document.createElement("video"));
 		this.getTag().preload = "auto";
-
-		// this._tag.autoplay = false;
-		// Note: The type property doesn't seem necessary.
-
-		this.resultFormatter = this._formatResult;
-
-		this.getTag().onstalled = createjs.proxy(this._handleStalled, this);
-		// This will tell us when audio is buffered enough to play through, but not when its loaded.
-		// The tag doesn't keep loading in Chrome once enough has buffered, and we have decided that behaviour is sufficient.
-		this.getTag().addEventListener("canplaythrough", createjs.proxy(this._handleTagComplete, this), false); // canplaythrough callback doesn't work in Chrome, so we use an event.
+		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.DataTypes.VIDEO);
 	};
 
-	var p = createjs.extend(VideoLoader, createjs.AbstractLoader);
+	var p = createjs.extend(VideoLoader, createjs.AbstractMediaLoader);
 	var s = VideoLoader;
+	
 	/**
 	 * LoadQueue calls this when it creates loaders.
 	 * Each loader has the option to say either yes (true) or no (false).
@@ -78,24 +63,6 @@ this.createjs = this.createjs || {};
 
 	// public methods
 
-	// protected methods
-	p._formatResult = function (loader) {
-		if (this._useXHR) {
-			loader.getTag().src = loader.getResult(true);
-		}
-		return loader.getTag();
-	};
-
-	/**
-	 * Handle a stalled audio event. The main place we seem to get these is with HTMLAudio in Chrome when we try and
-	 * playback audio that is already in a load, but not complete.
-	 * @method _handleStalled
-	 * @private
-	 */
-	p._handleStalled = function () {
-		//Ignore, let the timeout take care of it. Sometimes its not really stopped.
-	};
-
-	createjs.VideoLoader = createjs.promote(VideoLoader, "AbstractLoader");
+	createjs.VideoLoader = createjs.promote(VideoLoader, "AbstractMediaLoader");
 
 }());

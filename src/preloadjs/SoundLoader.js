@@ -39,29 +39,13 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function SoundLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.SOUND);
-
-		// public properties
-
-		// protected properties
-		this._tagSrcAttribute = "src";
-
 		this.setTag(document.createElement("audio"));
-		var tag = this.getTag();
-		tag.preload = "auto";
+		this.getTag().preload = "auto";
 
-		// this._tag.autoplay = false;
-		// Note: The type property doesn't seem necessary.
-
-		this.resultFormatter = this._formatResult;
-
-		tag.onstalled = createjs.proxy(this._handleStalled, this);
-		// This will tell us when audio is buffered enough to play through, but not when its loaded.
-		// The tag doesn't keep loading in Chrome once enough has buffered, and we have decided that behaviour is sufficient.
-		tag.addEventListener("canplaythrough", createjs.proxy(this._handleTagComplete, this), false); // canplaythrough callback doesn't work in Chrome, so we use an event.
+		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.DataTypes.SOUND);
 	};
 
-	var p = createjs.extend(SoundLoader, createjs.AbstractLoader);
+	var p = createjs.extend(SoundLoader, createjs.AbstractMediaLoader);
 	var s = SoundLoader;
 	/**
 	 * LoadQueue calls this when it creates loaders.
@@ -75,28 +59,6 @@ this.createjs = this.createjs || {};
 		return item.type == createjs.DataTypes.SOUND;
 	};
 
-	// static properties
-
-	// public methods
-
-	// protected methods
-	p._formatResult = function (loader) {
-		if (this._useXHR) {
-			loader.getTag().src = loader.getResult(true);
-		}
-		return loader.getTag();
-	};
-
-	/**
-	 * Handle a stalled audio event. The main place we seem to get these is with HTMLAudio in Chrome when we try and
-	 * playback audio that is already in a load, but not complete.
-	 * @method _handleStalled
-	 * @private
-	 */
-	p._handleStalled = function () {
-		//Ignore, let the timeout take care of it. Sometimes its not really stopped.
-	};
-
-	createjs.SoundLoader = createjs.promote(SoundLoader, "AbstractLoader");
+	createjs.SoundLoader = createjs.promote(SoundLoader, "AbstractMediaLoader");
 
 }());

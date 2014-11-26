@@ -15,6 +15,7 @@
 		"../src/preloadjs/data/LoadItem.js",
 		"../src/preloadjs/utils/RequestUtils.js",
 		"../src/preloadjs/AbstractLoader.js",
+		"../src/preloadjs/AbstractMediaLoader.js",
 		"../src/preloadjs/XHRRequest.js",
 		"../src/preloadjs/LoadQueue.js",
 		"../src/preloadjs/TextLoader.js",
