@@ -46,36 +46,51 @@ this.createjs = this.createjs || {};
 		// protected properties
 		this._tagSrcAttribute = "src";
 
-		this.resultFormatter = this._formatResult;
+		/**
+		 * Used to determine what type of tag to create, for example "audio"
+		 * @property _tagType
+		 * @type {string}
+		 * @private
+		 */
+		this._tagType = type;
 
-		this.getTag().onstalled = createjs.proxy(this._handleStalled, this);
-		// This will tell us when audio is buffered enough to play through, but not when its loaded.
-		// The tag doesn't keep loading in Chrome once enough has buffered, and we have decided that behaviour is sufficient.
-		this.getTag().addEventListener("canplaythrough", createjs.proxy(this._handleTagComplete, this), false); // canplaythrough callback doesn't work in Chrome, so we use an event.
+		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(AbstractMediaLoader, createjs.AbstractLoader);
-	var s = AbstractMediaLoader;
 	// static properties
 
 	// public methods
 
 	// protected methods
+	p.load = function () {
+		// TagRequest will handle most of this, but Sound / Video need a few custom properties, so just handle them here.
+		if (!this._tag) {
+			this._tag = this._createTag(this._item.src);
+		}
+
+		this._tag.preload = "auto";
+		this._tag.load();
+
+		this.AbstractLoader_load();
+	};
+
+	/**
+	 * Abstract, create a new tag if none exist.
+	 *
+	 * @private
+	 */
+	p._createTag = function () {
+
+	};
+
 	p._formatResult = function (loader) {
+		this._tag.removeEventListener && this._tag.removeEventListener("canplaythrough", this._loadedHandler);
+		this._tag.onstalled = null;
 		if (this._useXHR) {
 			loader.getTag().src = loader.getResult(true);
 		}
 		return loader.getTag();
-	};
-
-	/**
-	 * Handle a stalled audio event. The main place we seem to get these is with HTMLAudio in Chrome when we try and
-	 * playback audio that is already in a load, but not complete.
-	 * @method _handleStalled
-	 * @private
-	 */
-	p._handleStalled = function () {
-		//Ignore, let the timeout take care of it. Sometimes its not really stopped.
 	};
 
 	createjs.AbstractMediaLoader = createjs.promote(AbstractMediaLoader, "AbstractLoader");

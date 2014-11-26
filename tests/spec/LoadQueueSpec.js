@@ -122,12 +122,23 @@ describe("PreloadJS.LoadQueue", function () {
 
 	it("should load sounds (tag)", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
-			console.log(evt);
 			expect(evt.result instanceof HTMLMediaElement).toBe(true);
 			done();
 		});
 
 		this.loadFile({src: "Thunder.mp3", type: createjs.DataTypes.SOUND}, false);
+	});
+
+	it("should load sounds (xhr)", function (done) {
+		this.queue.addEventListener("fileload", function (evt) {
+			expect(evt.result instanceof HTMLMediaElement).toBe(true);
+			done();
+		});
+
+		this.loadFile({
+			  src: "Thunder.mp3",
+			  type: createjs.DataTypes.SOUND
+		  }, true);
 	});
 
 	xit("should load a manifest and its children", function (done) {
