@@ -102,9 +102,14 @@ this.createjs = this.createjs || {};
 		 */
 		if (loadItem) {
 			this._item = createjs.LoadItem.create(loadItem);
+		} else {
+			this._item = null;
 		}
 
 		this._useXHR = useXHR;
+
+		this._rawResult = null;
+
 	};
 
 	var p = createjs.extend(AbstractLoader, createjs.EventDispatcher);
