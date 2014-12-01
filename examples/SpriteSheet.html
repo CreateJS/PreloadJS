@@ -2,7 +2,8 @@
 <html>
 <head>
 <title>EaselJS: Sprite Sheet Example</title>
-<link href="assets/demoStyles.css" rel="stylesheet" type="text/css" />
+		<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
+		<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body onload="init();">
@@ -22,7 +23,7 @@
 		<canvas id="testCanvas" width="960" height="400"></canvas>
 	</div>
 
-    <script src="./assets/easeljs-NEXT.min.js"></script>
+    <script src="../_assets/js/easeljs-NEXT.min.js"></script>
     <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
    	<!-- We also provide hosted minified versions of all CreateJS libraries.
    	  http://code.createjs.com -->
@@ -64,7 +65,7 @@
                     "height": 361
                 },
                 "animations": {"jump": [26, 63], "run": [0, 25]},
-                "images": ["assets/runningGrant.png"]
+                "images": ["../_assets/runningGrant.png"]
             };
 
             var ss = new createjs.SpriteSheet(spriteSheet);
@@ -87,11 +88,11 @@
             assets = [];
 
             manifest = [
-                {src:"assets/runningGrant.png", id:"grant"},
-                {src:"assets/sky.png", id:"sky"},
-                {src:"assets/ground.png", id:"ground"},
-                {src:"assets/parallaxHill1.png", id:"hill"},
-                {src:"assets/parallaxHill2.png", id:"hill2"}
+                {src:"../_assets/runningGrant.png", id:"grant"},
+                {src:"../_assets/sky.png", id:"sky"},
+                {src:"../_assets/ground.png", id:"ground"},
+                {src:"../_assets/parallaxHill1.png", id:"hill"},
+                {src:"../_assets/parallaxHill2.png", id:"hill2"}
             ];
 
             var loader = new createjs.LoadQueue();

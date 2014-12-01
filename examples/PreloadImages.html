@@ -3,7 +3,9 @@
 <head>
     <title>Preload Images example</title>
 
-	<link rel="stylesheet" href="./assets/demoStyles.css" />
+	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
+	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+
 </head>
 <body onload="init()">
 
@@ -31,7 +33,7 @@
 
         var loaderBar;
         var stage;
-        var bar;   
+        var bar;
         var imageContainer;
         var currentImage;
         var loaderWidth;
@@ -48,7 +50,7 @@
             canvas = document.getElementById("myCanvas");
             stage = new createjs.Stage(canvas);
 			stage.enableMouseOver(10);
-   
+
             borderPadding = 10;
 
             var barHeight = 20;
@@ -70,8 +72,8 @@
             bgBar.graphics.setStrokeStyle(1).beginStroke(loaderColor).drawRect(-padding/2, -padding/2, loaderWidth+padding, barHeight+padding);
 
             loaderBar.x = canvas.width - loaderWidth>>1;
-            loaderBar.y = canvas.height - barHeight>>1; 
-			loaderBar.addChild(bar, bgBar);    
+            loaderBar.y = canvas.height - barHeight>>1;
+			loaderBar.addChild(bar, bgBar);
 
             stage.addChild(loaderBar);
 
@@ -108,7 +110,7 @@
             var image = event.result;
             var w = image.width;
             var h = image.height;
-			
+
 			var bmp = new createjs.Bitmap(image).set({
                 scaleX: 0.75,
                 scaleY: 0.75,
@@ -135,18 +137,18 @@
 
             var movieClip = new createjs.Container();
             movieClip.addChild(border, bmp);
-            imageContainer.addChild(movieClip); 
-			stage.update();     
+            imageContainer.addChild(movieClip);
+			stage.update();
         }
 
         function handleClick(event) {
            	currentItem = event.target.parent;
             var tween = createjs.Tween.get(currentItem, {override:true}).to({y:-350}, 200).call(tweenUpComplete).to({y:0}, 500);
 			tween.on("change", handleTweenChange);
-        }        
-		
+        }
+
 		function handleTweenChange(tween) {
-			stage.update();           
+			stage.update();
 		}
 
         function tweenUpComplete() {

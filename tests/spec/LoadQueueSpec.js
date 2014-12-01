@@ -25,7 +25,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof Document).toBe(true);
 			done();
 		});
-		this.loadFile("grant.xml");
+		this.loadFile("static/grant.xml");
 	});
 
 	it("should load JSON", function (done) {
@@ -33,7 +33,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof Object).toBe(true);
 			done();
 		});
-		this.loadFile("grant.json");
+		this.loadFile("static/grant.json");
 	});
 
 	it("should load JSONp", function (done) {
@@ -42,7 +42,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 		this.loadFile({
-						  src: "jsonpSample.json",
+						  src: "static/jsonpSample.json",
 						  callback: "x",
 						  type: createjs.LoadQueue.JSONP
 					  });
@@ -53,7 +53,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(window.foo).toBe(true);
 			done();
 		});
-		this.loadFile("scriptExample.js", false);
+		this.loadFile("static/scriptExample.js", false);
 	});
 
 	it("should load and execute Javascript (xhr)", function (done) {
@@ -61,7 +61,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(window.foo).toBe(true);
 			done();
 		});
-		this.loadFile("scriptExample.js", true);
+		this.loadFile("static/scriptExample.js", true);
 	});
 
 	it("should load css", function (done) {
@@ -69,7 +69,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof HTMLElement).toBe(true);
 			done();
 		});
-		this.loadFile("font.css");
+		this.loadFile("static/font.css");
 	});
 
 	it("should load images (xhr)", function (done) {
@@ -77,7 +77,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof HTMLImageElement).toBe(true);
 			done();
 		});
-		this.loadFile("Autumn.png", true);
+		this.loadFile("art/Autumn.png", true);
 	});
 
 	it("should load images (tag)", function (done) {
@@ -85,7 +85,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof HTMLImageElement).toBe(true);
 			done();
 		});
-		this.loadFile("image0.jpg", false);
+		this.loadFile("art/image0.jpg", false);
 	});
 
 	it("should load binary data", function (done) {
@@ -93,7 +93,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof ArrayBuffer).toBe(true);
 			done();
 		});
-		this.loadFile({src: "Thunder.mp3", type: createjs.AbstractLoader.BINARY});
+		this.loadFile({src: "audio/Thunder.mp3", type: createjs.AbstractLoader.BINARY});
 	});
 
 	it("should load svg (tag)", function (done) {
@@ -101,7 +101,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(typeof evt.result).toBe("object");
 			done();
 		});
-		this.loadFile("gbot.svg");
+		this.loadFile("art/gbot.svg");
 	});
 
 	it("should load svg (xhr)", function (done) {
@@ -109,7 +109,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(typeof evt.result).toBe("object");
 			done();
 		});
-		this.loadFile("gbot.svg", true);
+		this.loadFile("art/gbot.svg", true);
 	});
 
 	it("should load text", function (done) {
@@ -117,7 +117,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(typeof evt.result).toBe("string");
 			done();
 		});
-		this.loadFile({src: "gbot.svg", type: createjs.LoadQueue.TEXT});
+		this.loadFile({src: "art/gbot.svg", type: createjs.LoadQueue.TEXT});
 	});
 
 	it("should load sounds (tag)", function (done) {
@@ -126,7 +126,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 
-		this.loadFile({src: "Thunder.mp3", type: createjs.AbstractLoader.SOUND}, false);
+		this.loadFile({src: "audio/Thunder.mp3", type: createjs.AbstractLoader.SOUND}, false);
 	});
 
 	it("should load sounds (xhr)", function (done) {
@@ -136,7 +136,7 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 
 		this.loadFile({
-			  src: "Thunder.mp3",
+			  src: "audio/Thunder.mp3",
 			  type: createjs.AbstractLoader.SOUND
 		  }, true);
 	});
@@ -153,7 +153,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 		this.loadFile({
-						  src: "ManifestTest.json",
+						  src: "static/ManifestTest.json",
 						  callback: "maps",
 						  type: createjs.LoadQueue.MANIFEST
 					  });
@@ -167,7 +167,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		};
 		this.queue.addEventListener("progress", callback);
-		this.loadFile({src: "Thunder.mp3", type: createjs.LoadQueue.BINARY});
+		this.loadFile({src: "audio/Thunder.mp3", type: createjs.LoadQueue.BINARY});
 	});
 
 	it("should error on a 404", function (done) {
@@ -184,7 +184,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 		this.loadFile({
-						  src: "gbot.svg",
+						  src: "art/gbot.svg",
 						  type: createjs.LoadQueue.TEXT,
 						  data: "foo"
 					  });
@@ -226,7 +226,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.item.data).toBe("foo");
 			done();
 		});
-		this.loadFile("grant.json");
+		this.loadFile("static/grant.json");
 	});
 
 	it("should POST data.", function (done) {
