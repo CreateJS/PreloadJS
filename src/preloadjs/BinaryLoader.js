@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function BinaryLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.BINARY);
+		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.BINARY);
 
 		this.on("initialize", this._updateXHR, this);
 	};
@@ -55,7 +55,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.BINARY;
+		return item.type == createjs.AbstractLoader.BINARY;
 	};
 
 	p._updateXHR = function (evt) {

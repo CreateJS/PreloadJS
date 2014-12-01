@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function JSONPLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, false, createjs.DataTypes.JSONP);
+		this.AbstractLoader_constructor(loadItem, false, createjs.AbstractLoader.JSONP);
 
 		// public properties
 
@@ -61,7 +61,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.JSONP || item._loadAsJSONP;
+		return item.type == createjs.AbstractLoader.JSONP || item._loadAsJSONP;
 	};
 
 	// static properties

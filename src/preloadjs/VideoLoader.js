@@ -41,7 +41,7 @@ this.createjs = this.createjs || {};
 	function VideoLoader(loadItem, useXHR) {
 		this.setTag(document.createElement("video"));
 		this.getTag().preload = "auto";
-		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.DataTypes.VIDEO);
+		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.VIDEO);
 	};
 
 	var p = createjs.extend(VideoLoader, createjs.AbstractMediaLoader);
@@ -56,7 +56,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.VIDEO;
+		return item.type == createjs.AbstractLoader.VIDEO;
 	};
 
 	// static properties

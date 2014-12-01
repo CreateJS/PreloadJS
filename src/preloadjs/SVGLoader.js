@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function SVGLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.SVG);
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.SVG);
 
 		// public properties
 
@@ -69,7 +69,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.SVG;
+		return item.type == createjs.AbstractLoader.SVG;
 	};
 
 	// static properties

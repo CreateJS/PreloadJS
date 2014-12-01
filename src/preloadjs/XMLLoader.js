@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function XMLLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.XML);
+		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.XML);
 
 		// public properties
 
@@ -60,7 +60,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.XML;
+		return item.type == createjs.AbstractLoader.XML;
 	};
 
 	// public methods

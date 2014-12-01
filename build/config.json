@@ -10,8 +10,6 @@
 		"../src/createjs/events/EventDispatcher.js",
 		"../src/preloadjs/utils/json3.js",
 		"../src/preloadjs/utils/DataUtils.js",
-		"../src/preloadjs/data/DataTypes.js",
-		"../src/preloadjs/data/RequestMethods.js",
 		"../src/preloadjs/data/LoadItem.js",
 		"../src/preloadjs/utils/RequestUtils.js",
 		"../src/preloadjs/AbstractLoader.js",

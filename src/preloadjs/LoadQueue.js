@@ -558,7 +558,7 @@ this.createjs = this.createjs || {};
 	 * @default binary
 	 * @static
 	 */
-	s.BINARY = createjs.DataTypes.BINARY;
+	s.BINARY = createjs.AbstractLoader.BINARY;
 
 	/**
 	 * The preload type for css files. CSS files are loaded using a &lt;link&gt; when loaded with XHR, or a
@@ -568,7 +568,7 @@ this.createjs = this.createjs || {};
 	 * @default css
 	 * @static
 	 */
-	s.CSS = createjs.DataTypes.CSS;
+	s.CSS = createjs.AbstractLoader.CSS;
 
 	/**
 	 * The preload type for image files, usually png, gif, or jpg/jpeg. Images are loaded into an &lt;image&gt; tag.
@@ -577,7 +577,7 @@ this.createjs = this.createjs || {};
 	 * @default image
 	 * @static
 	 */
-	s.IMAGE = createjs.DataTypes.IMAGE;
+	s.IMAGE = createjs.AbstractLoader.IMAGE;
 
 	/**
 	 * The preload type for javascript files, usually with the "js" file extension. JavaScript files are loaded into a
@@ -591,7 +591,7 @@ this.createjs = this.createjs || {};
 	 * @default javascript
 	 * @static
 	 */
-	s.JAVASCRIPT = createjs.DataTypes.JAVASCRIPT;
+	s.JAVASCRIPT = createjs.AbstractLoader.JAVASCRIPT;
 
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
@@ -603,7 +603,7 @@ this.createjs = this.createjs || {};
 	 * @default json
 	 * @static
 	 */
-	s.JSON = createjs.DataTypes.JSON;
+	s.JSON = createjs.AbstractLoader.JSON;
 
 	/**
 	 * The preload type for jsonp files, usually with the "json" file extension. JSON data is loaded and parsed into a
@@ -615,7 +615,7 @@ this.createjs = this.createjs || {};
 	 * @default jsonp
 	 * @static
 	 */
-	s.JSONP = createjs.DataTypes.JSONP;
+	s.JSONP = createjs.AbstractLoader.JSONP;
 
 	/**
 	 * The preload type for json-based manifest files, usually with the "json" file extension. The JSON data is loaded
@@ -629,7 +629,7 @@ this.createjs = this.createjs || {};
 	 * @static
 	 * @since 0.4.1
 	 */
-	s.MANIFEST = createjs.DataTypes.MANIFEST;
+	s.MANIFEST = createjs.AbstractLoader.MANIFEST;
 
 	/**
 	 * The preload type for sound files, usually mp3, ogg, or wav. When loading via tags, audio is loaded into an
@@ -639,7 +639,7 @@ this.createjs = this.createjs || {};
 	 * @default sound
 	 * @static
 	 */
-	s.SOUND = createjs.DataTypes.SOUND;
+	s.SOUND = createjs.AbstractLoader.SOUND;
 
 	/**
 	 * The preload type for video files, usually mp4, ts, or ogg. When loading via tags, video is loaded into an
@@ -649,7 +649,7 @@ this.createjs = this.createjs || {};
 	 * @default video
 	 * @static
 	 */
-	s.VIDEO = createjs.DataTypes.VIDEO;
+	s.VIDEO = createjs.AbstractLoader.VIDEO;
 
 	/**
 	 * The preload type for SVG files.
@@ -658,7 +658,7 @@ this.createjs = this.createjs || {};
 	 * @default svg
 	 * @static
 	 */
-	s.SVG = createjs.DataTypes.SVG;
+	s.SVG = createjs.AbstractLoader.SVG;
 
 	/**
 	 * The preload type for text files, which is also the default file type if the type can not be determined. Text is
@@ -668,7 +668,7 @@ this.createjs = this.createjs || {};
 	 * @default text
 	 * @static
 	 */
-	s.TEXT = createjs.DataTypes.TEXT;
+	s.TEXT = createjs.AbstractLoader.TEXT;
 
 	/**
 	 * The preload type for xml files. XML is loaded into an XML document.
@@ -677,21 +677,21 @@ this.createjs = this.createjs || {};
 	 * @default xml
 	 * @static
 	 */
-	s.XML = createjs.DataTypes.XML;
+	s.XML = createjs.AbstractLoader.XML;
 
 	/**
 	 * Defines a POST request, use for a method value when loading data.
 	 *
 	 * @type {string}
 	 */
-	s.POST = createjs.RequestMethods.POST;
+	s.POST = createjs.AbstractLoader.POST;
 
 	/**
 	 * Defines a GET request, use for a method value when loading data.
 	 *
 	 * @type {string}
 	 */
-	s.GET = createjs.RequestMethods.GET;
+	s.GET = createjs.AbstractLoader.GET;
 
 // events
 	/**

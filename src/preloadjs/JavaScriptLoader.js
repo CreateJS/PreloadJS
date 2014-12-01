@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function JavascriptLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.JAVASCRIPT);
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.JAVASCRIPT);
 
 		// public properties
 
@@ -61,7 +61,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.JAVASCRIPT;
+		return item.type == createjs.AbstractLoader.JAVASCRIPT;
 	};
 
 	// static properties

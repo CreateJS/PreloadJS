@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function ImageLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.DataTypes.IMAGE);
+		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.IMAGE);
 
 		// public properties
 
@@ -65,7 +65,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.IMAGE;
+		return item.type == createjs.AbstractLoader.IMAGE;
 	};
 
 	// static properties

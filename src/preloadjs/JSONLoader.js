@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function JSONLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.JSON);
+		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.JSON);
 
 		// public properties
 
@@ -58,7 +58,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.JSON && !item._loadAsJSONP;
+		return item.type == createjs.AbstractLoader.JSON && !item._loadAsJSONP;
 	};
 
 	// static properties

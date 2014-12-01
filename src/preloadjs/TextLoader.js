@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function TextLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, true, createjs.DataTypes.TEXT);
+		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.TEXT);
 	};
 
 	var p = createjs.extend(TextLoader, createjs.AbstractLoader);
@@ -53,7 +53,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.TEXT;
+		return item.type == createjs.AbstractLoader.TEXT;
 	};
 
 	createjs.TextLoader = createjs.promote(TextLoader, "AbstractLoader");

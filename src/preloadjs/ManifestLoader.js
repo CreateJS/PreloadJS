@@ -43,7 +43,7 @@ this.createjs = this.createjs || {};
 	function ManifestLoader(itemSrc, useXHR) {
 		useXHR = useXHR !== false;
 
-		this.AbstractLoader_constructor(itemSrc, useXHR, useXHR ? createjs.DataTypes.JSON : createjs.DataTypes.JSONP);
+		this.AbstractLoader_constructor(itemSrc, useXHR, useXHR ? createjs.AbstractLoader.JSON : createjs.AbstractLoader.JSONP);
 
 		// public properties
 
@@ -62,7 +62,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.MANIFEST;
+		return item.type == createjs.AbstractLoader.MANIFEST;
 	};
 
 	// static properties

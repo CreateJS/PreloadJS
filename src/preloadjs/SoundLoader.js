@@ -39,7 +39,7 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function SoundLoader(loadItem, useXHR) {
-		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.DataTypes.SOUND);
+		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.SOUND);
 
 		this._tagType = "audio";
 	};
@@ -55,7 +55,7 @@ this.createjs = this.createjs || {};
 	 * @returns {boolean}
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.DataTypes.SOUND;
+		return item.type == createjs.AbstractLoader.SOUND;
 	};
 
 	p._createRequest = function() {

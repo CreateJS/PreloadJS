@@ -93,7 +93,7 @@ describe("PreloadJS.LoadQueue", function () {
 			expect(evt.result instanceof ArrayBuffer).toBe(true);
 			done();
 		});
-		this.loadFile({src: "Thunder.mp3", type: createjs.LoadQueue.BINARY});
+		this.loadFile({src: "Thunder.mp3", type: createjs.AbstractLoader.BINARY});
 	});
 
 	it("should load svg (tag)", function (done) {
@@ -126,7 +126,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 
-		this.loadFile({src: "Thunder.mp3", type: createjs.DataTypes.SOUND}, false);
+		this.loadFile({src: "Thunder.mp3", type: createjs.AbstractLoader.SOUND}, false);
 	});
 
 	it("should load sounds (xhr)", function (done) {
@@ -137,7 +137,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		this.loadFile({
 			  src: "Thunder.mp3",
-			  type: createjs.DataTypes.SOUND
+			  type: createjs.AbstractLoader.SOUND
 		  }, true);
 	});
 
