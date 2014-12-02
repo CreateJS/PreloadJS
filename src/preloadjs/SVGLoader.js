@@ -38,15 +38,15 @@ this.createjs = this.createjs || {};
 	 * The SVGLoader class description goes here.
 	 *
 	 */
-	function SVGLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.SVG);
+	function SVGLoader(loadItem, preferXHR) {
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.SVG);
 
 		// public properties
 
 		// protected properties
 		this._tagSrcAttribute = "data";
 
-		if (useXHR) {
+		if (preferXHR) {
 			this.setTag(document.createElement("svg"));
 		} else {
 			this.setTag(document.createElement("object"));
@@ -81,7 +81,7 @@ this.createjs = this.createjs || {};
 		var xml = createjs.DataUtils.parseXML(loader.getResult(true), "image/svg+xml");
 		var tag = loader.getTag();
 
-		if (!this._useXHR) {
+		if (!this._preferXHR) {
 			document.body.removeChild(tag);
 		}
 

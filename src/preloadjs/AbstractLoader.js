@@ -44,7 +44,7 @@ this.createjs = this.createjs || {};
 	 * @class AbstractLoader
 	 * @extends EventDispatcher
 	 */
-	function AbstractLoader(loadItem, useXHR, type) {
+	function AbstractLoader(loadItem, preferXHR, type) {
 		this.EventDispatcher_constructor();
 
 		// public properties
@@ -106,7 +106,7 @@ this.createjs = this.createjs || {};
 			this._item = null;
 		}
 
-		this._useXHR = useXHR;
+		this._preferXHR = preferXHR;
 
 		this._rawResult = null;
 	};
@@ -173,7 +173,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
 	 * JavaScript object. Note that if a `callback` is present on the load item, the file will be loaded with JSONP,
-	 * no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to, and the JSON
+	 * no matter what the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}} property is set to, and the JSON
 	 * must contain a matching wrapper function.
 	 * @property JSON
 	 * @type {String}
@@ -185,7 +185,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * The preload type for jsonp files, usually with the "json" file extension. JSON data is loaded and parsed into a
 	 * JavaScript object. You are required to pass a callback parameter that matches the function wrapper in the JSON.
-	 * Note that JSONP will always be used if there is a callback present, no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}}
+	 * Note that JSONP will always be used if there is a callback present, no matter what the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}}
 	 * property is set to.
 	 * @property JSONP
 	 * @type {String}
@@ -199,7 +199,7 @@ this.createjs = this.createjs || {};
 	 * and parsed into a JavaScript object. PreloadJS will then look for a "manifest" property in the JSON, which is an
 	 * Array of files to load, following the same format as the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * method. If a "callback" is specified on the manifest object, then it will be loaded using JSONP instead,
-	 * regardless of what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to.
+	 * regardless of what the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}} property is set to.
 	 * @property MANIFEST
 	 * @type {String}
 	 * @default manifest
@@ -390,7 +390,7 @@ this.createjs = this.createjs || {};
 	};
 
 	p._createRequest = function() {
-		if (!this._useXHR) {
+		if (!this._preferXHR) {
 			this._request = new createjs.TagRequest(this._item, false, this._tag || this._createTag(), this._tagSrcAttribute);
 		} else {
 			this._request = new createjs.XHRRequest(this._item, false);

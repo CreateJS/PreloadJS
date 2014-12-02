@@ -101,7 +101,7 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 
-		this.queue.useXHR = false;
+		this.queue.preferXHR = false;
 		this.queue.loadFile("http://dev.gskinner.com/createjs/cors/daisy.png");
 	});
 

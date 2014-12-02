@@ -38,8 +38,8 @@ this.createjs = this.createjs || {};
 	 * The JavascriptLoader class description goes here.
 	 *
 	 */
-	function JavascriptLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.JAVASCRIPT);
+	function JavascriptLoader(loadItem, preferXHR) {
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.JAVASCRIPT);
 
 		// public properties
 
@@ -71,7 +71,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	p._formatResult = function (loader) {
 		var tag = loader.getTag();
-		if (this._useXHR) {
+		if (this._preferXHR) {
 			tag.text = loader.getResult(true);
 		}
 		return tag;

@@ -110,7 +110,7 @@ this.createjs = this.createjs || {};
 	 * a single file, or queue of files.
 	 *
 	 * <b>Creating a Queue</b><br />
-	 * To use LoadQueue, create a LoadQueue instance. If you want to force tag loading where possible, set the useXHR
+	 * To use LoadQueue, create a LoadQueue instance. If you want to force tag loading where possible, set the preferXHR
 	 * argument to false.
 	 *
 	 *      var queue = new createjs.LoadQueue(true);
@@ -239,7 +239,7 @@ this.createjs = this.createjs || {};
 	 * </ul>
 	 *
 	 * @class LoadQueue
-	 * @param {Boolean} [useXHR=true] Determines whether the preload instance will favor loading with XHR (XML HTTP
+	 * @param {Boolean} [preferXHR=true] Determines whether the preload instance will favor loading with XHR (XML HTTP
 	 * Requests), or HTML tags. When this is `false`, the queue will use tag loading when possible, and fall back on XHR
 	 * when necessary.
 	 * @param {String} [basePath=""] A path that will be prepended on to the source parameter of all items in the queue
@@ -253,9 +253,8 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
-	function LoadQueue(useXHR, basePath, crossOrigin) {
+	function LoadQueue(preferXHR, basePath, crossOrigin) {
 		this.AbstractLoader_constructor();
-		this.setUseXHR(useXHR);
 
 		// public properties
 		/**
@@ -264,14 +263,24 @@ this.createjs = this.createjs || {};
 		 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
 		 *
 		 * <b>Note: This property is read-only.</b> To change it, please use the {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
-		 * method, or specify the `useXHR` argument in the LoadQueue constructor.
+		 * method, or specify the `preferXHR` argument in the LoadQueue constructor.
 		 *
 		 * @property useXHR
 		 * @type {Boolean}
 		 * @readOnly
 		 * @default true
+		 * @deprecated Use preferXHR instead.
 		 */
 		this.useXHR = true;
+
+		/**
+		 *
+		 * @type {boolean}
+		 */
+		this.preferXHR = true;
+
+
+		this.setPreferXHR(preferXHR);
 
 		/**
 		 * Determines if the LoadQueue will stop processing the current queue when an error is encountered.
@@ -598,7 +607,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * The preload type for json files, usually with the "json" file extension. JSON data is loaded and parsed into a
 	 * JavaScript object. Note that if a `callback` is present on the load item, the file will be loaded with JSONP,
-	 * no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to, and the JSON
+	 * no matter what the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}} property is set to, and the JSON
 	 * must contain a matching wrapper function.
 	 * @property JSON
 	 * @type {String}
@@ -610,7 +619,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * The preload type for jsonp files, usually with the "json" file extension. JSON data is loaded and parsed into a
 	 * JavaScript object. You are required to pass a callback parameter that matches the function wrapper in the JSON.
-	 * Note that JSONP will always be used if there is a callback present, no matter what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}}
+	 * Note that JSONP will always be used if there is a callback present, no matter what the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}}
 	 * property is set to.
 	 * @property JSONP
 	 * @type {String}
@@ -624,7 +633,7 @@ this.createjs = this.createjs || {};
 	 * and parsed into a JavaScript object. PreloadJS will then look for a "manifest" property in the JSON, which is an
 	 * Array of files to load, following the same format as the {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * method. If a "callback" is specified on the manifest object, then it will be loaded using JSONP instead,
-	 * regardless of what the {{#crossLink "LoadQueue/useXHR:property"}}{{/crossLink}} property is set to.
+	 * regardless of what the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}} property is set to.
 	 * @property MANIFEST
 	 * @type {String}
 	 * @default manifest
@@ -774,12 +783,17 @@ this.createjs = this.createjs || {};
 	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
 	 * the provided value argument was true.
 	 * @since 0.3.0
+	 * @deprecated use setPreferXHR instead.
 	 */
 	p.setUseXHR = function (value) {
+		return this.setPreferXHR(value);
+	};
+
+	p.setPreferXHR = function(value) {
 		// Determine if we can use XHR. XHR defaults to TRUE, but the browser may not support it.
 		//TODO: Should we be checking for the other XHR types? Might have to do a try/catch on the different types similar to createXHR.
-		this.useXHR = (value != false && window.XMLHttpRequest != null);
-		return this.useXHR;
+		this.preferXHR = (value != false && window.XMLHttpRequest != null);
+		return this.preferXHR;
 	};
 
 	/**
@@ -831,7 +845,7 @@ this.createjs = this.createjs || {};
 			for (var n in this._loadItemsById) {
 				this._disposeItem(this._loadItemsById[n]);
 			}
-			this.init(this.useXHR, this._basePath);
+			this.init(this.preferXHR, this._basePath);
 
 			// Remove specific items
 		} else {
@@ -1364,9 +1378,7 @@ this.createjs = this.createjs || {};
 			item.loadTimeout = s.loadTimeout;
 		}
 
-		if (item.crossOrigin == null) {
-			item.crossOrigin = this._crossOrigin;
-		}
+		item.crossOrigin = this._crossOrigin;
 
 		return item;
 	};
@@ -1380,12 +1392,12 @@ this.createjs = this.createjs || {};
 	 */
 	p._createLoader = function (item) {
 		// Initially, try and use the provided/supported XHR mode:
-		var useXHR = this.useXHR;
+		var preferXHR = this.preferXHR;
 
 		for (var i = 0; i < this._availableLoaders.length; i++) {
 			var loader = this._availableLoaders[i];
 			if (loader.canLoadItem(item)) {
-				return new loader(item, useXHR);
+				return new loader(item, preferXHR);
 			}
 		}
 
@@ -1492,7 +1504,7 @@ this.createjs = this.createjs || {};
 		var item = loader.getItem();
 
 		this._loadedResults[item.id] = loader.getResult();
-		if (loader.useXHR) {
+		if (loader.preferXHR) {
 			this._loadedRawResults[item.id] = loader.getResult(true);
 		}
 
@@ -1596,7 +1608,7 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._canStartLoad = function (loader) {
-		if (!this.maintainScriptOrder || loader.useXHR) { return true; }
+		if (!this.maintainScriptOrder || loader.preferXHR) { return true; }
 		var item = loader.getItem();
 		if (item.type != createjs.LoadQueue.JAVASCRIPT) { return true; }
 		if (this._currentlyLoadingScript) { return false; }

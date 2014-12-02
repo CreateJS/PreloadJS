@@ -38,10 +38,10 @@ this.createjs = this.createjs || {};
 	 * The SoundLoader class description goes here.
 	 *
 	 */
-	function VideoLoader(loadItem, useXHR) {
+	function VideoLoader(loadItem, preferXHR) {
 		this.setTag(document.createElement("video"));
 		this.getTag().preload = "auto";
-		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.VIDEO);
+		this.AbstractMediaLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.VIDEO);
 	};
 
 	var p = createjs.extend(VideoLoader, createjs.AbstractMediaLoader);

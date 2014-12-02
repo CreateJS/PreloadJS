@@ -40,10 +40,10 @@ this.createjs = this.createjs || {};
 	 * @param useXHR Default true; Specifies whether or not to load the manifest as JSONP (false), or to use XHR (true/default).
 	 * @constructor
 	 */
-	function ManifestLoader(itemSrc, useXHR) {
-		useXHR = useXHR !== false;
+	function ManifestLoader(itemSrc, preferXHR) {
+		preferXHR = preferXHR !== false;
 
-		this.AbstractLoader_constructor(itemSrc, useXHR, useXHR ? createjs.AbstractLoader.JSON : createjs.AbstractLoader.JSONP);
+		this.AbstractLoader_constructor(itemSrc, preferXHR, preferXHR ? createjs.AbstractLoader.JSON : createjs.AbstractLoader.JSONP);
 
 		// public properties
 

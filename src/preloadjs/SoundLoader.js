@@ -38,8 +38,8 @@ this.createjs = this.createjs || {};
 	 * The SoundLoader class description goes here.
 	 *
 	 */
-	function SoundLoader(loadItem, useXHR) {
-		this.AbstractMediaLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.SOUND);
+	function SoundLoader(loadItem, preferXHR) {
+		this.AbstractMediaLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.SOUND);
 
 		this._tagType = "audio";
 	};
@@ -59,7 +59,7 @@ this.createjs = this.createjs || {};
 	};
 
 	p._createRequest = function() {
-		if (!this._useXHR) {
+		if (!this._preferXHR) {
 			this._request = new createjs.MediaTagRequest(this._item, false, this._tag || this._createTag(), this._tagSrcAttribute);
 		} else {
 			this._request = new createjs.XHRRequest(this._item, false);

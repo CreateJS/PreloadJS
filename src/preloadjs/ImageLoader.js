@@ -38,8 +38,8 @@ this.createjs = this.createjs || {};
 	 * The ImageLoader class description goes here.
 	 *
 	 */
-	function ImageLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.IMAGE);
+	function ImageLoader(loadItem, preferXHR) {
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.IMAGE);
 
 		// public properties
 
@@ -88,7 +88,7 @@ this.createjs = this.createjs || {};
 
 	p._formatResult = function (loader) {
 		var URL = window.URL || window.webkitURL;
-		if (!this._useXHR) {
+		if (!this._preferXHR) {
 			document.body.removeChild(loader.getTag());
 		} else if (URL) {
 			var objURL = URL.createObjectURL(loader.getResult(true));

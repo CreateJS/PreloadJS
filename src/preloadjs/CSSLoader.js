@@ -38,15 +38,15 @@ this.createjs = this.createjs || {};
 	 * The CSSLoader class description goes here.
 	 *
 	 */
-	function CSSLoader(loadItem, useXHR) {
-		this.AbstractLoader_constructor(loadItem, useXHR, createjs.AbstractLoader.CSS);
+	function CSSLoader(loadItem, preferXHR) {
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.CSS);
 
 		// public properties
 
 		// protected properties
 		this._tagSrcAttribute = "href";
 
-		if (useXHR) {
+		if (preferXHR) {
 			this._tag = document.createElement("style");
 		} else {
 			this._tag = document.createElement("link");
@@ -78,7 +78,7 @@ this.createjs = this.createjs || {};
 
 	// protected methods
 	p._formatResult = function (loader) {
-		if (this._useXHR) {
+		if (this._preferXHR) {
 			var tag = loader.getTag();
 			var head = document.getElementsByTagName("head")[0]; //Note: This is unavoidable in IE678
 			head.appendChild(tag);
