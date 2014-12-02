@@ -132,6 +132,15 @@ this.createjs = this.createjs || {};
 		this.mimeType = null;
 
 		/**
+		 * Sets the crossorigin attribute on images.
+		 *
+		 * @default Anonymous
+		 *
+		 * @type {boolean}
+		 */
+		this.crossOrigin = "Anonymous";
+
+		/**
 		 * how long before we stop a request.  Only applies to Tag loading and XHR level one loading.
 		 *
 		 * @type {number}

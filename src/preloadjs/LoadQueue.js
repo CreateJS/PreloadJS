@@ -248,6 +248,8 @@ this.createjs = this.createjs || {};
 	 * @param {String|Boolean} [crossOrigin=""] An optional flag to support images loaded from a CORS-enabled server. To
 	 * use it, set this value to `true`, which will default the crossOrigin property on images to "Anonymous". Any
 	 * string value will be passed through, but only "" and "Anonymous" are recommended.
+	 * @deprecated Use LoadItem.crossOrigin instead
+	 *
 	 * @constructor
 	 * @extends AbstractLoader
 	 */
@@ -829,7 +831,7 @@ this.createjs = this.createjs || {};
 			for (var n in this._loadItemsById) {
 				this._disposeItem(this._loadItemsById[n]);
 			}
-			this.init(this.useXHR, this._basePath, this._crossOrigin);
+			this.init(this.useXHR, this._basePath);
 
 			// Remove specific items
 		} else {
@@ -1358,7 +1360,13 @@ this.createjs = this.createjs || {};
 		this._loadItemsById[item.id] = item;
 		this._loadItemsBySrc[item.src] = item;
 
-		item.loadTimeout = s.loadTimeout;
+		if (item.loadTimeout == null) {
+			item.loadTimeout = s.loadTimeout;
+		}
+
+		if (item.crossOrigin == null) {
+			item.crossOrigin = this._crossOrigin;
+		}
 
 		return item;
 	};

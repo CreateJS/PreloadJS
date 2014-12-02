@@ -72,7 +72,7 @@ this.createjs = this.createjs || {};
 
 	// public methods
 	p.load = function () {
-		if (this._crossOrigin != "") { this._tag.crossOrigin = "Anonymous"; } // We can assume this, since XHR images are always loaded on a server.
+		if (this._item.crossOrigin != null) { this._tag.crossOrigin = this._item.crossOrigin; }
 		this.AbstractLoader_load();
 	};
 
