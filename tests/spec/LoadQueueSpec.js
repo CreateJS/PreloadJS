@@ -88,6 +88,23 @@ describe("PreloadJS.LoadQueue", function () {
 		this.loadFile("art/image0.jpg", false);
 	});
 
+	it("images should allow crossOrigin access", function (done) {
+		this.queue.addEventListener("fileload", function (evt) {
+			var canvas = document.createElement("canvas");
+			var stage = new createjs.Stage(canvas);
+			var bmp = new createjs.Bitmap(evt.result);
+
+			stage.addChild(bmp);
+			stage.update();
+
+			expect(stage.hitTest(35, 25)).toBe(true);
+			done();
+		});
+
+		this.queue.useXHR = false;
+		this.queue.loadFile("http://dev.gskinner.com/createjs/cors/daisy.png");
+	});
+
 	it("should load binary data", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
 			expect(evt.result instanceof ArrayBuffer).toBe(true);

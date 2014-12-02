@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 				server: {
 					options: {
 						keepalive: true,
-						base: ['../lib/', '../', './'],
+						base: ['../_assets/', '../lib/', '../', './'],
 						middleware: function (connect, options, middlewares) {
 							middlewares.unshift(function echo(req, res, next) {
 								if (req.method == "POST") {
