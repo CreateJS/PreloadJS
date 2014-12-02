@@ -40,10 +40,14 @@ this.createjs = this.createjs||{};
 	"use strict";
 
 	/**
-	 * An additional module to determine the current browser, version, operating system, and other environment
+	 * An object that determines the current browser, version, operating system, and other environment
 	 * variables via user agent string.
 	 *
 	 * Used for audio because feature detection is unable to detect the many limitations of mobile devices.
+	 *
+	 * <h4>Example</h4>
+	 *
+	 *      if (createjs.BrowserDetect.isIOS) { // do stuff }
 	 *
 	 * @property BrowserDetect
 	 * @type {Object}
@@ -61,9 +65,8 @@ this.createjs = this.createjs||{};
 		throw "BrowserDetect cannot be instantiated";
 	};
 
-
 	var agent = BrowserDetect.agent = window.navigator.userAgent;
-	BrowserDetect.isWindowPhone =  (agent.indexOf("IEMobile") > -1) || (agent.indexOf("Windows Phone") > -1);
+	BrowserDetect.isWindowPhone = (agent.indexOf("IEMobile") > -1) || (agent.indexOf("Windows Phone") > -1);
 	BrowserDetect.isFirefox = (agent.indexOf("Firefox") > -1);
 	BrowserDetect.isOpera = (window.opera != null);
 	BrowserDetect.isChrome = (agent.indexOf("Chrome") > -1);  // NOTE that Chrome on Android returns true but is a completely different browser with different abilities
