@@ -187,6 +187,19 @@ describe("PreloadJS.LoadQueue", function () {
 		this.loadFile({src: "audio/Thunder.mp3", type: createjs.LoadQueue.BINARY});
 	});
 
+	it("tag sound loading send progress events.", function (done) {
+		var _this = this;
+		var callback = function (evt) {
+			expect(true).toBe(true);
+			sound.removeEventListener("progress", callback);
+			done();
+		};
+
+		var sound = new createjs.SoundLoader({src: "audio/Thunder.mp3", type: createjs.LoadQueue.SOUND});
+		sound.addEventListener("progress", callback);
+		sound.load();
+	});
+
 	it("should error on a 404", function (done) {
 		this.queue.addEventListener("error", function (evt) {
 			expect(evt.text).toBe("FILE_LOAD_ERROR");

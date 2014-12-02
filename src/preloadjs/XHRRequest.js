@@ -262,7 +262,7 @@ this.createjs = this.createjs || {};
 		var newEvent = new createjs.Event("progress");
 		newEvent.loaded = event.loaded;
 		newEvent.total = event.total;
-		this._sendProgress(newEvent);
+		this.dispatchEvent(newEvent);
 	};
 
 	/**
