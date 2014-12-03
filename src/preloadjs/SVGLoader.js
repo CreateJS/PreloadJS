@@ -78,7 +78,8 @@ this.createjs = this.createjs || {};
 
 	// protected methods
 	p._formatResult = function (loader) {
-		var xml = createjs.DataUtils.parseXML(loader.getResult(true), "image/svg+xml");
+		// mime should be image/svg+xml, but Opera requires text/xml
+		var xml = createjs.DataUtils.parseXML(loader.getResult(true), "text/xml");
 		var tag = loader.getTag();
 
 		if (!this._preferXHR) {

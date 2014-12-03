@@ -17,7 +17,6 @@
 		var xml = null;
 		try {
 			// CocoonJS does not support XML parsing with either method.
-			// Windows (?) Opera DOMParser throws DOMException: NOT_SUPPORTED_ERR  // potential solution https://gist.github.com/1129031
 			if (window.DOMParser) {
 				var parser = new DOMParser();
 				xml = parser.parseFromString(text, type);
