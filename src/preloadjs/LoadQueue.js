@@ -1407,12 +1407,12 @@ this.createjs = this.createjs || {};
 
 		for (var i = 0; i < this._availableLoaders.length; i++) {
 			var loader = this._availableLoaders[i];
-			if (loader.canLoadItem(item)) {
+			if (loader && loader.canLoadItem(item)) {
 				return new loader(item, preferXHR);
 			}
 		}
 
-		// TODO Throw error?
+		// TODO Throw error? LM: Yes
 		return null;
 	};
 
@@ -1592,18 +1592,9 @@ this.createjs = this.createjs || {};
 	 * @protected
 	 */
 	p._processFinishedLoad = function (item, loader) {
-		// If the item was a manifest, then queue it up!
-		if (item.type == createjs.LoadQueue.MANIFEST) {
-			var result = loader.getResult();
-			if (result != null && result.manifest !== undefined) {
-				this.loadManifest(result, true);
-			}
-		}
-
 		this._numItemsLoaded++;
 		this._updateProgress();
 		this._sendFileComplete(item, loader);
-
 		this._loadNext();
 	};
 

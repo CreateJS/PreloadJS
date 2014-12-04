@@ -42,15 +42,17 @@ this.createjs = this.createjs || {};
 	 */
 	function ManifestLoader(itemSrc, preferXHR) {
 		preferXHR = preferXHR !== false;
-
 		this.AbstractLoader_constructor(itemSrc, preferXHR, preferXHR ? createjs.AbstractLoader.JSON : createjs.AbstractLoader.JSONP);
 
-		this.resultFormatter = this._formatResult;
-
 		// public properties
-
+		this.resultFormatter = this._formatResult;
 		// protected properties
-
+		/**
+		 * An internal queue which loads the contents of the manifest.
+		 * @type {LoadQueue}
+		 * @private
+		 */
+		this._manifestQueue = null;
 	};
 
 	var p = createjs.extend(ManifestLoader, createjs.AbstractLoader);
@@ -105,6 +107,11 @@ this.createjs = this.createjs || {};
 		this.AbstractLoader_handleEvent(event);
 	};
 
+	p.destroy = function() {
+		this.AbstractLoader_destroy();
+		this._manifestQueue.close();
+	};
+
 	// Duplicated from JSONLoader TODO: Can we make this better?
 	p._formatResult = function (loader) {
 		var json = null;
@@ -124,12 +131,12 @@ this.createjs = this.createjs || {};
 	p._loadManifest = function (json) {
 		if (json && json.manifest) {
 			this._loadedItems = [];
-			var queue = new createjs.LoadQueue(this.preferXHR);
+			var queue = this._manifestQueue = new createjs.LoadQueue(this.preferXHR);
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("progress", this._handleManifestProgress, this);
 			queue.on("fileload", this._handleManifestFileLoad, this);
 			queue.on("error", this._handleManifestError, this, true);
-			queue.loadManifest(json.manifest, null, json.basePath);
+			queue.loadManifest(json.manifest);
 		} else {
 			this._sendComplete();
 		}

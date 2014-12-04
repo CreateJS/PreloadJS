@@ -428,7 +428,7 @@ this.createjs = this.createjs || {};
 
 	/**
 	 * Remove all references to this loader.
-	 *
+	 * @method destroy
 	 */
 	p.destroy = function() {
 		if (this._request) {
@@ -441,6 +441,8 @@ this.createjs = this.createjs || {};
 		this._item = null;
 		this._rawResult = null;
 		this._result = null;
+
+		this._loadItems = null;
 
 		this.removeAllEventListeners();
 	};
