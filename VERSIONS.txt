@@ -13,9 +13,9 @@ CRITICAL (may break existing content)
 	however they will always finish in the order specified.
 - Added bower support, including grunt task for updating the bower.json
 - Fixed issues with tag-loaded files preloaded before the body tag is available
-- Added constructors to all classes (Thanks kaesve)
 - Added .gitignore to subfolders under /docs (thanks mcfarljw)
 - Improved EventDispatcher's handling of redispatched event objects
+- Added ErrorEvent to createjs package, and changed usages throughout PreloadJS
 
 
 Version 0.4.1 [December 12, 2013]

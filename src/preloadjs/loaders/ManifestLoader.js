@@ -136,7 +136,7 @@ this.createjs = this.createjs || {};
 			queue.on("progress", this._handleManifestProgress, this);
 			queue.on("fileload", this._handleManifestFileLoad, this);
 			queue.on("error", this._handleManifestError, this, true);
-			queue.loadManifest(json.manifest);
+			queue.loadManifest(json);
 		} else {
 			this._sendComplete();
 		}
@@ -152,7 +152,7 @@ this.createjs = this.createjs || {};
 	};
 
 	p._handleManifestFileLoad = function (event) {
-		this._loadedItems.push(event.item);
+		this._loadedItems.push(event.target);
 	};
 
 	p._handleManifestError = function (event) {

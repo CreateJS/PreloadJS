@@ -1,5 +1,5 @@
 {
-	"basePath": "../_assets/art/",
+	"path": "../_assets/art/",
 	"manifest": [
 		"image0.jpg",
 		"image1.jpg",
