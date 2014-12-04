@@ -88,6 +88,7 @@ describe("PreloadJS.LoadQueue", function () {
 		this.loadFile("art/image0.jpg", false);
 	});
 
+	// This fails in Opera and IE (expected, as crossOrigin is not supported)
 	it("images should allow crossOrigin access", function (done) {
 		this.queue.addEventListener("fileload", function (evt) {
 			var canvas = document.createElement("canvas");
@@ -272,6 +273,31 @@ describe("PreloadJS.LoadQueue", function () {
 						  method: createjs.LoadQueue.POST,
 						  values: value
 					  });
+	});
+
+	it("destory() should remove all references in a LoadQueue", function () {
+		this.queue.addEventListener("fileload", function (evt) { });
+		this.loadFile({
+						  src: "art/gbot.svg",
+						  type: createjs.LoadQueue.TEXT,
+						  data: "foo"
+					  });
+
+		this.queue.destroy();
+		expect(this.queue.hasEventListener("fileload")).toBe(false);
+		expect(this.queue.getItem()).not.toBeDefined();
+		expect(this.queue.getItem(true)).not.toBeDefined();
+	});
+
+	it("removeAll() should remove all the items in a LoadQueue", function () {
+		this.queue.loadFile("foo.baz", false);
+		this.queue.loadFile("baz.foo", false);
+
+		this.queue.removeAll();
+
+		this.queue.load();
+
+		expect(this.queue._numItems).toBe(0);
 	});
 
 });
