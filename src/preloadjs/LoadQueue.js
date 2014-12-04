@@ -517,6 +517,14 @@ this.createjs = this.createjs || {};
 		this._loadedScripts = [];
 
 		/**
+		 * Used to supress duplicate progress events.
+		 *
+		 * @type {Number}
+		 * @private
+		 */
+		this._lastProgress = NaN;
+
+		/**
 		 * Hash of all our types, each with an array of possible loaders.
 		 * The default PreloadJS loaders will always be last in the array.
 		 * @type {{}}
@@ -1218,6 +1226,7 @@ this.createjs = this.createjs || {};
 		this._loadedScripts.length = 0;
 		this.loadStartWasDispatched = false;
 		this._itemCount = 0;
+		this._lastProgress = NaN;
 	};
 
 // protected methods
@@ -1685,7 +1694,11 @@ this.createjs = this.createjs || {};
 			}
 			loaded += (chunk / remaining) * (remaining / this._numItems);
 		}
-		this._sendProgress(loaded);
+
+		if (this._lastProgress != loaded) {
+			this._sendProgress(loaded);
+			this._lastProgress = loaded;
+		}
 	};
 
 	/**
