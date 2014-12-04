@@ -95,7 +95,7 @@ this.createjs = this.createjs || {};
 		// protected properties
 		/**
 		 * The item this loader represents. Note that this is null in a {{#crossLink "LoadQueue"}}{{/crossLink}}, but will
-		 * be available on loaders such as {{#crossLink "XHRLoader"}}{{/crossLink}} and {{#crossLink "TagLoader"}}{{/crossLink}}.
+		 * be available on loaders such as {{#crossLink "XMLLoader"}}{{/crossLink}} and {{#crossLink "ImageLoader"}}{{/crossLink}}.
 		 * @property _item
 		 * @type {Object}
 		 * @private
@@ -421,13 +421,10 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	p.destroy = function() {
-		this._request.off("complete", this, this);
-		this._request.off("progress", this, this);
-		this._request.off("loadStart", this, this);
-		this._request.off("abort", this, this);
-		this._request.off("timeout", this, this);
-		this._request.off("error", this, this);
-		this._request.destroy();
+		if (this._request) {
+			this._request.removeAllEventListeners();
+			this._request.destroy();
+		}
 
 		this._request = null;
 
