@@ -7,6 +7,7 @@
 		"../src/createjs/utils/proxy.js",
 		"../src/createjs/utils/BrowserDetect.js",
 		"../src/createjs/events/Event.js",
+		"../src/createjs/events/ErrorEvent.js",
 		"../src/createjs/events/EventDispatcher.js",
 		"../src/preloadjs/events/ProgressEvent.js",
 		"../src/preloadjs/utils/json3.js",

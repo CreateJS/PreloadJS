@@ -26,7 +26,9 @@
                 document.getElementById("header").style.display = "none";
             }
 
-            var loader = new createjs.ManifestLoader("../_assets/static/manifest.json");
+            //var loader = new createjs.ManifestLoader("../_assets/static/manifest.json");
+            var loader = new createjs.LoadQueue();
+            loader.loadManifest("../_assets/static/manifest.json");
             loader.on("complete", handleComplete);
             loader.on("progress", handleProgress);
             loader.load();
@@ -42,7 +44,7 @@
 
     </script>
     <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/ManifestLoader.js"></script>
+    <script type="text/javascript" src="../src/preloadjs/loaders/ManifestLoader.js"></script>
 
 </body>
 </html>

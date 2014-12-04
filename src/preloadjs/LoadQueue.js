@@ -1011,8 +1011,7 @@ this.createjs = this.createjs || {};
 	 */
 	p.loadFile = function (file, loadNow, basePath) {
 		if (file == null) {
-			var event = new createjs.Event("error");
-			event.text = "PRELOAD_NO_FILE";
+			var event = new createjs.ErrorEvent("PRELOAD_NO_FILE");
 			this._sendError(event);
 			return;
 		}
@@ -1091,8 +1090,7 @@ this.createjs = this.createjs || {};
 		// Array-based list of items
 		if (manifest instanceof Array) {
 			if (manifest.length == 0) {
-				var event = new createjs.Event("error");
-				event.text = "PRELOAD_MANIFEST_EMPTY";
+				var event = new createjs.ErrorEvent("PRELOAD_MANIFEST_EMPTY");
 				this._sendError(event);
 				return;
 			}
@@ -1114,8 +1112,7 @@ this.createjs = this.createjs || {};
 				if (manifest.type == null) {
 					manifest.type = s.MANIFEST;
 				} else if (manifest.type != s.MANIFEST) {
-					var event = new createjs.Event("error");
-					event.text = "PRELOAD_MANIFEST_ERROR";
+					var event = new createjs.ErrorEvent("PRELOAD_MANIFEST_TYPE");
 					this._sendError(event);
 				}
 				fileList = [manifest];
@@ -1128,8 +1125,7 @@ this.createjs = this.createjs || {};
 
 			// Unsupported. This will throw an error.
 		} else {
-			var event = new createjs.Event("error");
-			event.text = "PRELOAD_MANIFEST_NULL";
+			var event = new createjs.ErrorEvent("PRELOAD_MANIFEST_NULL");
 			this._sendError(event);
 			return;
 		}
@@ -1493,9 +1489,7 @@ this.createjs = this.createjs || {};
 		this._finishOrderedItem(loader, true);
 		this._updateProgress();
 
-		var newEvent = new createjs.Event("error");
-		newEvent.text = "FILE_LOAD_ERROR";
-		newEvent.item = loader.getItem();
+		var newEvent = new createjs.Event("FILE_LOAD_ERROR", null, loader.getItem());
 		// TODO: Propagate actual error message.
 
 		this._sendError(newEvent);

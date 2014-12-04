@@ -519,7 +519,7 @@ this.createjs = this.createjs || {};
 	p._sendError = function (event) {
 		if (this._isCanceled() || !this.hasEventListener("error")) { return; }
 		if (event == null) {
-			event = new createjs.Event("error");
+			event = new createjs.ErrorEvent(); // TODO: Populate error
 		}
 		this.dispatchEvent(event);
 	};

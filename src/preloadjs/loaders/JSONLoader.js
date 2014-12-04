@@ -71,8 +71,8 @@ this.createjs = this.createjs || {};
 		try {
 			json = createjs.DataUtils.parseJSON(loader.getResult(true));
 		} catch (e) {
-			var event = new createjs.Event("error");
-			event.error = e;
+			var event = new createjs.ErrorEvent();
+			//event.error = e; // TODO: Populate error
 
 			this._sendError(event);
 			return e;
