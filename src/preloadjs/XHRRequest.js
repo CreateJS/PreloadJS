@@ -259,9 +259,7 @@ this.createjs = this.createjs || {};
 			return; // Sometimes we get no "total", so just ignore the progress event.
 		}
 
-		var newEvent = new createjs.Event("progress");
-		newEvent.loaded = event.loaded;
-		newEvent.total = event.total;
+		var newEvent = new createjs.ProgressEvent(event.loaded, event.total);
 		this.dispatchEvent(newEvent);
 	};
 

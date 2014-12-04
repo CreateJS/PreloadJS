@@ -1,11 +1,9 @@
 {
-	"basePath": "assets/",
+	"basePath": "../_assets/art/",
 	"manifest": [
 		"image0.jpg",
 		"image1.jpg",
 		"image2.jpg",
-		"image3.jpg",
-		{ "src": "font.css" },
-		{ "src":"manifest.json", "type":"manifest" }
+		"image3.jpg"
 	]
 }

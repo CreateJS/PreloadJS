@@ -109,6 +109,16 @@ this.createjs = this.createjs || {};
 		this._preferXHR = preferXHR;
 
 		this._rawResult = null;
+
+		/**
+		 * A list of items that loaders load behind the scenes. This does not include the main item the loader is
+		 * responsible for loading. Examples of loaders that have subitems include the {{#crossLink "SpriteSheetLoader"}}{{/crossLink}} and
+		 * {{#crossLink "ManifestLoader"}}{{/crossLink}}.
+		 * @property _loadItems
+		 * @type {null}
+		 * @protected
+		 */
+		this._loadedItems = null;
 	};
 
 	var p = createjs.extend(AbstractLoader, createjs.EventDispatcher);
@@ -435,6 +445,15 @@ this.createjs = this.createjs || {};
 		this.removeAllEventListeners();
 	};
 
+	/**
+	 * Get any items loaded internally by the loader.
+	 * @method getLoadedItems
+	 * @returns {Array} A list of the items loaded by the loader.
+	 */
+	p.getLoadedItems = function () {
+		return this._loadedItems;
+	};
+
 // Callback proxies
 	/**
 	 * Dispatch a loadstart event. Please see the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}} event
@@ -460,7 +479,7 @@ this.createjs = this.createjs || {};
 		var event = null;
 		if (typeof(value) == "number") {
 			this.progress = value;
-			event = new createjs.Event("progress");
+			event = new createjs.ProgressEvent();
 			event.loaded = this.progress;
 			event.total = 1;
 		} else {
