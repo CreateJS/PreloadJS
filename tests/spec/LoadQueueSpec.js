@@ -20,72 +20,200 @@ describe("PreloadJS.LoadQueue", function () {
 		}
 	});
 
-	it("should load XML", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof Document).toBe(true);
-			done();
+	describe("Tag Loading", function () {
+		it("should load JSONp", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof Object).toBe(true);
+				done();
+			});
+			this.loadFile({
+							  src: "static/jsonpSample.json",
+							  callback: "x",
+							  type: createjs.LoadQueue.JSONP
+						  }, false);
 		});
-		this.loadFile("static/grant.xml");
+
+		it("should load and execute Javascript (tag)", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(window.foo).toBe(true);
+				done();
+			});
+			this.loadFile("static/scriptExample.js", false);
+		});
+
+		it("should load svg", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(typeof evt.result).toBe("object");
+				done();
+			});
+			this.loadFile("art/gbot.svg", false);
+		});
+
+		it("should load sounds", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof HTMLMediaElement).toBe(true);
+				done();
+			});
+
+			this.loadFile({
+							  src: "audio/Thunder.mp3",
+							  type: createjs.AbstractLoader.SOUND
+						  }, false);
+		});
+
+		it("should load video", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof HTMLMediaElement).toBe(true);
+				done();
+			});
+
+			this.loadFile({
+							  src: "static/video.mp4",
+							  type: createjs.AbstractLoader.VIDEO
+						  }, false);
+		});
+
+		it("should load an existing video tag", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result == tag).toBe(true);
+				done();
+			});
+
+			var tag = document.createElement("video");
+			tag.autoplay = false;
+			tag.preload = "none";
+			tag.src = "static/video.mp4";
+			this.queue.loadFile(tag);
+		});
+
+		it("should load an existing sound tag", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result == tag).toBe(true);
+				done();
+			});
+
+			var tag = document.createElement("audio");
+			tag.autoplay = false;
+			tag.preload = "none";
+			tag.src = "audio/Thunder.mp3";
+			this.queue.loadFile(tag);
+		});
+
+		it("tag sound loading send progress events.", function (done) {
+			var _this = this;
+			var callback = function (evt) {
+				expect(true).toBe(true);
+				sound.removeEventListener("progress", callback);
+				done();
+			};
+
+			var sound = new createjs.SoundLoader({
+													 src: "audio/Thunder.mp3",
+													 type: createjs.LoadQueue.SOUND
+												 });
+			sound.addEventListener("progress", callback);
+			sound.load();
+		});
+
+		it("should load images (tag)", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof HTMLImageElement).toBe(true);
+				done();
+			});
+			this.loadFile("art/image0.jpg", false);
+		});
+
+		it("should load an existing image tag", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result === tag).toBe(true);
+				done();
+			});
+
+			var tag = document.createElement("img");
+			tag.src = "art/image0.jpg";
+			this.queue.loadFile(tag);
+		});
 	});
 
-	it("should load JSON", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof Object).toBe(true);
-			done();
+	describe("XHR Loading", function () {
+		it("should load XML", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof Document).toBe(true);
+				done();
+			});
+			this.loadFile("static/grant.xml");
 		});
-		this.loadFile("static/grant.json");
-	});
 
-	it("should load JSONp", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof Object).toBe(true);
-			done();
+		it("should load JSON", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof Object).toBe(true);
+				done();
+			});
+			this.loadFile("static/grant.json");
 		});
-		this.loadFile({
-						  src: "static/jsonpSample.json",
-						  callback: "x",
-						  type: createjs.LoadQueue.JSONP
-					  });
-	});
 
-	it("should load and execute Javascript (tag)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(window.foo).toBe(true);
-			done();
+		it("should load and execute Javascript (xhr)", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(window.foo).toBe(true);
+				done();
+			});
+			this.loadFile("static/scriptExample.js", true);
 		});
-		this.loadFile("static/scriptExample.js", false);
-	});
 
-	it("should load and execute Javascript (xhr)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(window.foo).toBe(true);
-			done();
+		it("should load css", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof HTMLElement).toBe(true);
+				done();
+			});
+			this.loadFile("static/font.css");
 		});
-		this.loadFile("static/scriptExample.js", true);
-	});
 
-	it("should load css", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof HTMLElement).toBe(true);
-			done();
+		it("should load images (xhr)", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof HTMLImageElement).toBe(true);
+				done();
+			});
+			this.loadFile("art/Autumn.png", true);
 		});
-		this.loadFile("static/font.css");
-	});
 
-	it("should load images (xhr)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof HTMLImageElement).toBe(true);
-			done();
+		it("should load binary data", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof ArrayBuffer).toBe(true);
+				done();
+			});
+			this.loadFile({
+							  src: "audio/Thunder.mp3",
+							  type: createjs.AbstractLoader.BINARY
+						  });
 		});
-		this.loadFile("art/Autumn.png", true);
-	});
 
-	it("should load images (tag)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof HTMLImageElement).toBe(true);
-			done();
+		it("should load svg (xhr)", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(typeof evt.result).toBe("object");
+				done();
+			});
+			this.loadFile("art/gbot.svg", true);
 		});
-		this.loadFile("art/image0.jpg", false);
+
+		it("should load text", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(typeof evt.result).toBe("string");
+				done();
+			});
+			this.loadFile({src: "art/gbot.svg", type: createjs.LoadQueue.TEXT});
+		});
+
+		it("should load sounds (xhr)", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(evt.result instanceof HTMLMediaElement).toBe(true);
+				done();
+			});
+
+			this.loadFile({
+							  src: "audio/Thunder.mp3",
+							  type: createjs.AbstractLoader.SOUND
+						  }, true);
+		});
 	});
 
 	// This fails in Opera and IE (expected, as crossOrigin is not supported)
@@ -104,59 +232,6 @@ describe("PreloadJS.LoadQueue", function () {
 
 		this.queue.preferXHR = false;
 		this.queue.loadFile("http://dev.gskinner.com/createjs/cors/daisy.png");
-	});
-
-	it("should load binary data", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof ArrayBuffer).toBe(true);
-			done();
-		});
-		this.loadFile({src: "audio/Thunder.mp3", type: createjs.AbstractLoader.BINARY});
-	});
-
-	it("should load svg (tag)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(typeof evt.result).toBe("object");
-			done();
-		});
-		this.loadFile("art/gbot.svg");
-	});
-
-	it("should load svg (xhr)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(typeof evt.result).toBe("object");
-			done();
-		});
-		this.loadFile("art/gbot.svg", true);
-	});
-
-	it("should load text", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(typeof evt.result).toBe("string");
-			done();
-		});
-		this.loadFile({src: "art/gbot.svg", type: createjs.LoadQueue.TEXT});
-	});
-
-	it("should load sounds (tag)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof HTMLMediaElement).toBe(true);
-			done();
-		});
-
-		this.loadFile({src: "audio/Thunder.mp3", type: createjs.AbstractLoader.SOUND}, false);
-	});
-
-	it("should load sounds (xhr)", function (done) {
-		this.queue.addEventListener("fileload", function (evt) {
-			expect(evt.result instanceof HTMLMediaElement).toBe(true);
-			done();
-		});
-
-		this.loadFile({
-			  src: "audio/Thunder.mp3",
-			  type: createjs.AbstractLoader.SOUND
-		  }, true);
 	});
 
 	xit("should load a manifest and its children", function (done) {
@@ -185,20 +260,10 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		};
 		this.queue.addEventListener("progress", callback);
-		this.loadFile({src: "audio/Thunder.mp3", type: createjs.LoadQueue.BINARY});
-	});
-
-	it("tag sound loading send progress events.", function (done) {
-		var _this = this;
-		var callback = function (evt) {
-			expect(true).toBe(true);
-			sound.removeEventListener("progress", callback);
-			done();
-		};
-
-		var sound = new createjs.SoundLoader({src: "audio/Thunder.mp3", type: createjs.LoadQueue.SOUND});
-		sound.addEventListener("progress", callback);
-		sound.load();
+		this.loadFile({
+						  src: "audio/Thunder.mp3",
+						  type: createjs.LoadQueue.BINARY
+					  });
 	});
 
 	it("should error on a 404", function (done) {
@@ -222,7 +287,8 @@ describe("PreloadJS.LoadQueue", function () {
 	});
 
 	it("should have custom plugins", function (done) {
-		var SamplePlugin = function () { }
+		var SamplePlugin = function () {
+		}
 		var s = SamplePlugin;
 		s.getPreloadHandlers = function () {
 			return {
@@ -276,7 +342,8 @@ describe("PreloadJS.LoadQueue", function () {
 	});
 
 	it("destory() should remove all references in a LoadQueue", function () {
-		this.queue.addEventListener("fileload", function (evt) { });
+		this.queue.addEventListener("fileload", function (evt) {
+		});
 		this.loadFile({
 						  src: "art/gbot.svg",
 						  type: createjs.LoadQueue.TEXT,

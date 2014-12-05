@@ -46,7 +46,13 @@ this.createjs = this.createjs || {};
 		// protected properties
 		this._tagSrcAttribute = "src";
 
-		this._tag = document.createElement("img");
+		if (createjs.RequestUtils.isImageTag(loadItem) || createjs.RequestUtils.isImageTag(loadItem.src)) {
+			this._tag = createjs.RequestUtils.isImageTag(loadItem)?loadItem:loadItem.src;
+			this._preferXHR = false;
+		} else {
+			this._tag = document.createElement("img");
+		}
+
 		this._tag.style.visibility = "hidden";
 
 		this.on("initialize", this._updateXHR, this);

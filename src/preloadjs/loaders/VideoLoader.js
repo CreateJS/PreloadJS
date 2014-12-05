@@ -39,8 +39,12 @@ this.createjs = this.createjs || {};
 	 *
 	 */
 	function VideoLoader(loadItem, preferXHR) {
-		this.setTag(document.createElement("video"));
-		this.getTag().preload = "auto";
+		if (createjs.RequestUtils.isVideoTag(loadItem) || createjs.RequestUtils.isVideoTag(loadItem.src)) {
+			this.setTag(createjs.RequestUtils.isVideoTag(loadItem)?loadItem:loadItem.src);
+		} else {
+			this.setTag(document.createElement("video"));
+		}
+
 		this.AbstractMediaLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.VIDEO);
 	};
 

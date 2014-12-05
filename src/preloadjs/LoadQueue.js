@@ -1313,15 +1313,7 @@ this.createjs = this.createjs || {};
 				};
 				break;
 			case "object":
-				if (window.HTMLAudioElement && value instanceof window.HTMLAudioElement) {
-					item = {
-						tag: value,
-						src: item.tag.src,
-						type: createjs.LoadQueue.SOUND
-					};
-				} else {
-					item = value;
-				}
+				item = value;
 				break;
 			default:
 				return null;
