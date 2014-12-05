@@ -501,6 +501,8 @@ this.createjs = this.createjs || {};
 	p._sendComplete = function () {
 		if (this._isCanceled()) { return; }
 
+		this.loaded = true;
+
 		var event = new createjs.Event("complete");
 		event.rawResult = this._rawResult;
 
