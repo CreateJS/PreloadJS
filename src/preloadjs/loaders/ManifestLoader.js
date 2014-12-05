@@ -40,12 +40,10 @@ this.createjs = this.createjs || {};
 	 * @param useXHR Default true; Specifies whether or not to load the manifest as JSONP (false), or to use XHR (true/default).
 	 * @constructor
 	 */
-	function ManifestLoader(itemSrc, preferXHR) {
-		preferXHR = preferXHR !== false;
-		this.AbstractLoader_constructor(itemSrc, preferXHR, preferXHR ? createjs.AbstractLoader.JSON : createjs.AbstractLoader.JSONP);
+	function ManifestLoader(itemSrc) {
+		this.AbstractLoader_constructor(itemSrc, null, createjs.AbstractLoader.MANIFEST);
 
 		// public properties
-		this.resultFormatter = this._formatResult;
 		// protected properties
 		/**
 		 * An internal queue which loads the contents of the manifest.
@@ -84,23 +82,27 @@ this.createjs = this.createjs || {};
 	};
 
 	// protected methods
+	p._createRequest = function() {
+		var callback = this._item.callback
+		if (callback != null && callback instanceof Function) {
+			this._request = new createjs.JSONPLoader(this._item);
+		} else {
+			this._request = new createjs.JSONLoader(this._item);
+		}
+	};
+
 	p.handleEvent = function (event) {
 		switch (event.type) {
 			case "complete":
-				this._rawResult = event.target._response;
-				this._result = this.resultFormatter && this.resultFormatter(this) || this._rawResult;
+				this._rawResult = event.target.getResult(true);
+				this._result = event.target.getResult();
 				this._sendProgress(s.MANIFEST_PROGRESS);
 				this._loadManifest(this._result);
 				return;
 			case "progress":
-				if (typeof(value) == "number") {
-					this.progress = value * s.MANIFEST_PROGRESS;
-					event = new createjs.ProgressEvent(this.progress);
-				} else {
-					event.loaded *= s.MANIFEST_PROGRESS;
-					this.progress = event.loaded / event.total;
-					if (isNaN(this.progress) || this.progress == Infinity) { this.progress = 0; }
-				}
+				event.loaded *= s.MANIFEST_PROGRESS;
+				this.progress = event.loaded / event.total;
+				if (isNaN(this.progress) || this.progress == Infinity) { this.progress = 0; }
 				this._sendProgress(event);
 				return;
 		}
@@ -110,22 +112,6 @@ this.createjs = this.createjs || {};
 	p.destroy = function() {
 		this.AbstractLoader_destroy();
 		this._manifestQueue.close();
-	};
-
-	// Duplicated from JSONLoader TODO: Can we make this better?
-	p._formatResult = function (loader) {
-		var json = null;
-		try {
-			json = createjs.DataUtils.parseJSON(loader.getResult(true));
-		} catch (e) {
-			var event = new createjs.ErrorEvent();
-			//event.error = e; // TODO: Populate error
-
-			this._sendError(event);
-			return e;
-		}
-
-		return json;
 	};
 
 	p._loadManifest = function (json) {

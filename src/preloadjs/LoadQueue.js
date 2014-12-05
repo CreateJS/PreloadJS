@@ -1346,11 +1346,6 @@ this.createjs = this.createjs || {};
 		item.src = bp + item.src;
 		item.path = bp;
 
-		//TODO: Move into ManifestLoader
-		if (item.type == createjs.LoadQueue.JSON || item.type == createjs.LoadQueue.MANIFEST) {
-			item._loadAsJSONP = (item.callback != null);
-		}
-
 		// If there's no id, set one now.
 		if (item.id === undefined || item.id === null || item.id === "") {
 			item.id = autoId;
@@ -1676,7 +1671,6 @@ this.createjs = this.createjs || {};
 	p._removeLoadItem = function (loader) {
 		var item = loader.getItem();
 		delete item._loader;
-		delete item._loadAsJSONP;
 
 		var l = this._currentLoads.length;
 		for (var i = 0; i < l; i++) {
