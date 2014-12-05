@@ -106,7 +106,7 @@ this.createjs = this.createjs || {};
 			loader.getTag().src = loader.getItem().src;
 		}
 
-		loader.getTag().style.visibility = "visible";
+		loader.getTag().style.visibility = "";
 		return loader.getTag();
 	};
 
