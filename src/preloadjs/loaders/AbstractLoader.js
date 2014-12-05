@@ -481,15 +481,13 @@ this.createjs = this.createjs || {};
 		var event = null;
 		if (typeof(value) == "number") {
 			this.progress = value;
-			event = new createjs.ProgressEvent();
-			event.loaded = this.progress;
-			event.total = 1;
+			event = new createjs.ProgressEvent(this.progress);
 		} else {
 			event = value;
 			this.progress = value.loaded / value.total;
+			event.progress = this.progress;
 			if (isNaN(this.progress) || this.progress == Infinity) { this.progress = 0; }
 		}
-		event.progress = this.progress;
 		this.hasEventListener("progress") && this.dispatchEvent(event);
 	};
 

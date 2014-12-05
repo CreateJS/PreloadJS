@@ -56,9 +56,14 @@ this.createjs = this.createjs || {};
 	var p = createjs.extend(ManifestLoader, createjs.AbstractLoader);
 	var s = ManifestLoader;
 
+	// static properties
+
 	/**
 	 * The amount of progress that the manifest itself takes up.
+	 * @property MANIFEST_PROGRESS
 	 * @type {number}
+	 * @private
+	 * @static
 	 */
 	s.MANIFEST_PROGRESS = 0.25;
 
@@ -73,8 +78,6 @@ this.createjs = this.createjs || {};
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.MANIFEST;
 	};
-
-	// static properties
 
 	// public methods
 	p.load = function () {
@@ -116,8 +119,7 @@ this.createjs = this.createjs || {};
 
 	p._loadManifest = function (json) {
 		if (json && json.manifest) {
-			this._loadedItems = [];
-			var queue = this._manifestQueue = new createjs.LoadQueue(this.preferXHR);
+			var queue = this._manifestQueue = new createjs.LoadQueue();
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("progress", this._handleManifestProgress, this);
 			queue.on("error", this._handleManifestError, this, true);
