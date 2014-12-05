@@ -1,0 +1,9 @@
+loadManifest({
+	"path": "../_assets/art/",
+	"manifest": [
+		"image0.jpg",
+		"image1.jpg",
+		"image2.jpg",
+	   {"id":"image3", "src":"image3.jpg"}
+	]
+})

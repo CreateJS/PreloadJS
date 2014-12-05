@@ -29,6 +29,7 @@
             //var loader = new createjs.ManifestLoader("../_assets/static/manifest.json");
             var loader = new createjs.LoadQueue();
             loader.loadManifest("../_assets/static/manifest.json");
+            //loader.loadManifest({src:"../_assets/static/manifest.json", callback:"loadManifest"});
             loader.on("complete", handleComplete);
             loader.on("progress", handleProgress);
             loader.load();
