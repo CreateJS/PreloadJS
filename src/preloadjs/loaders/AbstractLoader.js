@@ -239,6 +239,15 @@ this.createjs = this.createjs || {};
 	s.VIDEO = "video";
 
 	/**
+	 * The preload type for SpriteSheet files.
+	 * @property SPRITESHEET
+	 * @type {String}
+	 * @default spritesheet
+	 * @static
+	 */
+	s.SPRITESHEET = "spritesheet";
+
+	/**
 	 * The preload type for SVG files.
 	 * @property SVG
 	 * @type {String}

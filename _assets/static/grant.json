@@ -7,5 +7,5 @@
         "height": 361
     },
     "animations": {"jump": [26, 63], "run": [0, 25]},
-    "images": ["assets/runningGrant.png"]
+    "images": ["../_assets/art/runningGrant.png"]
 }
