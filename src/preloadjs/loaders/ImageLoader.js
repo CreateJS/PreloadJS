@@ -79,7 +79,7 @@ this.createjs = this.createjs || {};
 
 	// public methods
 	p.load = function () {
-		if (this._tag.complete) {
+		if (this._tag.src != "" && this._tag.complete) {
 			this._sendComplete();
 			return;
 		}
