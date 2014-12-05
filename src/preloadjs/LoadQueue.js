@@ -1198,6 +1198,26 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
+	 * Generate a list of load items on-demand.
+	 * @method getItems
+	 * @returns {Array} A list of items that have been added to the queue.
+	 */
+	p.getItems = function(loaded) {
+		var arr = [];
+		for (var i= 0, l=this._loadQueueBackup.length; i<l; i++) {
+			var loader = this._loadQueueBackup[i]
+			var item = loader.getItem();
+			if (loaded === true && !loader.loaded) { continue; }
+			arr.push({
+				item: item,
+				result: this.getResult(item.id),
+				rawResult: this.getResult(item.id, true)
+			 });
+		}
+		return arr;
+	};
+
+	/**
 	 * Pause or resume the current load. Active loads will not be cancelled, but the next items in the queue will not
 	 * be processed when active loads complete. LoadQueues are not paused by default.
 	 *
@@ -1517,6 +1537,8 @@ this.createjs = this.createjs || {};
 			this._loadedRawResults[item.id] = loader.getResult(true);
 		}
 
+		this._saveLoadedItems(loader);
+
 		// Clean up the load item
 		this._removeLoadItem(loader);
 
@@ -1525,6 +1547,35 @@ this.createjs = this.createjs || {};
 			this._processFinishedLoad(item, loader);
 		}
 	};
+
+	/**
+	 * Some loaders might load additional content, other than the item they were passed (such as {{#crossLink "ManifestLoader"}}{{/crossLink}}).
+	 * Any items exposed by the loader using {{#crossLink "AbstractLoader/getLoadItems"}}{{/crossLink}} are added to the
+	 * LoadQueue's look-ups, including {{#crossLink "getItem"}}{{/crossLink}} and {{#crossLink "getResult"}}{{/crossLink}}
+	 * methods.
+	 * @method _saveLoadedItems
+	 * @param {AbstractLoader} loader
+	 * @protected
+	 * @since 0.6.0
+	 */
+	p._saveLoadedItems = function(loader) {
+		// TODO: Not sure how to handle this. Would be nice to expose the items.
+		// Loaders may load sub-items. This adds them to this queue
+		var list = loader.getLoadedItems();
+		if (list === null) { return; }
+
+		for (var i = 0; i < list.length; i++) {
+			var item = list[i].item;
+
+			// Store item lookups
+			this._loadItemsBySrc[item.src] = item;
+			this._loadItemsById[item.id] = item;
+
+			// Store loaded content
+			this._loadedResults[item.id] = list[i].result;
+			this._loadedRawResults[item.id] = list[i].rawResult;
+		}
+	}
 
 	/**
 	 * Flag an item as finished. If the item's order is being managed, then set it up to finish

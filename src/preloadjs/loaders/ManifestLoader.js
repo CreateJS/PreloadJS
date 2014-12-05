@@ -134,7 +134,6 @@ this.createjs = this.createjs || {};
 			var queue = this._manifestQueue = new createjs.LoadQueue(this.preferXHR);
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("progress", this._handleManifestProgress, this);
-			queue.on("fileload", this._handleManifestFileLoad, this);
 			queue.on("error", this._handleManifestError, this, true);
 			queue.loadManifest(json);
 		} else {
@@ -143,16 +142,13 @@ this.createjs = this.createjs || {};
 	};
 
 	p._handleManifestComplete = function (event) {
+		this._loadedItems = this._manifestQueue.getItems(true);
 		this._sendComplete();
 	};
 
 	p._handleManifestProgress = function (event) {
 		this.progress = event.progress * (1 - s.MANIFEST_PROGRESS) + s.MANIFEST_PROGRESS;
 		this._sendProgress(this.progress);
-	};
-
-	p._handleManifestFileLoad = function (event) {
-		this._loadedItems.push(event.target);
 	};
 
 	p._handleManifestError = function (event) {
