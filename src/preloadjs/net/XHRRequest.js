@@ -162,7 +162,7 @@ this.createjs = this.createjs || {};
 		return this._response;
 	};
 
-	// Overrides abstract method in AbstractLoader
+	// Overrides abstract method in AbstractRequest
 	p.cancel = function () {
 		this.canceled = true;
 		this._clean();

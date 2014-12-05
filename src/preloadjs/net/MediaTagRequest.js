@@ -64,14 +64,6 @@ this.createjs = this.createjs || {};
 		this.TagRequest_load();
 	};
 
-	p.destroy = function() {
-		this._tag.addEventListener && this._tag.removeEventListener("canplaythrough", this._loadedHandler);
-		this._tag.onstalled = null;
-		this._tag.onprogress = null;
-
-		this.TagRequest_destory();
-	};
-
 	/**
 	 * Handle the readyStateChange event from a tag. We sometimes need this in place of the onload event (mainly SCRIPT
 	 * and LINK tags), but other cases may exist.
@@ -114,6 +106,17 @@ this.createjs = this.createjs || {};
 		this.dispatchEvent(newEvent);
 	};
 
+	/**
+	 *
+	 * @private
+	 */
+	p._clean = function () {
+		this._tag.removeEventListener && this._tag.removeEventListener("canplaythrough", this._loadedHandler);
+		this._tag.onstalled = null;
+		this._tag.onprogress = null;
+
+		this.TagRequest__clean();
+	};
 
 	createjs.MediaTagRequest = createjs.promote(MediaTagRequest, "TagRequest");
 

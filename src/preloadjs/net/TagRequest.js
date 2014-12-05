@@ -68,9 +68,7 @@ this.createjs = this.createjs || {};
 	};
 
 	p.destroy = function() {
-		this._tag.onreadystatechange = null;
-		this._tag.onload = null;
-
+		this._clean();
 		this._tag = null;
 
 		this.AbstractRequest_destory();
@@ -97,7 +95,19 @@ this.createjs = this.createjs || {};
 		this._rawResult = this._tag;
 		this._result = this.resultFormatter && this.resultFormatter(this) || this._rawResult;
 
+		this._clean();
+
 		this.dispatchEvent("complete");
+	};
+
+	/**
+	 * Remove event listeners, but don't destory the request object
+	 *
+	 * @private
+	 */
+	p._clean = function() {
+		this._tag.onload = null;
+		this._tag.onreadystatechange = null;
 	};
 
 	/**
