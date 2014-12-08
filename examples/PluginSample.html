@@ -20,8 +20,7 @@
 <body onload="init()">
 
 <header class="PreloadJS">
-	<h1><span class="text-product">Preload<strong>JS</strong></span> Example:
-		Plugin</h1>
+	<h1>Example: Plugin</h1>
 
 	<p>In this example, a PreloadJS plugin is defined, which parses a load item
 		into an HTML image ID that is
@@ -43,7 +42,7 @@
 
 	function init() {
 		// Create a new queue.
-		preload = new createjs.LoadQueue(false, "assets/");
+		preload = new createjs.LoadQueue(false, "../_assets/art/");
 
 		// Use this instead to favor xhr loading
 		//preload = new createjs.LoadQueue(true, "assets/");

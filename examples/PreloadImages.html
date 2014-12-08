@@ -11,8 +11,7 @@
 <body onload="init()">
 
 <header class="PreloadJS">
-	<h1><span class="text-product">Preload<strong>JS</strong></span> Image
-		Gallery</h1>
+	<h1>Image Gallery</h1>
 
 	<p>This sample loads a number of images, and adds them to a canvas stage
 		when they are complete. Click the image
@@ -22,10 +21,10 @@
 		images may not work locally either.</p>
 </header>
 
-<canvas id="myCanvas" width="960" height="400"></canvas>
+<div><canvas id="myCanvas" width="960" height="400"></canvas></div>
 
-<script src="./assets/easeljs-NEXT.min.js"></script>
-<script src="./assets/tweenjs-NEXT.min.js"></script>
+<script src="../_assets/libs/easeljs-NEXT.min.js"></script>
+<script src="../_assets/libs/tweenjs-NEXT.min.js"></script>
 
 <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
 <!-- We also provide hosted minified versions of all CreateJS libraries.
@@ -91,7 +90,7 @@
 		preload.on("progress", handleProgress);
 		preload.on("complete", handleComplete);
 		preload.on("fileload", handleFileLoad);
-		preload.loadManifest(manifest, true, "assets/");
+		preload.loadManifest(manifest, true, "../_assets/art/");
 
 		createjs.Ticker.setFPS(30);
 	}

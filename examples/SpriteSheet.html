@@ -9,8 +9,7 @@
 
 <body onload="init();">
 <header class="EaselJS">
-	<h1><span class="text-product">Easel<strong>JS</strong></span> Sprite Sheets
-	</h1>
+	<h1>Sprite Sheets</h1>
 
 	<p>An example of a sprite sheet using <strong>Sprite</strong>. This demos
 		also shows playing named
@@ -64,7 +63,7 @@
 				"height": 361
 			},
 			"animations": {"jump": [26, 63], "run": [0, 25]},
-			"images": ["../_assets/runningGrant.png"]
+			"images": ["../_assets/art/runningGrant.png"]
 		};
 
 		var ss = new createjs.SpriteSheet(spriteSheet);
@@ -87,11 +86,11 @@
 		assets = [];
 
 		manifest = [
-			{src: "../_assets/runningGrant.png", id: "grant"},
-			{src: "../_assets/sky.png", id: "sky"},
-			{src: "../_assets/ground.png", id: "ground"},
-			{src: "../_assets/parallaxHill1.png", id: "hill"},
-			{src: "../_assets/parallaxHill2.png", id: "hill2"}
+			{src: "../_assets/art/runningGrant.png", id: "grant"},
+			{src: "../_assets/art/sky.png", id: "sky"},
+			{src: "../_assets/art/ground.png", id: "ground"},
+			{src: "../_assets/art/parallaxHill1.png", id: "hill"},
+			{src: "../_assets/art/parallaxHill2.png", id: "hill2"}
 		];
 
 		var loader = new createjs.LoadQueue();
