@@ -1,13 +1,21 @@
 Version NEXT [Not Released]
 ************************************************************************************************************************
 CRITICAL (may break existing content)
+- Completely changed how loaders are structured. Tag & XHR loaders have been turned into utilities, and top-level
+	content-based loaders are used instead, such as ImageLoader, CSSLoader, etc. The API hasn't changed, but this could
+	introduce issues.
+- Added low-level classes and utilities, mostly broken out of the existing classes, which makes the re-architecture
+	easier. This includes the net/Request classes, and utils/.
 - Completely revisited how file paths are parsed. The new version is much less aggressive, and should be more reliable
 	and simple to edit.
 
 ****
+-
 - Fixed issue with erroneous fileload events when manually changing the src property of an image loaded with PreloadJS.
 - Refactored XMLHTTP fallback for old IE
-- Added "headers" property on load items, which is injected into XHR request headers
+- Added a LoadItem class, a class that can be used in place of the raw objects for load items. Used in the background
+	when string paths are used.
+- Added "headers" and "withCredentials" property on load items, which is injected into XHR request headers
 - Added support for an optional "maintainOrder" property on load items, which makes PreloadJS ensure they get loaded in
 	order. Items other than tag-loaded scripts will be loaded at any time (depending on the setMaxConnections() value,
 	however they will always finish in the order specified.
@@ -15,7 +23,11 @@ CRITICAL (may break existing content)
 - Fixed issues with tag-loaded files preloaded before the body tag is available
 - Added .gitignore to subfolders under /docs (thanks mcfarljw)
 - Improved EventDispatcher's handling of redispatched event objects
+- Added ProgressEvent to simplify progress events, and for usage in the new system
 - Added ErrorEvent to createjs package, and changed usages throughout PreloadJS
+- Changed ManifestLoader to automatically subload content before dispatching complete. Uses internal LoadQueue.
+- Added SpriteSheetLoader to preload json files, their contents, and create a SpriteSheet before "complete".
+- Added resultFormatter to LoadItems to handle XML, JSON, etc parsing, which can be user-overridden.
 
 
 Version 0.4.1 [December 12, 2013]
