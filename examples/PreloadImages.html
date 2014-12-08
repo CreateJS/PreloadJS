@@ -1,166 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Preload Images example</title>
+	<title>Preload Images example</title>
 
 	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
 	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+	<script src="../_assets/js/examples.js"></script>
 
 </head>
 <body onload="init()">
 
-	<header id="header" class="PreloadJS">
-	    <h1><span class="text-product">Preload<strong>JS</strong></span> Image Gallery</h1>
-	    <p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click the image
-		    to view the next one. Note that when loading images locally, you need to ensure that PreloadJS
-		    uses tag loading to avoid cross-origin errors. Mouse interaction on images may not work locally either.</p>
-	</header>
+<header class="PreloadJS">
+	<h1><span class="text-product">Preload<strong>JS</strong></span> Image
+		Gallery</h1>
 
-    <canvas id="myCanvas" width="960" height="400"></canvas>
+	<p>This sample loads a number of images, and adds them to a canvas stage
+		when they are complete. Click the image
+		to view the next one. Note that when loading images locally, you need to
+		ensure that PreloadJS
+		uses tag loading to avoid cross-origin errors. Mouse interaction on
+		images may not work locally either.</p>
+</header>
 
+<canvas id="myCanvas" width="960" height="400"></canvas>
 
+<script src="./assets/easeljs-NEXT.min.js"></script>
+<script src="./assets/tweenjs-NEXT.min.js"></script>
 
-    <script src="./assets/easeljs-NEXT.min.js"></script>
-    <script src="./assets/tweenjs-NEXT.min.js"></script>
+<script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+<!-- We also provide hosted minified versions of all CreateJS libraries.
+	 http://code.createjs.com -->
 
-    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
-   	<!-- We also provide hosted minified versions of all CreateJS libraries.
-   	  http://code.createjs.com -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" id="editable">
+	var loaderBar;
+	var stage;
+	var bar;
+	var imageContainer;
+	var currentImage;
+	var loaderWidth;
+	var loaderColor;
+	var borderPadding;
+	var preload;
+	var oldItem;
 
-    <script type="text/javascript">
+	function init() {
+		canvas = document.getElementById("myCanvas");
+		stage = new createjs.Stage(canvas);
+		stage.enableMouseOver(10);
 
-        var loaderBar;
-        var stage;
-        var bar;
-        var imageContainer;
-        var currentImage;
-        var loaderWidth;
-        var loaderColor;
-  		var borderPadding;
-        var preload;
-		var oldItem;
+		borderPadding = 10;
 
-        function init() {
-            if (window.top != window) {
-                document.getElementById("header").style.display = "none";
-            }
+		var barHeight = 20;
+		loaderColor = createjs.Graphics.getRGB(247, 247, 247);
+		loaderBar = new createjs.Container();
 
-            canvas = document.getElementById("myCanvas");
-            stage = new createjs.Stage(canvas);
-			stage.enableMouseOver(10);
+		bar = new createjs.Shape();
+		bar.graphics.beginFill(loaderColor).drawRect(0, 0, 1, barHeight).endFill();
 
-            borderPadding = 10;
+		imageContainer = new createjs.Container();
+		imageContainer.x = 430;
+		imageContainer.y = 200;
 
-            var barHeight = 20;
-            loaderColor = createjs.Graphics.getRGB(247,247,247);
-            loaderBar = new createjs.Container();
+		loaderWidth = 300;
+		stage.addChild(imageContainer);
 
-            bar = new createjs.Shape();
-            bar.graphics.beginFill(loaderColor).drawRect(0, 0, 1, barHeight).endFill();
+		var bgBar = new createjs.Shape();
+		var padding = 3
+		bgBar.graphics.setStrokeStyle(1).beginStroke(loaderColor).drawRect(-padding / 2, -padding / 2, loaderWidth + padding, barHeight + padding);
 
-            imageContainer = new createjs.Container();
-            imageContainer.x = 430;
-            imageContainer.y = 200;
+		loaderBar.x = canvas.width - loaderWidth >> 1;
+		loaderBar.y = canvas.height - barHeight >> 1;
+		loaderBar.addChild(bar, bgBar);
 
-            loaderWidth = 300;
-            stage.addChild(imageContainer);
+		stage.addChild(loaderBar);
 
-            var bgBar = new createjs.Shape();
-            var padding = 3
-            bgBar.graphics.setStrokeStyle(1).beginStroke(loaderColor).drawRect(-padding/2, -padding/2, loaderWidth+padding, barHeight+padding);
+		manifest = [
+			{src: "image0.jpg", id: "image0"},
+			{src: "image1.jpg", id: "image1"},
+			{src: "image2.jpg", id: "image2"},
+			{src: "image3.jpg", id: "image3"}
+		];
 
-            loaderBar.x = canvas.width - loaderWidth>>1;
-            loaderBar.y = canvas.height - barHeight>>1;
-			loaderBar.addChild(bar, bgBar);
+		preload = new createjs.LoadQueue(true, "test/");
 
-            stage.addChild(loaderBar);
+		// Use this instead to use tag loading
+		//preload = new createjs.PreloadJS(false);
 
+		preload.on("progress", handleProgress);
+		preload.on("complete", handleComplete);
+		preload.on("fileload", handleFileLoad);
+		preload.loadManifest(manifest, true, "assets/");
 
-            manifest = [
-                {src:"image0.jpg", id:"image0"},
-                {src:"image1.jpg", id:"image1"},
-                {src:"image2.jpg", id:"image2"},
-                {src:"image3.jpg", id:"image3"}
-            ];
+		createjs.Ticker.setFPS(30);
+	}
 
-            preload = new createjs.LoadQueue(true, "test/");
-
-            // Use this instead to use tag loading
-            //preload = new createjs.PreloadJS(false);
-
-            preload.on("progress", handleProgress);
-            preload.on("complete", handleComplete);
-            preload.on("fileload", handleFileLoad);
-            preload.loadManifest(manifest, true, "assets/");
-
-            createjs.Ticker.setFPS(30);
-        }
-
-        function stop() {
-            if (preload != null) { preload.close(); }
-        }
-
-        function handleProgress(event) {
-            bar.scaleX = event.loaded * loaderWidth;
-        }
-
-        function handleFileLoad(event) {
-            var image = event.result;
-            var w = image.width;
-            var h = image.height;
-
-			var bmp = new createjs.Bitmap(image).set({
-                scaleX: 0.75,
-                scaleY: 0.75,
-                regX: w/2,
-                regY: h/2,
-                rotation: Math.random() * 16 - 8,
-                cursor: "pointer",
-                x: borderPadding/2 * 0.75,
-                y: borderPadding/2 * 0.75
-            });
-            bmp.on("click", handleClick);
-
-
-            var border = new createjs.Shape(
-                new createjs.Graphics().beginFill("#FFFFFF").drawRect(0, 0, w + borderPadding, h + borderPadding).endFill()
-            ).set({
-                rotation: bmp.rotation,
-                regX: w/2,
-                regY: h/2,
-                scaleX: bmp.scaleX,
-                scaleY: bmp.scaleY,
-                shadow: new createjs.Shadow("#000000", 0, 0, 2.5)
-            });
-
-            var movieClip = new createjs.Container();
-            movieClip.addChild(border, bmp);
-            imageContainer.addChild(movieClip);
-			stage.update();
-        }
-
-        function handleClick(event) {
-           	currentItem = event.target.parent;
-            var tween = createjs.Tween.get(currentItem, {override:true}).to({y:-350}, 200).call(tweenUpComplete).to({y:0}, 500);
-			tween.on("change", handleTweenChange);
-        }
-
-		function handleTweenChange(tween) {
-			stage.update();
+	function stop() {
+		if (preload != null) {
+			preload.close();
 		}
+	}
 
-        function tweenUpComplete() {
-            imageContainer.addChildAt(currentItem, 0);
-        }
+	function handleProgress(event) {
+		bar.scaleX = event.loaded * loaderWidth;
+	}
 
-        function handleComplete(event) {
-            loaderBar.visible = false;
-            stage.update();
-        }
+	function handleFileLoad(event) {
+		var image = event.result;
+		var w = image.width;
+		var h = image.height;
 
-    </script>
+		var bmp = new createjs.Bitmap(image).set({
+													 scaleX: 0.75,
+													 scaleY: 0.75,
+													 regX: w / 2,
+													 regY: h / 2,
+													 rotation: Math.random() * 16 - 8,
+													 cursor: "pointer",
+													 x: borderPadding / 2 * 0.75,
+													 y: borderPadding / 2 * 0.75
+												 });
+		bmp.on("click", handleClick);
+
+		var border = new createjs.Shape(
+				new createjs.Graphics().beginFill("#FFFFFF").drawRect(0, 0, w + borderPadding, h + borderPadding).endFill()
+		).set({
+				  rotation: bmp.rotation,
+				  regX: w / 2,
+				  regY: h / 2,
+				  scaleX: bmp.scaleX,
+				  scaleY: bmp.scaleY,
+				  shadow: new createjs.Shadow("#000000", 0, 0, 2.5)
+			  });
+
+		var movieClip = new createjs.Container();
+		movieClip.addChild(border, bmp);
+		imageContainer.addChild(movieClip);
+		stage.update();
+	}
+
+	function handleClick(event) {
+		currentItem = event.target.parent;
+		var tween = createjs.Tween.get(currentItem, {override: true}).to({y: -350}, 200).call(tweenUpComplete).to({y: 0}, 500);
+		tween.on("change", handleTweenChange);
+	}
+
+	function handleTweenChange(tween) {
+		stage.update();
+	}
+
+	function tweenUpComplete() {
+		imageContainer.addChildAt(currentItem, 0);
+	}
+
+	function handleComplete(event) {
+		loaderBar.visible = false;
+		stage.update();
+	}
+</script>
 
 </body>
 </html>

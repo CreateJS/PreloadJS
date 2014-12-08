@@ -5,6 +5,7 @@
 
 	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
 	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+	<script src="../_assets/js/examples.js"></script>
 
 	<style>
 		.image {
@@ -18,11 +19,14 @@
 
 <body onload="init()">
 
-<header id="header" class="PreloadJS">
-	<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Plugin</h1>
+<header class="PreloadJS">
+	<h1><span class="text-product">Preload<strong>JS</strong></span> Example:
+		Plugin</h1>
 
-	<p>In this example, a PreloadJS plugin is defined, which parses a load item  into an HTML image ID that is
-		already present in the HTML DOM. PreloadJS will then use the image to do the loading, and the image
+	<p>In this example, a PreloadJS plugin is defined, which parses a load item
+		into an HTML image ID that is
+		already present in the HTML DOM. PreloadJS will then use the image to do
+		the loading, and the image
 		will be displayed in its defined position when it is loaded.</p>
 </header>
 
@@ -34,14 +38,10 @@
 <!-- We also provide hosted minified versions of all CreateJS libraries.
   http://code.createjs.com -->
 
-<script>
+<script id="editable">
 	var preload;
 
 	function init() {
-		if (window.top != window) {
-			document.getElementById("header").style.display = "none";
-		}
-
 		// Create a new queue.
 		preload = new createjs.LoadQueue(false, "assets/");
 
@@ -49,27 +49,25 @@
 		//preload = new createjs.LoadQueue(true, "assets/");
 
 		var plugin = {
-			getPreloadHandlers:function () {
+			getPreloadHandlers: function () {
 				return {
-					types:["image"],
-					callback:function (src, type, id, data, basePath) {
+					types: ["image"],
+					callback: function (src, type, id, data, basePath) {
 						var id = src.toLowerCase().split("/").pop().split(".")[0];
 						var img = document.getElementById(id);
-						return {tag:img};
+						return {tag: img};
 					}
 				};
 			}
 		}
 
 		preload.installPlugin(plugin);
-		preload.loadManifest([
-			"Texas.jpg",
-			"BlueBird.png",
-			"Nepal.jpg",
-			"Autumn.png" //NOTE: Will not display
-		]);
+		preload.loadManifest(["Texas.jpg",
+							  "BlueBird.png",
+							  "Nepal.jpg",
+							  "Autumn.png" //NOTE: Will not display
+							 ]);
 	}
-
 </script>
 
 </body>

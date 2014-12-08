@@ -5,47 +5,45 @@
 
 	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
 	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
-	
+	<link href="../_assets/css/preloadjs.css" rel="stylesheet" type="text/css"/>
+	<script src="../_assets/js/examples.js"></script>
+
 	<style type="text/css">
 		#template {
-			display:none;
+			display: none;
 		}
 	</style>
 </head>
 <body onload="init()">
 
-	<header id="header" class="PreloadJS">
-	    <h1><span class="text-product">Preload<strong>JS</strong></span> Preload Queue</h1>
-	    <p></p>
-	</header>
+<header class="PreloadJS">
+	<h1><span class="text-product">Preload<strong>JS</strong></span> Preload
+		Queue</h1>
 
-    <script type="text/javascript">
+	<p></p>
+</header>
 
-        function init() {
-            if (window.top != window) {
-                document.getElementById("header").style.display = "none";
-            }
+<script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+<script type="text/javascript" src="../src/preloadjs/loaders/ManifestLoader.js"></script>
+<script type="text/javascript" id="editable">
+	function init() {
+		//var loader = new createjs.ManifestLoader("../_assets/static/manifest.json");
+		var loader = new createjs.LoadQueue();
+		loader.loadManifest("../_assets/static/manifest.json");
+		//loader.loadManifest({src:"../_assets/static/manifest.json", callback:"loadManifest"});
+		loader.on("complete", handleComplete);
+		loader.on("progress", handleProgress);
+		loader.load();
+	}
 
-            //var loader = new createjs.ManifestLoader("../_assets/static/manifest.json");
-            var loader = new createjs.LoadQueue();
-            loader.loadManifest("../_assets/static/manifest.json");
-            //loader.loadManifest({src:"../_assets/static/manifest.json", callback:"loadManifest"});
-            loader.on("complete", handleComplete);
-            loader.on("progress", handleProgress);
-            loader.load();
-        }
+	function handleComplete(event) {
+		console.log(event.target.getResult("image3"));
+	}
 
-        function handleComplete(event) {
-            console.log(event.target.getResult("image3"));
-        }
-
-        function handleProgress(event) {
-            console.log("PROGRESS", event.progress);
-        }
-
-    </script>
-    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
-    <script type="text/javascript" src="../src/preloadjs/loaders/ManifestLoader.js"></script>
+	function handleProgress(event) {
+		console.log("PROGRESS", event.progress);
+	}
+</script>
 
 </body>
 </html>

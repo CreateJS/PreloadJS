@@ -5,9 +5,10 @@
 
 	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
 	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+	<script src="../_assets/js/examples.js"></script>
 
 	<style>
-	   .gridBox {
+		.gridBox {
 			float: left;
 			width: 150px;
 			height: 112px;
@@ -15,213 +16,236 @@
 			border-width: thin;
 			color: #FFF0EE;
 			margin: 1px;
-            overflow: hidden;
+			overflow: hidden;
 		}
-	   .gridBox:hover {  background-color: #111111; }
-	   .gridBox.error  {
-		   background-color: #992222;
-	   }
-	   .gridBox.error LABEL {
-		   color: #ffffff !important;
-	   }
 
-	   #imageGrid {
-		   width: 960px;
-	   }
-	   #controls {
-		   height: 25px;
-		   padding: 5px;
-		   background-color: rgba(255,255,255,0.2);
-	   }
+		.gridBox:hover {
+			background-color: #111111;
+		}
+
+		.gridBox.error {
+			background-color: #992222;
+		}
+
+		.gridBox.error LABEL {
+			color: #ffffff !important;
+		}
+
+		#imageGrid {
+			width: 960px;
+		}
+
+		#controls {
+			height: 25px;
+			padding: 5px;
+			background-color: rgba(255, 255, 255, 0.2);
+		}
+
 		LABEL {
 			position: relative;
-			top: 10px; left: 10px;
-			font-family: sans-serif; font-size: 12px;
-            word-wrap: break-word;
+			top: 10px;
+			left: 10px;
+			font-family: sans-serif;
+			font-size: 12px;
+			word-wrap: break-word;
 		}
 
-        XMP {
-            color: #ffffff;
-            font-size: 10px;
-        }
+		XMP {
+			color: #ffffff;
+			font-size: 10px;
+		}
 	</style>
 </head>
 
 <body onload="init()">
 
-	<header id="header" class="PreloadJS">
-		<h1><span class="text-product">Preload<strong>JS</strong></span> Example: Media Grid</h1>
-		<p>PreloadJS can load a variety of media. In this example, click each example to load its related item.
-			Once the item is loaded, it will display (image, svg), play (sound), apply to the document (css), or display
-            an alert (script). Note that when loading images, sounds, css, scripts, or svg locally, you need to ensure
-            that PreloadJS uses tag loading to avoid cross-origin errors. Other media types will not load locally.</p>
-	</header>
+<header class="PreloadJS">
+	<h1><span class="text-product">Preload<strong>JS</strong></span> Example:
+		Media Grid</h1>
 
+	<p>PreloadJS can load a variety of media. In this example, click each
+		example to load its related item.
+		Once the item is loaded, it will display (image, svg), play (sound),
+		apply to the document (css), or display
+		an alert (script). Note that when loading images, sounds, css, scripts,
+		or svg locally, you need to ensure
+		that PreloadJS uses tag loading to avoid cross-origin errors. Other
+		media types will not load locally.</p>
+</header>
 
-	<div id="controls">
-		Click an item to load it. <input type="button" value="Load the entire manifest" onclick="loadManifest()">
+<div id="controls">
+	Click an item to load it. <input type="button"
+									 value="Load the entire manifest"
+									 onclick="loadManifest()">
+</div>
+
+<div id="imageGrid">
+	<div id="art/Texas.jpg" onclick="loadAsset(this)" class="gridBox"
+		 style="width: 300px; height: 375px;">
+		<label>Image</label>
 	</div>
 
-	<div id="imageGrid">
-		<div id="art/Texas.jpg" onclick="loadAsset(this)" class="gridBox" style="width: 300px; height: 375px;">
-			<label>Image</label>
-		</div>
-
-		<div id="static/bg.css" onclick="loadAsset(this)" class="gridBox">
-			<label>CSS - Background</label>
-		</div>
-
-	   <div id="static/alert1.js" onclick="loadAsset(this)" class="gridBox">
-			<label>JavaScript</label>
-		</div>
-
-		<div id="static/grant.xml" onclick="loadAsset(this)" class="gridBox">
-			<label>XML</label>
-		</div>
-
-		<div id="static/gbot.svg" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:226px; float: right; overflow:hidden">
-			<label>SVG</label>
-		</div>
-
-		<div id="static/grant.json" onclick="loadAsset(this)" class="gridBox">
-			<label>JSON</label>
-		</div>
-
-		<div id="static/font.css" onclick="loadAsset(this)" class="gridBox">
-			<label>CSS - Font Color</label>
-		</div>
-
-		<div id="audio/Thunder.mp3|audio/Thunder.ogg" onclick="loadAsset(this)" class="gridBox">
-			<label>Audio</label>
-		</div>
-
-        <div id="//gskinner.com/assets/createjs/mapsJSONP.json" type="jsonp" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:73px; float: right; overflow:hidden">
-            <label>JSONP<br />(loaded from gskinner.com)</label>
-        </div>
-
-		<div id="art/Autumn.png" onclick="loadAsset(this)" class="gridBox" style="width:454px; height:147px">
-			<label>Image</label>
-		</div>
-
-		<div id="NoFileHere.png" onclick="loadAsset(this)" class="gridBox" style="width:200px; height:72px;">
-			<label>Intentionally missing file<br/>to generate error.</label>
-		</div>
+	<div id="static/bg.css" onclick="loadAsset(this)" class="gridBox">
+		<label>CSS - Background</label>
 	</div>
 
-    <script type="text/javascript" src="../_assets/js/soundjs-NEXT.min.js"></script>
-    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
-    <!-- We also provide hosted minified versions of all CreateJS libraries.
-        http://code.createjs.com -->
+	<div id="static/alert1.js" onclick="loadAsset(this)" class="gridBox">
+		<label>JavaScript</label>
+	</div>
 
-    <script>
-        var preload;
+	<div id="static/grant.xml" onclick="loadAsset(this)" class="gridBox">
+		<label>XML</label>
+	</div>
 
-        function init() {
-            if (window.top != window) {
-                document.getElementById("header").style.display = "none";
-            }
+	<div id="static/gbot.svg" onclick="loadAsset(this)" class="gridBox"
+		 style="width:200px; height:226px; float: right; overflow:hidden">
+		<label>SVG</label>
+	</div>
 
-            // Create a new queue.
-            //preload = new createjs.LoadQueue(true, "assets/");
+	<div id="static/grant.json" onclick="loadAsset(this)" class="gridBox">
+		<label>JSON</label>
+	</div>
 
-            // Use this instead to favor tag loading
-            preload = new createjs.LoadQueue(true);
+	<div id="static/font.css" onclick="loadAsset(this)" class="gridBox">
+		<label>CSS - Font Color</label>
+	</div>
 
-            createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
-            preload.installPlugin(createjs.Sound);
-            preload.on("fileload", handleFileLoaded);
-            preload.on("error", handleFileError);
+	<div id="audio/Thunder.mp3|audio/Thunder.ogg" onclick="loadAsset(this)"
+		 class="gridBox">
+		<label>Audio</label>
+	</div>
+
+	<div id="//gskinner.com/assets/createjs/mapsJSONP.json" type="jsonp"
+		 onclick="loadAsset(this)" class="gridBox"
+		 style="width:200px; height:73px; float: right; overflow:hidden">
+		<label>JSONP<br/>(loaded from gskinner.com)</label>
+	</div>
+
+	<div id="art/Autumn.png" onclick="loadAsset(this)" class="gridBox"
+		 style="width:454px; height:147px">
+		<label>Image</label>
+	</div>
+
+	<div id="NoFileHere.png" onclick="loadAsset(this)" class="gridBox"
+		 style="width:200px; height:72px;">
+		<label>Intentionally missing file<br/>to generate error.</label>
+	</div>
+</div>
+
+<script type="text/javascript" src="../_assets/libs/soundjs-NEXT.min.js"></script>
+<script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+<!-- We also provide hosted minified versions of all CreateJS libraries.
+	http://code.createjs.com -->
+
+<script id="editable">
+	var preload;
+
+	function init() {
+		// Create a new queue.
+		//preload = new createjs.LoadQueue(true, "assets/");
+
+		// Use this instead to favor tag loading
+		preload = new createjs.LoadQueue(true);
+
+		createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
+		preload.installPlugin(createjs.Sound);
+		preload.on("fileload", handleFileLoaded);
+		preload.on("error", handleFileError);
+	}
+
+	function loadManifest() {
+		preload.loadFile({src: "../_assets/static/MediaGridManifest.json", callback: "maps", type: "manifest"}, true, "../_assets/");
+	}
+
+	function stop() {
+		if (preload != null) {
+			preload.close();
 		}
+	}
 
-		function loadManifest() {
-			preload.loadFile({src:"../_assets/static/MediaGridManifest.json", callback:"maps", type:"manifest"}, true, "../_assets/");
-        }
+	// Load a single asset.
+	function loadAsset(target) {
+		var div = document.getElementById(target.id);
+		div.innerHTML = "<label>Loading...</label>";
 
-        function stop() {
-            if (preload != null) { preload.close(); }
-        }
+		var type = target.attributes.getNamedItem("type");
 
-        // Load a single asset.
-        function loadAsset(target) {
-            var div = document.getElementById(target.id);
-            div.innerHTML = "<label>Loading...</label>";
+		var item = {
+			src: target.id,
+			id: target.id
+		};
 
-            var type = target.attributes.getNamedItem("type");
+		if (!type) {
+			//preload.loadFile(item, true);
+			preload.loadManifest({path: "../assets/", manifest: [item]});
+		} else {
+			item.type = type.nodeValue;
+			item.callback = "maps";
+			preload.loadFile(item, true);
+		}
+	}
 
-			var item = {
-				src: target.id,
-				id: target.id
-			};
+	// Once each file is loaded, show it. Each ID corresponds to the related DIV.
+	function handleFileLoaded(event) {
+		var item = event.item;
+		var id = item.id;
+		var result = event.result;
 
-            if (!type) {
-                //preload.loadFile(item, true);
-				preload.loadManifest({path:"../assets/", manifest:[item]});
-            } else {
-				item.type = type.nodeValue;
-				item.callback = "maps";
-                preload.loadFile(item, true);
-            }
-        }
+		var div = document.getElementById(id);
+		if (div == null) {
+			console.log(event);
+			return;
+		}
+		switch (item.type) {
+			case createjs.LoadQueue.CSS:
+				(document.head || document.getElementsByTagName("head")[0]).appendChild(result);
+				div.innerHTML = "<label>CSS is complete :)</label>";
+				break;
 
-        // Once each file is loaded, show it. Each ID corresponds to the related DIV.
-        function handleFileLoaded(event) {
-            var item = event.item;
-            var id = item.id;
-            var result = event.result;
+			case createjs.LoadQueue.IMAGE:
+				div.innerText = "";
+				result.width = div.clientWidth;
+				result.height = div.clientHeight;
+				div.appendChild(result);
+				break;
 
-            var div = document.getElementById(id);
-			if (div == null) { console.log(event);return; }
-            switch (item.type){
-                case createjs.LoadQueue.CSS:
-                    (document.head || document.getElementsByTagName("head")[0]).appendChild(result);
-                    div.innerHTML = "<label>CSS is complete :)</label>";
-                    break;
+			case createjs.LoadQueue.JAVASCRIPT:
+				document.body.appendChild(result);
+				div.innerHTML = "<label>Javascript is complete :)</label>";
+				break;
 
-                case createjs.LoadQueue.IMAGE:
-                    div.innerText = "";
-                    result.width = div.clientWidth;
-                    result.height = div.clientHeight;
-                    div.appendChild(result);
-                    break;
+			case createjs.LoadQueue.JSON:
+			case createjs.LoadQueue.XML:
+				div.innerHTML = "<label>" +
+						item.type +
+						" loaded: <br /><xmp>" +
+						(event.rawResult ? event.rawResult : '') +
+						"</xmp></label>";
+				break;
+			case createjs.LoadQueue.JSONP:
+				div.innerHTML = "<label>JSONP is complete :)</label>";
+				break;
+			case createjs.LoadQueue.SOUND:
+				document.body.appendChild(result);
+				result.play();
+				div.innerHTML = "<label>Sound is complete :)</label>";
+				break;
 
-                case createjs.LoadQueue.JAVASCRIPT:
-                    document.body.appendChild(result);
-                    div.innerHTML = "<label>Javascript is complete :)</label>";
-                    break;
+			case createjs.LoadQueue.SVG:
+				div.innerHTML = "";
+				div.appendChild(result);
+				break
+		}
+		div.style.backgroundColor = "#222222";
+	}
 
-                case createjs.LoadQueue.JSON:
-                case createjs.LoadQueue.XML:
-                    div.innerHTML = "<label>" +
-                                        item.type +
-                                        " loaded: <br /><xmp>" +
-                                        (event.rawResult?event.rawResult:'') +
-                                    "</xmp></label>";
-                    break;
-                case createjs.LoadQueue.JSONP:
-                    div.innerHTML = "<label>JSONP is complete :)</label>";
-                    break;
-                case createjs.LoadQueue.SOUND:
-                    document.body.appendChild(result);
-                    result.play();
-                    div.innerHTML = "<label>Sound is complete :)</label>";
-                    break;
-
-                case createjs.LoadQueue.SVG:
-                    div.innerHTML = "";
-                    div.appendChild(result);
-                    break
-            }
-            div.style.backgroundColor = "#222222";
-        }
-
-        // A file failed to load.
-        function handleFileError(event) {
-            var div = document.getElementById(event.item.id);
-            div.innerHTML = "<label>Error :(</label>";
-			div.className = "gridBox error";
-        }
-
-    </script>
+	// A file failed to load.
+	function handleFileError(event) {
+		var div = document.getElementById(event.item.id);
+		div.innerHTML = "<label>Error :(</label>";
+		div.className = "gridBox error";
+	}
+</script>
 
 </body>
 </html>
