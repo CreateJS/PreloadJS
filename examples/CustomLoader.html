@@ -33,12 +33,21 @@
             // Static Plugin Methods
             CustomLoader.getPreloadHandlers = function() {
                 return {
-                    loaders: [this]
+                    types: ["image"],
+                    callback: CustomLoader.preloadHandler
                 };
             };
-            CustomLoader.canLoadItem = function(item) {
-                return (item.type === "image");
-            }
+            CustomLoader.preloadHandler = function(src) {
+                var loader = new CustomLoader(src);
+                loader.on("complete", CustomLoader.handleComplete, CustomLoader);
+                return {
+                    loader: loader
+                }
+            };
+            CustomLoader.handleComplete = function(event) {
+                var img = event.result;
+                img.width = img.height = 200;
+            };
 
             // Loader Methods
             var p = createjs.extend(CustomLoader, createjs.AbstractLoader);

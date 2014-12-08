@@ -973,12 +973,6 @@ this.createjs = this.createjs || {};
 					this._extensionCallbacks[map.extensions[i]] = map;
 				}
 			}
-
-			if (map.loaders != null) {
-				for (var i=map.loaders.length-1; i>=0; i--) { // Reverse to maintain order
-					this.registerLoader(plugin);
-				}
-			}
 		}
 	};
 
@@ -1392,7 +1386,12 @@ this.createjs = this.createjs || {};
 				if (result.tag != null) { // Assumes that the returned tag either has a load method or a src setter.
 					item.tag = result.tag;
 				}
-				if (result.completeHandler != null) { item.completeHandler = result.completeHandler; }
+				if (result.completeHandler != null) {
+					item.completeHandler = result.completeHandler;
+				}
+				if (result.loader != null) {
+					item._loader = result.loader;
+				}
 
 				// Allow type overriding:
 				if (result.type) { item.type = result.type; }
@@ -1426,6 +1425,10 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._createLoader = function (item) {
+		if (item._loader != null) {
+			return item._loader;
+		}
+
 		// Initially, try and use the provided/supported XHR mode:
 		var preferXHR = this.preferXHR;
 
@@ -1436,7 +1439,7 @@ this.createjs = this.createjs || {};
 			}
 		}
 
-		// TODO Throw error? LM: Yes
+		// TODO: Log error (requires createjs.log)
 		return null;
 	};
 
