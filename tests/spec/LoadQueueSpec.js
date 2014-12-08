@@ -268,7 +268,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 	it("should error on a 404", function (done) {
 		this.queue.addEventListener("error", function (evt) {
-			expect(evt.text).toBe("FILE_LOAD_ERROR");
+			expect(evt.title).toBe("FILE_LOAD_ERROR");
 			done();
 		});
 		this.loadFile("This_file_does_not_EXIST_.no");
