@@ -26,7 +26,7 @@
 	<canvas id="testCanvas" width="960" height="400"></canvas>
 </div>
 
-<script src="../_assets/libs/easeljs-NEXT.min.js"></script>
+<script src="../../EaselJS/lib/easeljs-NEXT.combined.js"></script>
 <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
 <!-- We also provide hosted minified versions of all CreateJS libraries.
 	 http://code.createjs.com -->
@@ -54,31 +54,6 @@
 		stationaryPosition = 300;
 		isPassed = false;
 
-		spriteSheet = {
-			"frames": {
-				"width": 200,
-				"numFrames": 64,
-				"regX": 2,
-				"regY": 2,
-				"height": 361
-			},
-			"animations": {"jump": [26, 63], "run": [0, 25]},
-			"images": ["../_assets/art/runningGrant.png"]
-		};
-
-		var ss = new createjs.SpriteSheet(spriteSheet);
-		grant = new createjs.Sprite(ss);
-
-		// Set up looping
-		ss.getAnimation("run").next = "run";
-		ss.getAnimation("jump").next = "run";
-		grant.gotoAndPlay("run");
-
-		// Position the Grant sprite
-		grant.x = -200;
-		grant.y = 40;
-		grant.scaleX = grant.scaleY = 0.8;
-
 		// grab canvas width and height for later calculations:
 		w = canvas.width;
 		h = canvas.height;
@@ -86,11 +61,11 @@
 		assets = [];
 
 		manifest = [
-			{src: "../_assets/art/runningGrant.png", id: "grant"},
 			{src: "../_assets/art/sky.png", id: "sky"},
 			{src: "../_assets/art/ground.png", id: "ground"},
+			{src: "../_assets/art/parallaxHill2.png", id: "hill2"},
 			{src: "../_assets/art/parallaxHill1.png", id: "hill"},
-			{src: "../_assets/art/parallaxHill2.png", id: "hill2"}
+			{src: "../_assets/static/grant.json", id:"grant", type:"spritesheet"}
 		];
 
 		var loader = new createjs.LoadQueue();
@@ -121,12 +96,13 @@
 				case "ground":
 					ground = new createjs.Shape();
 					var g = ground.graphics;
+					g.f("#f00");
 					g.beginBitmapFill(result);
 					g.drawRect(0, 0, w + 330, 79);
 					ground.y = h - 79;
 					break;
 				case "hill":
-					hill = new createjs.Shape(new createjs.Graphics().beginBitmapFill(result).drawRect(0, 0, 282, 59));
+					hill = new createjs.Shape(new createjs.Graphics().f("#f00")/*(result)*/.drawRect(0, 0, 282, 59));
 					hill.x = Math.random() * w | 0;
 					hill.scaleX = hill.scaleY = 3;
 					hill.y = 144;
@@ -137,13 +113,21 @@
 					hill2.scaleX = hill2.scaleY = 3;
 					hill2.y = 171;
 					break;
+				case "grant":
+					var spriteSheet = result;
+					spriteSheet.getAnimation("run").next = "run";
+					spriteSheet.getAnimation("jump").next = "run";
+
+					grant = new createjs.Sprite(spriteSheet, "run")
+							.set({x: -200, y:40, scaleX:0.8, scaleY:0.8});
+					//grant.gotoAndPlay("run");
 			}
 		}
 
 		examples.hideDistractor();
 
 		if (grant == null) {
-			//console.log("Can not play. Grant sprite was not loaded.");
+			console.log("Can not play. Grant sprite was not loaded.");
 			return;
 		}
 

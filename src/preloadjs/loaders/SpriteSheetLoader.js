@@ -119,11 +119,6 @@ this.createjs = this.createjs || {};
 		}
 	};
 
-	p._handleManifestComplete = function (event) {
-		this._loadedItems = this._manifestQueue.getItems(true);
-		this._sendComplete();
-	};
-
 	p._handleManifestFileLoad = function (event) {
 		var image = event.result;
 		if (image != null) {
@@ -131,6 +126,12 @@ this.createjs = this.createjs || {};
 			var pos = images.indexOf(event.item.src);
 			images[pos] = image;
 		}
+	};
+
+	p._handleManifestComplete = function (event) {
+		this._result = new createjs.SpriteSheet(this._result);
+		this._loadedItems = this._manifestQueue.getItems(true);
+		this._sendComplete();
 	};
 
 	p._handleManifestProgress = function (event) {

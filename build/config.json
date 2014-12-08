@@ -31,6 +31,7 @@
 		"../src/preloadjs/loaders/ManifestLoader.js",
 		"../src/preloadjs/loaders/SoundLoader.js",
 		"../src/preloadjs/loaders/VideoLoader.js",
+		"../src/preloadjs/loaders/SpriteSheetLoader.js",
 		"../src/preloadjs/loaders/SVGLoader.js",
 		"../src/preloadjs/loaders/XMLLoader.js"
 	],
