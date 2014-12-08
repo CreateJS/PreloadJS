@@ -768,7 +768,7 @@ this.createjs = this.createjs || {};
 		if (!loader || !loader.canLoadItem) {
 			throw new Error("loader is of an incorrect type.");
 		} else if (this._availableLoaders.indexOf(loader) != -1) {
-			throw new Error("loader already exists.");
+			throw new Error("loader already exists."); //LM: Maybe just silently fail here
 		}
 
 		this._availableLoaders.unshift(loader);
@@ -796,12 +796,19 @@ this.createjs = this.createjs || {};
 	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
 	 * the provided value argument was true.
 	 * @since 0.3.0
-	 * @deprecated use setPreferXHR instead.
+	 * @deprecated use the {{#crossLink "preferXHR:property"}}{{/crossLink}} property, or the {{#crossLink "setUseXHR"}}{{/crossLink}}
+	 * method instead.
 	 */
 	p.setUseXHR = function (value) {
 		return this.setPreferXHR(value);
 	};
 
+	/**
+	 *
+	 * @param value
+	 * @returns {boolean}
+	 * @since 0.6.0
+	 */
 	p.setPreferXHR = function(value) {
 		// Determine if we can use XHR. XHR defaults to TRUE, but the browser may not support it.
 		//TODO: Should we be checking for the other XHR types? Might have to do a try/catch on the different types similar to createXHR.
@@ -949,18 +956,28 @@ this.createjs = this.createjs || {};
 	 * @param {Function} plugin The plugin class to install.
 	 */
 	p.installPlugin = function (plugin) {
-		if (plugin == null || plugin.getPreloadHandlers == null) { return; }
-		var map = plugin.getPreloadHandlers();
-		map.scope = plugin;
+		if (plugin == null) { return; }
 
-		if (map.types != null) {
-			for (var i = 0, l = map.types.length; i < l; i++) {
-				this._typeCallbacks[map.types[i]] = map;
+		if (plugin.getPreloadHandlers != null) {
+			var map = plugin.getPreloadHandlers();
+			map.scope = plugin;
+
+			if (map.types != null) {
+				for (var i = 0, l = map.types.length; i < l; i++) {
+					this._typeCallbacks[map.types[i]] = map;
+				}
 			}
-		}
-		if (map.extensions != null) {
-			for (i = 0, l = map.extensions.length; i < l; i++) {
-				this._extensionCallbacks[map.extensions[i]] = map;
+
+			if (map.extensions != null) {
+				for (i = 0, l = map.extensions.length; i < l; i++) {
+					this._extensionCallbacks[map.extensions[i]] = map;
+				}
+			}
+
+			if (map.loaders != null) {
+				for (var i=map.loaders.length-1; i>=0; i--) { // Reverse to maintain order
+					this.registerLoader(plugin);
+				}
 			}
 		}
 	};
