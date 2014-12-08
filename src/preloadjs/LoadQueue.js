@@ -1540,9 +1540,11 @@ this.createjs = this.createjs || {};
 		var loader = event.target;
 		var item = loader.getItem();
 
-		this._loadedResults[item.id] = loader.getResult();
-		if (loader.preferXHR) {
-			this._loadedRawResults[item.id] = loader.getResult(true);
+		var result = loader.getResult();
+		this._loadedResults[item.id] = result;
+		var rawResult = loader.getResult(true);
+		if (rawResult != null && rawResult !== result) {
+			this._loadedRawResults[item.id] = rawResult;
 		}
 
 		this._saveLoadedItems(loader);

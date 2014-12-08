@@ -109,7 +109,7 @@
 		<label>CSS - Font Color</label>
 	</div>
 
-	<div id="audio/Thunder.mp3|audio/Thunder.ogg" onclick="loadAsset(this)"
+	<div id="audio/Thunder.mp3" onclick="loadAsset(this)"
 		 class="gridBox">
 		<label>Audio</label>
 	</div>
@@ -146,7 +146,7 @@
 		// Use this instead to favor tag loading
 		preload = new createjs.LoadQueue(true);
 
-		createjs.Sound.registerPlugin(createjs.HTMLAudioPlugin);  // need this so it doesn't default to Web Audio
+		createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);  // need this so it doesn't default to Web Audio
 		preload.installPlugin(createjs.Sound);
 		preload.on("fileload", handleFileLoaded);
 		preload.on("error", handleFileError);
@@ -196,41 +196,41 @@
 			return;
 		}
 		switch (item.type) {
-			case createjs.LoadQueue.CSS:
+			case createjs.AbstractLoader.CSS:
 				(document.head || document.getElementsByTagName("head")[0]).appendChild(result);
 				div.innerHTML = "<label>CSS is complete :)</label>";
 				break;
 
-			case createjs.LoadQueue.IMAGE:
+			case createjs.AbstractLoader.IMAGE:
 				div.innerText = "";
 				result.width = div.clientWidth;
 				result.height = div.clientHeight;
 				div.appendChild(result);
 				break;
 
-			case createjs.LoadQueue.JAVASCRIPT:
+			case createjs.AbstractLoader.JAVASCRIPT:
 				document.body.appendChild(result);
 				div.innerHTML = "<label>Javascript is complete :)</label>";
 				break;
 
-			case createjs.LoadQueue.JSON:
-			case createjs.LoadQueue.XML:
+			case createjs.AbstractLoader.JSON:
+			case createjs.AbstractLoader.XML:
 				div.innerHTML = "<label>" +
 						item.type +
 						" loaded: <br /><xmp>" +
 						(event.rawResult ? event.rawResult : '') +
 						"</xmp></label>";
 				break;
-			case createjs.LoadQueue.JSONP:
+			case createjs.AbstractLoader.JSONP:
 				div.innerHTML = "<label>JSONP is complete :)</label>";
 				break;
-			case createjs.LoadQueue.SOUND:
+			case createjs.AbstractLoader.SOUND:
 				document.body.appendChild(result);
 				result.play();
 				div.innerHTML = "<label>Sound is complete :)</label>";
 				break;
 
-			case createjs.LoadQueue.SVG:
+			case createjs.AbstractLoader.SVG:
 				div.innerHTML = "";
 				div.appendChild(result);
 				break
@@ -240,7 +240,8 @@
 
 	// A file failed to load.
 	function handleFileError(event) {
-		var div = document.getElementById(event.item.id);
+		var item = event.data;
+		var div = document.getElementById(item.id);
 		div.innerHTML = "<label>Error :(</label>";
 		div.className = "gridBox error";
 	}
