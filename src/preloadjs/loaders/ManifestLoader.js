@@ -87,7 +87,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	p._createRequest = function() {
 		var callback = this._item.callback
-		if (callback != null && callback instanceof Function) {
+		if (callback != null) {
 			this._request = new createjs.JSONPLoader(this._item);
 		} else {
 			this._request = new createjs.JSONLoader(this._item);

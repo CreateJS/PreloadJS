@@ -8,7 +8,7 @@ maps({
 		{"id":"static/gbot.svg", "src":"art/gbot.svg"},
 		{"id":"static/grant.json", "src":"static/grant.json"},
 		{"id":"static/font.css", "src":"static/font.css"},
-		{"id":"audio/Thunder.mp3|audio/Thunder.ogg", "src":"audio/Thunder.mp3|audio/Thunder.ogg"},
+		{"id":"audio/Thunder.mp3", "src":"audio/Thunder.mp3"},
 		{"id":"http://gskinner.com/assets/createjs/mapsJSONP.json", "callback":"maps", "type":"jsonp", "src":"http://gskinner.com/assets/createjs/mapsJSONP.json"},
 		{"id":"art/Autumn.png", "src":"art/Autumn.png"},
 	]
