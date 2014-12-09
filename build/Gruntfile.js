@@ -211,14 +211,10 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('setDocsBase', "Internal utility task to set a correct base for YUIDocs.", function() {
 		grunt.file.setBase('../src');
-
-		// wdg:: In order to keep the source link working, we have to copy this file into src/ then after docs are generated we delete it.
-		grunt.file.copy("../extras/SamplePlugin.js", "./preloadjs/SamplePlugin.js");
 		grunt.config.set('docsFolder', "../build/output/<%= docsName %>/");
 	});
 
 	grunt.registerTask('resetBase', "Internal utility task to reset the base, after setDocsBase", function() {
-		grunt.file.delete("./preloadjs/SamplePlugin.js");
 		grunt.file.setBase('../build');
 		grunt.config.set('docsFolder', "./output/<%= docsName %>/");
 	});
