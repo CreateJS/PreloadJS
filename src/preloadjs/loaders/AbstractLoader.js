@@ -39,9 +39,15 @@ this.createjs = this.createjs || {};
 
 // constructor
 	/**
-	 * The base loader, which defines all the generic callbacks and events. All loaders extend this class, including the
-	 * {{#crossLink "LoadQueue"}}{{/crossLink}}.
+	 * The base loader, which defines all the generic methods, properties, and events. All loaders extend this class,
+	 * including the {{#crossLink "LoadQueue"}}{{/crossLink}}.
 	 * @class AbstractLoader
+	 * @param {LoadItem|object|string} The item to be loaded.
+	 * @param {Boolean} [preferXHR] Determines if the LoadItem should <em>try</em> and load using XHR, or take a
+	 * tag-based approach, which can be better in cross-domain situations. Not all loaders can load using one or the
+	 * other, so this is a suggested directive.
+	 * @oaram {String} [type] The type of loader. Loader types are defined as constants on the AbstractLoader class,
+	 * such as {{#crossLink "IMAGE:property"}}{{/crossLink}}, {{#crossLink "CSS:property"}}{{/crossLink}}, etc.
 	 * @extends EventDispatcher
 	 */
 	function AbstractLoader(loadItem, preferXHR, type) {
@@ -128,7 +134,7 @@ this.createjs = this.createjs || {};
 	 * Defines a POST request, use for a method value when loading data.
 	 * @property POST
 	 * @type {string}
-	 * @defaultValue post
+	 * @default post
 	 */
 	s.POST = "POST";
 
@@ -136,7 +142,7 @@ this.createjs = this.createjs || {};
 	 * Defines a GET request, use for a method value when loading data.
 	 * @property GET
 	 * @type {string}
-	 * @defaultValue get
+	 * @default get
 	 */
 	s.GET = "GET";
 
@@ -349,8 +355,8 @@ this.createjs = this.createjs || {};
 	 */
 
 	/**
-	 * Dispatched after our XHRRequest is created, but before a load.
-	 * Allows updates to the loader for specific loading needs (ex, Binary loading, or XHR image loading.)	 *
+	 * The {{#crossLink "Event"}}{{/crossLink}} that is fired after the internal request is created, but before a load.
+	 * This allows updates to the loader for specific loading needs, such as binary or XHR image loading.
 	 * @event initialize
 	 * @param {Object} target The object that dispatched the event.
 	 * @param {String} type The event type ("initialize")
@@ -359,36 +365,61 @@ this.createjs = this.createjs || {};
 
 
 	/**
-	 * Get a reference to the manifest item that is loaded by this loader. In most cases this will be the value that was
+	 * Get a reference to the manifest item that is loaded by this loader. In some cases this will be the value that was
 	 * passed into {{#crossLink "LoadQueue"}}{{/crossLink}} using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or
 	 * {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}. However if only a String path was passed in, then it will
-	 * be an Object created by the LoadQueue.
+	 * be a {{#crossLink "LoadItem"}}{{/crossLink}}.
+	 * @method getItem
 	 * @return {Object} The manifest item that this loader is responsible for loading.
+	 * @since 0.6.0
 	 */
 	p.getItem = function () {
 		return this._item;
 	};
 
+	/**
+	 * Get a reference to the content that was loaded by the loader (only available after the {{#crossLink "complete:event"}}{{/crossLink}}
+	 * event is dispatched.
+	 * @method getResult
+	 * @param {Boolean} [raw=false] Determines if the returned result will be the formatted content, or the raw loaded
+	 * data (if it exists).
+	 * @return {Object}
+	 * @since 0.6.0
+	 */
 	p.getResult = function (raw) {
 		return raw ? this._rawResult : this._result;
 	};
 
+	/**
+	 * Return the `tag` this object creates or uses for loading.
+	 * @method getTag
+	 * @return {Object} The tag instance
+	 * @since 0.6.0
+	 */
 	p.getTag = function () {
 		return this._tag;
 	};
 
+	/**
+	 * Set the `tag` this item uses for loading.
+	 * @method setTag
+	 * @param {Object} tag The tag instance
+	 * @since 0.6.0
+	 */
 	p.setTag = function(tag) {
 	  this._tag = tag;
 	};
 
 	/**
-	 * Begin loading the queued items. This method can be called when a {{#crossLink "LoadQueue"}}{{/crossLink}} is set
-	 * up but not started immediately.
-	 * @example
+	 * Begin loading the item. This method is required when using a loader by itself.
+	 *
+	 * <h4>Example</h4>
+	 *
 	 *      var queue = new createjs.LoadQueue();
 	 *      queue.addEventListener("complete", handleComplete);
 	 *      queue.loadManifest(fileArray, false); // Note the 2nd argument that tells the queue not to start loading yet
 	 *      queue.load();
+	 *
 	 * @method load
 	 */
 	p.load = function () {
@@ -408,27 +439,10 @@ this.createjs = this.createjs || {};
 		this._request.load();
 	};
 
-	p._createRequest = function() {
-		if (!this._preferXHR) {
-			this._request = new createjs.TagRequest(this._item, false, this._tag || this._createTag(), this._tagSrcAttribute);
-		} else {
-			this._request = new createjs.XHRRequest(this._item, false);
-		}
-	};
-
 	/**
-	 * Close the active queue. Closing a queue completely empties the queue, and prevents any remaining items from
-	 * starting to download. Note that currently any active loads will remain open, and events may be processed.
-	 *
-	 * To stop and restart a queue, use the {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} method instead.
-	 * @method close
-	 */
-	p.close = function () {
-
-	};
-
-	/**
-	 *
+	 * Close the the item. This will stop any open requests (although downloads using HTML tags may still continue in
+	 * the background), but events will not longer be dispatched.
+	 * @method cancel
 	 */
 	p.cancel = function () {
 		this.canceled = true;
@@ -436,7 +450,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Remove all references to this loader.
+	 * Clean up the loader.
 	 * @method destroy
 	 */
 	p.destroy = function() {
@@ -457,18 +471,37 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Get any items loaded internally by the loader.
+	 * Get any items loaded internally by the loader. The enables loaders such as {{#crossLink "ManifestLoader"}}{{/crossLink}}
+	 * to expose items it loads internally.
 	 * @method getLoadedItems
-	 * @returns {Array} A list of the items loaded by the loader.
+	 * @return {Array} A list of the items loaded by the loader.
+	 * @since 0.6.0
 	 */
 	p.getLoadedItems = function () {
 		return this._loadedItems;
 	};
 
-// Callback proxies
+
+	// Private methods
 	/**
-	 * Dispatch a loadstart event. Please see the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}} event
-	 * for details on the event payload.
+	 * Create an internal request used for loading. By default, an {{#crossLink "XHRRequest"}}{{/crossLink}} or
+	 * {{#crossLink "TagRequest"}}{{/crossLink}} is created, depending on the value of {{#crossLink "preferXHR:property"}}{{/crossLink}}.
+	 * Other loaders may override this to use different request types, such as {{#crossLink "ManifestLoader"}}{{/crossLink}},
+	 * which uses {{#crossLink "JSONLoader"}}{{/crossLink}} or {{#crossLink "JSONPLoader"}}{{/crossLink}} under the hood.
+	 * @method _createRequest
+	 * @private
+	 */
+	p._createRequest = function() {
+		if (!this._preferXHR) {
+			this._request = new createjs.TagRequest(this._item, false, this._tag || this._createTag(), this._tagSrcAttribute);
+		} else {
+			this._request = new createjs.XHRRequest(this._item, false);
+		}
+	};
+
+	/**
+	 * Dispatch a loadstart {{#crossLink "Event"}}{{/crossLink}}. Please see the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}}
+	 * event for details on the event payload.
 	 * @method _sendLoadStart
 	 * @protected
 	 */
@@ -478,8 +511,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Dispatch a progress event. Please see the {{#crossLink "AbstractLoader/progress:event"}}{{/crossLink}} event for
-	 * details on the event payload.
+	 * Dispatch a {{#crossLink "ProgressEvent"}}{{/crossLink}}.
 	 * @method _sendProgress
 	 * @param {Number | Object} value The progress of the loaded item, or an object containing <code>loaded</code>
 	 * and <code>total</code> properties.
@@ -501,7 +533,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Dispatch a complete event. Please see the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}} event
+	 * Dispatch a complete {{#crossLink "Event"}}{{/crossLink}}. Please see the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}} event
 	 * @method _sendComplete
 	 * @protected
 	 */
@@ -521,10 +553,10 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Dispatch an error event. Please see the {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}} event for
-	 * details on the event payload.
+	 * Dispatch an error {{#crossLink "Event"}}{{/crossLink}}. Please see the {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
+	 * event for details on the event payload.
 	 * @method _sendError
-	 * @param {Object} event The event object containing specific error properties.
+	 * @param {ErrorEvent} event The event object containing specific error properties.
 	 * @protected
 	 */
 	p._sendError = function (event) {
@@ -550,16 +582,24 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Optional; Called just before a request dispatches its complete event.
-	 * Allows plugins to set a custom result value.
-	 * Will be passed a single loader parameter, which is the current loader in use.
-	 *
+	 * A custom result formatter function, which is called just before a request dispatches its complete event. Most
+	 * loader types already have an internal formatter, but this can be user-overridden for custom formatting. The
+	 * formatted result will be available on Loaders using {{#crossLink "getResult"}}{{/crossLink}}, and passing `true`.
+	 * @property resultFormatter
 	 * @type Function
-	 * @returns {Object}
-	 * @private
+	 * @return {Object} The formatted result
+	 * @since 0.6.0
 	 */
-	p.resultFormatter = null;
+	p.resultFormatter = null; //TODO: Add support for async formatting.
 
+	/**
+	 * Handle events from internal requests. By default, loaders will handle, and redispatch the necessary events, but
+	 * this method can be overridden for custom behaviours.
+	 * @method handleEvent
+	 * @param {Event} The event that the internal request dispatches.
+	 * @private
+	 * @since 0.6.0
+	 */
 	p.handleEvent = function (event) {
 		switch (event.type) {
 			case "complete":
@@ -595,7 +635,9 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * @deprecated Prefer RequestUtils.buildPath instead of this method.
+	 * @method buildPath
+	 * @deprecated Use the {{#crossLink "RequestUtils"}}{{/crossLink}} method {{#crossLink "RequestUtils/buildPath"}}{{/crossLink}}
+	 * instead.
 	 */
 	p.buildPath = function (src, data) {
 		return createjs.RequestUtils.buildPath(src, data);

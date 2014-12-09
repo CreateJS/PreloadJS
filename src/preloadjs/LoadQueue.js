@@ -273,17 +273,18 @@ this.createjs = this.createjs || {};
 	var p = createjs.extend(LoadQueue, createjs.AbstractLoader);
 	var s = LoadQueue;
 
+	/**
+	 * An internal initialization method, which is used for initial set up, but also to reset the LoadQueue.
+	 * @method init
+	 * @param preferXHR
+	 * @param basePath
+	 * @param crossOrigin
+	 * @private
+	 */
 	p.init = function(preferXHR, basePath, crossOrigin) {
 
 		// public properties
 		/**
-		 * Use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR loading depending
-		 * on the requirements for a media type. For example, HTML audio can not be loaded with XHR, and WebAudio can not be
-		 * loaded with tags, so it will default the the correct type instead of using the user-defined type.
-		 *
-		 * <b>Note: This property is read-only.</b> To change it, please use the {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
-		 * method, or specify the `preferXHR` argument in the LoadQueue constructor.
-		 *
 		 * @property useXHR
 		 * @type {Boolean}
 		 * @readOnly
@@ -293,12 +294,16 @@ this.createjs = this.createjs || {};
 		this.useXHR = true;
 
 		/**
-		 *
-		 * @type {boolean}
+		 * Try and use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR
+		 * loading depending on the requirements for a media type. For example, HTML audio can not be loaded with XHR,
+		 * and plain text can not be loaded with tags, so it will default the the correct type instead of using the
+		 * user-defined type.
+		 * @type {Boolean}
+		 * @default true
+		 * @since 0.6.0
 		 */
-		this.preferXHR = true;
-
-
+		this.preferXHR = true; //TODO: Get/Set
+		this._preferXHR = true;
 		this.setPreferXHR(preferXHR);
 
 		/**
@@ -315,11 +320,11 @@ this.createjs = this.createjs || {};
 		 * scripts loaded using XHR can load in any order, but will "finish" and be added to the document in the order
 		 * specified.
 		 *
-		 * Any items can be set to load in order by setting the `maintainOrder` property on the load item, or by ensuring
-		 * that only one connection can be open at a time using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}.
-		 * Note that when the `maintainScriptOrder` property is set to `true`, scripts items are automatically set to
-		 * `maintainOrder=true`, and changing the `maintainScriptOrder` to `false` during a load will not change items
-		 * already in a queue.
+		 * Any items can be set to load in order by setting the {{#crossLink "maintainOrder:property"}}{{/crossLink}}
+		 * property on the load item, or by ensuring that only one connection can be open at a time using
+		 * {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}. Note that when the `maintainScriptOrder` property
+		 * is set to `true`, scripts items are automatically set to `maintainOrder=true`, and changing the
+		 * `maintainScriptOrder` to `false` during a load will not change items already in a queue.
 		 *
 		 * <h4>Example</h4>
 		 *
@@ -352,15 +357,17 @@ this.createjs = this.createjs || {};
 
 		// protected properties
 		/**
-		 * @todo
+		 * Whether the queue is currently paused or not.
+		 * @property _paused
 		 * @type {boolean}
 		 * @private
 		 */
 		this._paused = false;
 
 		/**
-		 * A path that will be prepended on to the item's `src`. The `_basePath` property will only be used if an item's
-		 * source is relative, and does not include a protocol such as `http://`, or a relative path such as `../`.
+		 * A path that will be prepended on to the item's {{#crossLink "LoadItem/src:property"}}{{/crossLink}}. The
+		 * `_basePath` property will only be used if an item's source is relative, and does not include a protocol such
+		 * as `http://`, or a relative path such as `../`.
 		 * @property _basePath
 		 * @type {String}
 		 * @private
@@ -376,7 +383,7 @@ this.createjs = this.createjs || {};
 		 * and "Anonymous".
 		 * @property _crossOrigin
 		 * @type {String}
-		 * @defaultValue ""
+		 * @default ""
 		 * @private
 		 * @since 0.4.1
 		 */
@@ -458,7 +465,8 @@ this.createjs = this.createjs || {};
 		this._loadQueueBackup = [];
 
 		/**
-		 * An object hash of items that have finished downloading, indexed by item IDs.
+		 * An object hash of items that have finished downloading, indexed by the {{#crossLink "LoadItem"}}{{/crossLink}}
+		 * id.
 		 * @property _loadItemsById
 		 * @type {Object}
 		 * @private
@@ -466,7 +474,8 @@ this.createjs = this.createjs || {};
 		this._loadItemsById = {};
 
 		/**
-		 * An object hash of items that have finished downloading, indexed by item source.
+		 * An object hash of items that have finished downloading, indexed by {{#crossLink "LoadItem"}}{{/crossLink}}
+		 * source.
 		 * @property _loadItemsBySrc
 		 * @type {Object}
 		 * @private
@@ -474,7 +483,7 @@ this.createjs = this.createjs || {};
 		this._loadItemsBySrc = {};
 
 		/**
-		 * An object hash of loaded items, indexed by the ID of the load item.
+		 * An object hash of loaded items, indexed by the ID of the {{#crossLink "LoadItem"}}{{/crossLink}}.
 		 * @property _loadedResults
 		 * @type {Object}
 		 * @private
@@ -482,7 +491,7 @@ this.createjs = this.createjs || {};
 		this._loadedResults = {};
 
 		/**
-		 * An object hash of un-parsed loaded items, indexed by the ID of the load item.
+		 * An object hash of un-parsed loaded items, indexed by the ID of the {{#crossLink "LoadItem"}}{{/crossLink}}.
 		 * @property _loadedRawResults
 		 * @type {Object}
 		 * @private
@@ -491,7 +500,8 @@ this.createjs = this.createjs || {};
 
 		/**
 		 * The number of items that have been requested. This helps manage an overall progress without knowing how large
-		 * the files are before they are downloaded.
+		 * the files are before they are downloaded. This does not include items inside of loaders such as the
+		 * {{#crossLink "ManifestLoader"}}{{/crossLink}}.
 		 * @property _numItems
 		 * @type {Number}
 		 * @default 0
@@ -529,38 +539,53 @@ this.createjs = this.createjs || {};
 		this._loadedScripts = [];
 
 		/**
-		 * Used to supress duplicate progress events.
-		 *
+		 * The last progress amount. This is used to suppress duplicate progress events.
+		 * @property _lastProgress
 		 * @type {Number}
 		 * @private
+		 * @since 0.6.0
 		 */
 		this._lastProgress = NaN;
 
 		/**
-		 * Hash of all our types, each with an array of possible loaders.
-		 * The default PreloadJS loaders will always be last in the array.
-		 * @type {{}}
+		 * An internal list of all the default Loaders that are included with PreloadJS. Before an item is loaded, the
+		 * available loader list is iterated, in the order they are included, and as soon as a loader indicates it can
+		 * handle the content, it will be selected. The default loader, ({{#crossLink "TextLoader"}}{{/crossLink}} is
+		 * last in the list, so it will be used if no other match is found. Typically, loaders will match based on the
+		 * {{#crossLink "LoadItem/type"}}{{/crossLink}}, which is automatically determined using the file extension of
+		 * the {{#crossLink "LoadItem/src:property"}}{{/crossLink}}.
+		 *
+		 * Loaders can be removed from PreloadJS by simply not including them.
+		 *
+		 * Custom loaders installed using {{#crossLink "registerLoader"}}{{/crossLink}} will be prepended to this list
+		 * so that they are checked first.
+		 * @property _availableLoaders
+		 * @type {Array}
+		 * @private
+		 * @since 0.6.0
 		 */
 		this._availableLoaders = [
-			createjs.JSONLoader,
-			createjs.ManifestLoader,
-			createjs.JSONPLoader,
-			createjs.XMLLoader,
-			createjs.SoundLoader,
 			createjs.ImageLoader,
-			createjs.CSSLoader,
 			createjs.JavascriptLoader,
+			createjs.CSSLoader,
+			createjs.JSONLoader,
+			createjs.JSONPLoader,
+			createjs.SoundLoader,
+			createjs.ManifestLoader,
+			createjs.SpriteSheetLoader,
+			createjs.XMLLoader,
 			createjs.SVGLoader,
 			createjs.BinaryLoader,
 			createjs.VideoLoader,
 			createjs.TextLoader,
-			createjs.SpriteSheetLoader,
 		];
 
 		/**
-		 * Store off how many built in loaders we have, so they can't be removed by unregisterLoader().
-		 *
+		 * The number of built in loaders, so they can't be removed by {{#crossLink "unregisterLoader"}}{{/crossLink}.
+		 * @property _defaultLoaderLength
+		 * @type {Number}
 		 * @private
+		 * @since 0.6.0
 		 */
 		this._defaultLoaderLength = this._availableLoaders.length;
 	};
@@ -568,21 +593,22 @@ this.createjs = this.createjs || {};
 
 // static properties
 	/**
-	 * Time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
+	 * The time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
 	 * event is dispatched if the timeout is reached before any data is received.
-	 *
 	 * @property loadTimeout
 	 * @type {Number}
 	 * @default 8000
 	 * @static
 	 * @since 0.4.1
-	 * @depricated In favour of LoadItem.loadTimeout
+	 * @deprecated In favour of LoadItem.loadTimeout
 	 */
 	s.loadTimeout = 8000;
 
 	/**
-	 * Time in milliseconds to assume a load has failed.
+	 * The time in milliseconds to assume a load has failed.
+	 * @property LOAD_TIMEOUT
 	 * @type {Number}
+	 * @default 0
 	 * @deprecated in favor of the {{#crossLink "LoadQueue/loadTimeout:property"}}{{/crossLink}} property.
 	 */
 	s.LOAD_TIMEOUT = 0;
@@ -744,11 +770,12 @@ this.createjs = this.createjs || {};
 
 // public methods
 	/**
-	 * Register custom loaders.  Each new loader will take priority for each datatype.
-	 *
-	 * TO-DO: Docs for writing a custom loader.
-	 *
-	 * @param loader
+	 * Register a custom loaders class. New loaders are given precedence over loaders added earlier and default loaders.
+	 * It is recommended that loaders extend {{#crossLink "AbstractLoader"}}{{/crossLink}}. Loaders can only be added
+	 * once, and will be prepended to the list of available loaders.
+	 * @method registerLoader
+	 * @param {Class} The AbstractLoader class to add.
+	 * @since 0.6.0
 	 */
 	p.registerLoader = function (loader) {
 		if (!loader || !loader.canLoadItem) {
@@ -761,10 +788,10 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Remove a custom loader.
-	 * ** Note, you can only un-register custom loaders, the defaults will always stay.
-	 *
-	 * @param loader
+	 * Remove a custom loader added usig {{#crossLink "registerLoader"}}{{/crossLink}}. Only custom loaders can be
+	 * unregistered, the default loaders will always be available.
+	 * @method unregisterLoader
+	 * @param {Class} loader The AbstractLoader class to remove
 	 */
 	p.unregisterLoader = function (loader) {
 		var idx = this._availableLoaders.indexOf(loader);
@@ -774,9 +801,6 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Change the usXHR value. Note that if this is set to true, it may fail depending on the browser's capabilities.
-	 * Additionally, some files require XHR in order to load, such as JSON (without JSONP), Text, and XML, so XHR will
-	 * be used regardless of what is passed to this method.
 	 * @method setUseXHR
 	 * @param {Boolean} value The new useXHR value to set.
 	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
@@ -790,9 +814,11 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 *
-	 * @param value
-	 * @returns {boolean}
+	 * Change the {{#crossLink "preferXHR:property"}}{{/crossLink}} value. Note that if this is set to `true`, it may
+	 * fail, or be ignored depending on the browser's capabilities and the load type.
+	 * @method setPreferXHR
+	 * @param {Boolean} value
+	 * @returns {Boolean} The value of {{#crossLink "preferXHR"}}{{/crossLink}} that was successfully set.
 	 * @since 0.6.0
 	 */
 	p.setPreferXHR = function(value) {
@@ -991,17 +1017,18 @@ this.createjs = this.createjs || {};
 	 * Files are always appended to the current queue, so this method can be used multiple times to add files.
 	 * To clear the queue first, use the {{#crossLink "AbstractLoader/close"}}{{/crossLink}} method.
 	 * @method loadFile
-	 * @param {Object | String} file The file object or path to load. A file can be either
+	 * @param {LoadItem|Object|String} file The file object or path to load. A file can be either
 	 * <ul>
-	 *     <li>A string path to a resource. Note that this kind of load item will be converted to an object (see below)
+	 *     <li>A {{#crossLink "LoadItem"}}{{/crossLink}} instance</li>
+	 *     <li>An object containing properties defined by {{#crossLink "LoadItem"}}{{/crossLink}}</li>
+	 *     <li>OR A string path to a resource. Note that this kind of load item will be converted to a {{#crossLink "LoadItem"}}{{/crossLink}}
 	 *     in the background.</li>
-	 *     <li>OR an {{#crossLink "LoadItem"}}LoadItem{{/crossLink}}</li>
 	 * </ul>
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}}, and the value is
 	 * `true`, the queue will resume automatically.
 	 * @param {String} [basePath] A base path that will be prepended to each file. The basePath argument overrides the
-	 * path specified in the constructor. Note that if you load a manifest using a file of type {{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}},
+	 * path specified in the constructor. Note that if you load a manifest using a file of type {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}},
 	 * its files will <strong>NOT</strong> use the basePath parameter. <strong>The basePath parameter is deprecated.</strong>
 	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
 	 * constructor, or a `path` property in a manifest definition.
@@ -1047,30 +1074,12 @@ this.createjs = this.createjs || {};
 	 *
 	 * Each "file" in a manifest can be either:
 	 * <ul>
-	 *     <li>A string path to a resource (string). Note that this kind of load item will be converted to an object
-	 *     (see below) in the background.</li>
-	 *      <li>OR an object that contains:<ul>
-	 *         <li>src: The source of the file that is being loaded. This property is <b>required</b>. The source can
-	 *         either be a string (recommended), or an HTML tag.</li>
-	 *         <li>type: The type of file that will be loaded (image, sound, json, etc). PreloadJS does auto-detection
-	 *         of types using the extension. Supported types are defined on LoadQueue, such as {{#crossLink "LoadQueue/IMAGE:property"}}{{/crossLink}}.
-	 *         It is recommended that a type is specified when a non-standard file URI (such as a php script) us used.</li>
-	 *         <li>id: A string identifier which can be used to reference the loaded object.</li>
-	 *         <li>maintainOrder: Set to `true` to ensure this asset loads in the order defined in the manifest. This
-	 *         will happen when the max connections has been set above 1 (using {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}}),
-	 *         and will only affect other assets also defined as `maintainOrder`. Everything else will finish as it is
-	 *         loaded. Ordered items are combined with script tags loading in order when {{#crossLink "LoadQueue/maintainScriptOrder:property"}}{{/crossLink}}
-	 *         is set to `true`.</li>
-	 *         <li>callback: Optional, used for JSONP requests, to define what method to call when the JSONP is loaded.</li>
-	 *         <li>data: An arbitrary data object, which is included with the loaded object</li>
-	 *         <li>method: used to define if this request uses GET or POST when sending data to the server. The default
-	 *         value is "GET"</li>
-	 *         <li>values: Optional object of name/value pairs to send to the server.</li>
-	 *         <li>headers: Optional object hash of headers to attach to an XHR request. PreloadJS will automatically
-	 *         attach some default headers when required, including Origin, Content-Type, and X-Requested-With. You may
-	 *         override the default headers if needed.</li>
-	 *     </ul>
+	 *     <li>A {{#crossLink "LoadItem"}}{{/crossLink}} instance</li>
+	 *     <li>An object containing properties defined by {{#crossLink "LoadItem"}}{{/crossLink}}</li>
+	 *     <li>OR A string path to a resource. Note that this kind of load item will be converted to a {{#crossLink "LoadItem"}}{{/crossLink}}
+	 *     in the background.</li>
 	 * </ul>
+	 *
 	 * @param {Boolean} [loadNow=true] Kick off an immediate load (true) or wait for a load call (false). The default
 	 * value is true. If the queue is paused using {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} and this value is
 	 * `true`, the queue will resume automatically.
@@ -1139,13 +1148,16 @@ this.createjs = this.createjs || {};
 
 	};
 
-	// Overrides abstract method in AbstractLoader
+	/**
+	 * Start a LoadQueue that was created, but not automatically started.
+	 * @method load
+	 */
 	p.load = function () {
 		this.setPaused(false);
 	};
 
 	/**
-	 * Look up a load item using either the "id" or "src" that was specified when loading it. Note that if no "id" was
+	 * Look up a {{#crossLink "LoadItem"}}{{/crossLink}} using either the "id" or "src" that was specified when loading it. Note that if no "id" was
 	 * supplied with the load item, the ID will be the "src", including a `path` property defined by a manifest. The
 	 * `basePath` will not be part of the ID.
 	 * @method getItem
@@ -1181,7 +1193,7 @@ this.createjs = this.createjs || {};
 	 *      loaded audio. Specifically, audio loaded by Flash and WebAudio will return a loader object using this method
 	 *      which can not be used to play audio back.</li>
 	 * </ul>
-	 * This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}}  event as the 'item`
+	 * This object is also returned via the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event as the 'item`
 	 * parameter. Note that if a raw result is requested, but not found, the result will be returned instead.
 	 */
 	p.getResult = function (value, rawResult) {
@@ -1195,9 +1207,13 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Generate a list of load items on-demand.
+	 * Generate an list of items loaded by this queue.
 	 * @method getItems
-	 * @returns {Array} A list of items that have been added to the queue.
+	 * @param {Boolean} loaded Determines if only items that have been loaded should be returned. If false, in-progress
+	 * and failed load items will also be included.
+	 * @returns {Array} A list of objects that have been loaded. Each item includes the {{#crossLink "LoadItem"}}{{/crossLink}},
+	 * result, and rawResult.
+	 * @since 0.6.0
 	 */
 	p.getItems = function(loaded) {
 		var arr = [];
@@ -1218,8 +1234,9 @@ this.createjs = this.createjs || {};
 	 * Pause or resume the current load. Active loads will not be cancelled, but the next items in the queue will not
 	 * be processed when active loads complete. LoadQueues are not paused by default.
 	 *
-	 * Note that if new items are added to the queue using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}},
-	 * a paused queue will be resumed, unless the `loadNow` argument is `false`.
+	 * Note that if new items are added to the queue using {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or
+	 * {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}, a paused queue will be resumed, unless the `loadNow`
+	 * argument is `false`.
 	 * @method setPaused
 	 * @param {Boolean} value Whether the queue should be paused or not.
 	 */
@@ -1230,7 +1247,13 @@ this.createjs = this.createjs || {};
 		}
 	};
 
-	// Overrides abstract method in AbstractLoader
+	/**
+	 * Close the active queue. Closing a queue completely empties the queue, and prevents any remaining items from
+	 * starting to download. Note that currently any active loads will remain open, and events may be processed.
+	 *
+	 * To stop and restart a queue, use the {{#crossLink "LoadQueue/setPaused"}}{{/crossLink}} method instead.
+	 * @method close
+	 */
 	p.close = function () {
 		while (this._currentLoads.length) {
 			this._currentLoads.pop().cancel();
@@ -1283,7 +1306,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Create a refined load item, which contains all the required properties (src, type, extension, tag). The type of
+	 * Create a refined {{#crossLink "LoadItem"}}{{/crossLink}}, which contains all the required properties. The type of
 	 * item is determined by browser support, requirements based on the file type, and developer settings. For example,
 	 * XHR is only used for file types that support it in new browsers.
 	 *
@@ -1300,21 +1323,8 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._createLoadItem = function (value, path, basePath) {
-		var item = null;
-
-		// Create/modify a load item
-		switch (typeof(value)) {
-			case "string":
-				item = {
-					src: value
-				};
-				break;
-			case "object":
-				item = value;
-				break;
-			default:
-				return null;
-		}
+		var item = createjs.LoadItem.create(value);
+		if (item == null) { return null; }
 
 		// Determine Extension, etc.
 		var match = createjs.RequestUtils.parseURI(item.src);
