@@ -84,7 +84,7 @@ this.createjs = this.createjs || {};
 		if (window[this._item.callback] != null) {
 			throw new Error(
 				'JSONP callback "' +
-				this.item.callback +
+				this._item.callback +
 				'" already exists on window.' +
 				' You need to specify a different callback.' +
 				' Or re-name the current one.');
@@ -112,6 +112,7 @@ this.createjs = this.createjs || {};
 
 	p._dispose = function () {
 		window.document.body.removeChild(this._tag);
+		delete window[this._item.callback];
 	}
 
 	createjs.JSONPLoader = createjs.promote(JSONPLoader, "AbstractLoader");
