@@ -146,7 +146,9 @@ this.createjs = this.createjs || {};
 	};
 
 	p._handleManifestError = function (event) {
-		this._sendError(event);
+		var newEvent = new createjs.Event("fileerror");
+		newEvent.item = event.data;
+		this.dispatchEvent(newEvent);
 	};
 
 	createjs.ManifestLoader = createjs.promote(ManifestLoader, "AbstractLoader");

@@ -150,7 +150,7 @@
 		createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);  // need this so it doesn't default to Web Audio
 		preload.installPlugin(createjs.Sound);
 		preload.on("fileload", handleFileLoaded);
-		preload.on("error", handleFileError);
+		preload.on("error", handleError);
 	}
 
 	function loadManifest() {
@@ -240,7 +240,7 @@
 	}
 
 	// A file failed to load.
-	function handleFileError(event) {
+	function handleError(event) {
 		var item = event.data;
 		var div = document.getElementById(item.id);
 		if (div != null) {

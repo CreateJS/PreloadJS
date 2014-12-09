@@ -11,6 +11,6 @@ loadMediaGrid({
 		{"id":"audio/Thunder.mp3", "src":"audio/Thunder.mp3"},
 		{"id":"//gskinner.com/assets/createjs/mapsJSONP.json", "callback":"maps", "type":"jsonp", "src":"//gskinner.com/assets/createjs/mapsJSONP.json"},
 		{"id":"art/Autumn.png", "src":"art/Autumn.png"},
-		"NoFileHere.png"
+		{"id":"NoFileHere.png", "src":"NoFileHere.png"}
 	]
 });

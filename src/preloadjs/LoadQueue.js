@@ -715,16 +715,8 @@ this.createjs = this.createjs || {};
 	 */
 
 	/**
-	 * This event is fired when an an individual file progress changes.
+	 * This {{#crossLink "ProgressEvent"}}{{/crossLink}} that is fired when an an individual file's progress changes.
 	 * @event fileprogress
-	 * @param {Object} The object that dispatched the event.
-	 * @param {String} type The event type.
-	 * @param {Object} item The file item which was specified in the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
-	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}} call. If only a string path or tag was specified, the
-	 * object will contain that value as a `src` property.
-	 * @param {Number} loaded The number of bytes that have been loaded. Note that this may just be a percentage of 1.
-	 * @param {Number} total The total number of bytes. If it is unknown, the value is 1.
-	 * @param {Number} progress The amount that has been loaded between 0 and 1.
 	 * @since 0.3.0
 	 */
 
@@ -1479,25 +1471,45 @@ this.createjs = this.createjs || {};
 		loader.on("fileload", this._handleFileLoad, this);
 		loader.on("progress", this._handleProgress, this);
 		loader.on("complete", this._handleFileComplete, this);
-		loader.on("error", this._handleFileError, this);
+		loader.on("error", this._handleError, this);
+		loader.on("fileerror", this._handleFileError, this);
 		this._currentLoads.push(loader);
 		this._sendFileStart(loader.getItem());
 		loader.load();
 	};
 
-	p._handleFileLoad = function (event) {
+	/**
+	 * The callback that is fired when a loader loads a file. This enables loaders like {{#crossLink "ManifestLoader"}}{{/crossLink}}
+	 * to maintain internal queues, but for this queue to dispatch the {{#crossLink "fileload:event"}}{{/crossLink}}
+	 * events.
+	 * @param {Event} The {{#crossLink "AbstractLoader/fileload:event"}}{{/crossLink}} event from the loader.
+	 * @private
+	 * @since 0.6.0
+	 */
+	p._handleFileLoad = function(event) {
 		event.target = null;
 		this.dispatchEvent(event);
 	};
 
 	/**
-	 * The callback that is fired when a loader encounters an error. The queue will continue loading unless {{#crossLink "LoadQueue/stopOnError:property"}}{{/crossLink}}
-	 * is set to `true`.
-	 * @method _handleFileError
-	 * @param {Object} event The error event, containing relevant error information.
+	 * The callback that is fired when a loader encounters an error from an internal file load operation. This enables
+	 * loaders like M
+	 * @param event
 	 * @private
 	 */
-	p._handleFileError = function (event) {
+	p._handleFileError = function(event) {
+		var newEvent = new createjs.ErrorEvent("FILE_LOAD_ERROR", null, event.item);
+		this._sendError(newEvent);
+	};
+
+	/**
+	 * The callback that is fired when a loader encounters an error. The queue will continue loading unless {{#crossLink "LoadQueue/stopOnError:property"}}{{/crossLink}}
+	 * is set to `true`.
+	 * @method _handleError
+	 * @param {ErrorEvent} event The error event, containing relevant error information.
+	 * @private
+	 */
+	p._handleError = function (event) {
 		var loader = event.target;
 		this._numItemsLoaded++;
 

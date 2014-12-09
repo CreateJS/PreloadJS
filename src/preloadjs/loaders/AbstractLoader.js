@@ -291,19 +291,14 @@ this.createjs = this.createjs || {};
 
 // Events
 	/**
-	 * The event that is fired when the overall progress changes.
+	 * The {{#crossLink "ProgressEvent"}}{{/crossLink}} that is fired when the overall progress changes. Prior to
+	 * version 0.6.0, this was just a regular {{#crossLink "Event"}}{{/crossLink}}.
 	 * @event progress
-	 * @param {Object} target The object that dispatched the event.
-	 * @param {String} type The event type.
-	 * @param {Number} loaded The amount that has been loaded so far. Note that this is may just be a percentage of 1,
-	 * since file sizes can not be determined before a load is kicked off, if at all.
-	 * @param {Number} total The total number of bytes. Note that this may just be 1.
-	 * @param {Number} progress The ratio that has been loaded between 0 and 1.
 	 * @since 0.3.0
 	 */
 
 	/**
-	 * The event that is fired when a load starts.
+	 * The {{#crossLink "Event"}}{{/crossLink}} that is fired when a load starts.
 	 * @event loadstart
 	 * @param {Object} target The object that dispatched the event.
 	 * @param {String} type The event type.
@@ -311,7 +306,7 @@ this.createjs = this.createjs || {};
 	 */
 
 	/**
-	 * The event that is fired when the entire queue has been loaded.
+	 * The {{#crossLink "Event"}}{{/crossLink}} that is fired when the entire queue has been loaded.
 	 * @event complete
 	 * @param {Object} target The object that dispatched the event.
 	 * @param {String} type The event type.
@@ -319,58 +314,49 @@ this.createjs = this.createjs || {};
 	 */
 
 	/**
-	 * The event that is fired when the loader encounters an error. If the error was encountered by a file, the event will
-	 * contain the item that caused the error. There may be additional properties such as the error reason on event
-	 * objects.
+	 * The {{#crossLink "ErrorEvent"}}{{/crossLink}} that is fired when the loader encounters an error. If the error was
+	 * encountered by a file, the event will contain the item that caused the error. Prior to version 0.6.0, this was
+	 * just a regular {{#crossLink "Event"}}{{/crossLink}}.
 	 * @event error
-	 * @param {Object} target The object that dispatched the event.
-	 * @param {String} type The event type.
-	 * @param {Object} [item] The item that was being loaded that caused the error. The item was specified in
-	 * the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
-	 * call. If only a string path or tag was specified, the object will contain that value as a `src` property.
-	 * @param {String} [error] The error object or text.
 	 * @since 0.3.0
 	 */
 
 	/**
+	 * The {{#crossLink "Event"}}{{/crossLink}} that is fired when the loader encounters an internal file load error.
+	 * This enables loaders to maintain internal queues, and surface file load errors.
+	 * @event fileerror
+	 * @param {Object} target The object that dispatched the event.
+	 * @param {String} type The even type ("fileerror")
+	 * @param {LoadItem|object} The item that encountered the error
+	 * @since 0.6.0
+	 */
+
+	/**
+	 * The {{#crossLink "Event"}}{{/crossLink}} that is fired when a loader internally loads a file. This enables
+	 * loaders such as {{#crossLink "ManifestLoader"}}{{/crossLink}} to maintain internal {{#crossLink "LoadQueue"}}{{/crossLink}}s
+	 * and notify when they have loaded a file. The {{#crossLink "LoadQueue"}}{{/crossLink}} class dispatches a
+	 * slightly different {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event.
+	 * @event fileload
+	 * @param {Object} target The object that dispatched the event.
+	 * @param {String} type The event type ("fileload")
+	 * @param {Object} item The file item which was specified in the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
+	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}} call. If only a string path or tag was specified, the
+	 * object will contain that value as a `src` property.
+	 * @param {Object} result The HTML tag or parsed result of the loaded item.
+	 * @param {Object} rawResult The unprocessed result, usually the raw text or binary data before it is converted
+	 * to a usable object.
+	 * @since 0.6.0
+	 */
+
+	/**
 	 * Dispatched after our XHRRequest is created, but before a load.
-	 * Allows updates to the loader for specific loading needs (ex, Binary loading, or XHR image loading.)
-	 *
+	 * Allows updates to the loader for specific loading needs (ex, Binary loading, or XHR image loading.)	 *
 	 * @event initialize
 	 * @param {Object} target The object that dispatched the event.
-	 * @param {String} type The event type.
+	 * @param {String} type The event type ("initialize")
 	 * @param {AbstractLoader} loader The loader that has been initialized.
 	 */
 
-	//TODO: Deprecated
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/progress:event"}}{{/crossLink}}
-	 * event.
-	 * @property onProgress
-	 * @type {Function}
-	 * @deprecated Use addEventListener and the "progress" event.
-	 */
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/loadstart:event"}}{{/crossLink}}
-	 * event.
-	 * @property onLoadStart
-	 * @type {Function}
-	 * @deprecated Use addEventListener and the "loadstart" event.
-	 */
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}}
-	 * event.
-	 * @property onComplete
-	 * @type {Function}
-	 * @deprecated Use addEventListener and the "complete" event.
-	 */
-	/**
-	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
-	 * event.
-	 * @property onError
-	 * @type {Function}
-	 * @deprecated Use addEventListener and the "error" event.
-	 */
 
 	/**
 	 * Get a reference to the manifest item that is loaded by this loader. In most cases this will be the value that was
@@ -544,7 +530,7 @@ this.createjs = this.createjs || {};
 	p._sendError = function (event) {
 		if (this._isCanceled() || !this.hasEventListener("error")) { return; }
 		if (event == null) {
-			event = new createjs.ErrorEvent(); // TODO: Populate error
+			event = new createjs.ErrorEvent("PRELOAD_ERROR_EMPTY"); // TODO: Populate error
 		}
 		this.dispatchEvent(event);
 	};
