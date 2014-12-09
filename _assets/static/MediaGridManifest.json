@@ -9,7 +9,7 @@ loadMediaGrid({
 		{"id":"static/grant.json", "src":"static/grant.json"},
 		{"id":"static/font.css", "src":"static/font.css"},
 		{"id":"audio/Thunder.mp3", "src":"audio/Thunder.mp3"},
-		{"id":"http://gskinner.com/assets/createjs/mapsJSONP.json", "callback":"maps", "type":"jsonp", "src":"http://gskinner.com/assets/createjs/mapsJSONP.json"},
+		{"id":"//gskinner.com/assets/createjs/mapsJSONP.json", "callback":"maps", "type":"jsonp", "src":"//gskinner.com/assets/createjs/mapsJSONP.json"},
 		{"id":"art/Autumn.png", "src":"art/Autumn.png"},
 		"NoFileHere.png"
 	]
