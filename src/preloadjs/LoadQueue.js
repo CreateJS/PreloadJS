@@ -142,6 +142,10 @@ this.createjs = this.createjs || {};
 	 *      queue.loadFile({id:"image", src:"filePath/file.jpg"});
 	 *      queue.loadManifest(["filePath/file.jpg", {id:"image", src:"filePath/file.jpg"}]);
 	 *
+	 *      // Use an external manifest
+	 *      queue.loadManifest("path/to/manifest.json");
+	 *      queue.loadManifest({src:"manifest.json", type:"manifest"});
+	 *
 	 * If you pass `false` as the `loadNow` parameter, the queue will not kick of the load of the files, but it will not
 	 * stop if it has already been started. Call the {{#crossLink "AbstractLoader/load"}}{{/crossLink}} method to begin
 	 * a paused queue. Note that a paused queue will automatically resume when new files are added to it with a
@@ -155,41 +159,49 @@ this.createjs = this.createjs || {};
 	 * either a non-standard file extension, or are serving the file using a proxy script, then you can pass in a
 	 * <code>type</code> property with any manifest item.
 	 *
-	 *      queue.loadFile({src:"path/to/myFile.mp3x", type:createjs.LoadQueue.SOUND});
+	 *      queue.loadFile({src:"path/to/myFile.mp3x", type:createjs.AbstractLoader.SOUND});
 	 *
 	 *      // Note that PreloadJS will not read a file extension from the query string
-	 *      queue.loadFile({src:"http://server.com/proxy?file=image.jpg", type:createjs.LoadQueue.IMAGE});
+	 *      queue.loadFile({src:"http://server.com/proxy?file=image.jpg", type:createjs.AbstractLoader.IMAGE});
 	 *
-	 * Supported types are defined on the LoadQueue class, and include:
+	 * Supported types are defined on the {{#crossLink "AbstractLoader"}}{{/crossLink}} class, and include:
 	 * <ul>
-	 *     <li>{{#crossLink "LoadQueue/BINARY:property"}}{{/crossLink}}: Raw binary data via XHR</li>
-	 *     <li>{{#crossLink "LoadQueue/CSS:property"}}{{/crossLink}}: CSS files</li>
-	 *     <li>{{#crossLink "LoadQueue/IMAGE:property"}}{{/crossLink}}: Common image formats</li>
-	 *     <li>{{#crossLink "LoadQueue/JAVASCRIPT:property"}}{{/crossLink}}: JavaScript files</li>
-	 *     <li>{{#crossLink "LoadQueue/JSON:property"}}{{/crossLink}}: JSON data</li>
-	 *     <li>{{#crossLink "LoadQueue/JSONP:property"}}{{/crossLink}}: JSON files cross-domain</li>
-	 *     <li>{{#crossLink "LoadQueue/MANIFEST:property"}}{{/crossLink}}: A list of files to load in JSON format, see
-	 *     {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}</li>
-	 *     <li>{{#crossLink "LoadQueue/SOUND:property"}}{{/crossLink}}: Audio file formats</li>
-	 *     <li>{{#crossLink "LoadQueue/SVG:property"}}{{/crossLink}}: SVG files</li>
-	 *     <li>{{#crossLink "LoadQueue/TEXT:property"}}{{/crossLink}}: Text files - XHR only</li>
-	 *     <li>{{#crossLink "LoadQueue/XML:property"}}{{/crossLink}}: XML data</li>
+	 *     <li>{{#crossLink "AbstractLoader/BINARY:property"}}{{/crossLink}}: Raw binary data via XHR</li>
+	 *     <li>{{#crossLink "AbstractLoader/CSS:property"}}{{/crossLink}}: CSS files</li>
+	 *     <li>{{#crossLink "AbstractLoader/IMAGE:property"}}{{/crossLink}}: Common image formats</li>
+	 *     <li>{{#crossLink "AbstractLoader/JAVASCRIPT:property"}}{{/crossLink}}: JavaScript files</li>
+	 *     <li>{{#crossLink "AbstractLoader/JSON:property"}}{{/crossLink}}: JSON data</li>
+	 *     <li>{{#crossLink "AbstractLoader/JSONP:property"}}{{/crossLink}}: JSON files cross-domain</li>
+	 *     <li>{{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}: A list of files to load in JSON format, see
+	 *     {{#crossLink "AbstractLoader/loadManifest"}}{{/crossLink}}</li>
+	 *     <li>{{#crossLink "AbstractLoader/SOUND:property"}}{{/crossLink}}: Audio file formats</li>
+	 *     <li>{{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}: JSON SpriteSheet definiteions. This
+	 *     will also load sub-images, and provide a {{#crossLink "SpriteSheet"}}{{/crossLink}} instance.</li>
+	 *     <li>{{#crossLink "AbstractLoader/SVG:property"}}{{/crossLink}}: SVG files</li>
+	 *     <li>{{#crossLink "AbstractLoader/TEXT:property"}}{{/crossLink}}: Text files - XHR only</li>
+	 *     <li>{{#crossLink "AbstractLoader/XML:property"}}{{/crossLink}}: XML data</li>
 	 * </ul>
+	 *
+	 * <em>Note: Loader types used to be defined on LoadQueue, but have been moved to AbstractLoader for better
+	 * portability of loader classes, which can be used individually now. The properties on LoadQueue still exist, but
+	 * are deprecated.</em>
 	 *
 	 * <b>Handling Results</b><br />
 	 * When a file is finished downloading, a {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event is
 	 * dispatched. In an example above, there is an event listener snippet for fileload. Loaded files are usually a
-	 * resolved object that can be used immediately, including:
+	 * formatted object that can be used immediately, including:
 	 * <ul>
-	 *     <li>Image: An &lt;img /&gt; tag</li>
-	 *     <li>Audio: An &lt;audio /&gt; tag</a>
-	 *     <li>JavaScript: A &lt;script /&gt; tag</li>
-	 *     <li>CSS: A &lt;link /&gt; tag</li>
-	 *     <li>XML: An XML DOM node</li>
-	 *     <li>SVG: An &lt;object /&gt; tag</li>
-	 *     <li>JSON: A formatted JavaScript Object</li>
-	 *     <li>Text: Raw text</li>
 	 *     <li>Binary: The binary loaded result</li>
+	 *     <li>CSS: A &lt;link /&gt; tag</li>
+	 *     <li>Image: An &lt;img /&gt; tag</li>
+	 *     <li>JavaScript: A &lt;script /&gt; tag</li>
+	 *     <li>JSON/JSONP: A formatted JavaScript Object</li>
+	 *     <li>Manifest: A JavaScript object.
+	 *     <li>Sound: An &lt;audio /&gt; tag</a>
+	 *     <li>SpriteSheet: A {{#crossLink "SpriteSheet"}}{{/crossLink}} instance, containing loaded images.
+	 *     <li>SVG: An &lt;object /&gt; tag</li>
+	 *     <li>Text: Raw text</li>
+	 *     <li>XML: An XML DOM node</li>
 	 * </ul>
 	 *
 	 *      function handleFileLoad(event) {
@@ -203,9 +215,9 @@ this.createjs = this.createjs || {};
 	 *      }
 	 *
 	 * At any time after the file has been loaded (usually after the queue has completed), any result can be looked up
-	 * via its "id" using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}. If no id was provided, then the "src" or
-	 * file path can be used instead, including the `path` defined by a manifest, but <strong>not including</strong> a
-	 * base path defined on the LoadQueue. It is recommended to always pass an id.
+	 * via its "id" using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}. If no id was provided, then the
+	 * "src" or file path can be used instead, including the `path` defined by a manifest, but <strong>not including</strong>
+	 * a base path defined on the LoadQueue. It is recommended to always pass an id if you want to look up content.
 	 *
 	 *      var image = queue.getResult("image");
 	 *      document.body.appendChild(image);
@@ -247,8 +259,8 @@ this.createjs = this.createjs || {};
 	 * will not receive a base path.
 	 * @param {String|Boolean} [crossOrigin=""] An optional flag to support images loaded from a CORS-enabled server. To
 	 * use it, set this value to `true`, which will default the crossOrigin property on images to "Anonymous". Any
-	 * string value will be passed through, but only "" and "Anonymous" are recommended.
-	 * @deprecated Use LoadItem.crossOrigin instead
+	 * string value will be passed through, but only "" and "Anonymous" are recommended. <strong>Note: The crossOrigin
+	 * parameter is deprecated. Use LoadItem.crossOrigin instead</strong>
 	 *
 	 * @constructor
 	 * @extends AbstractLoader
