@@ -564,8 +564,17 @@ this.createjs = this.createjs || {};
 		switch (event.type) {
 			case "complete":
 				this._rawResult = event.target._response;
-				this._result = this.resultFormatter && this.resultFormatter(this) || this._rawResult;
-				this._sendComplete();
+				var result = this.resultFormatter && this.resultFormatter(this);
+				var _this = this;
+				if (result instanceof Function) {
+					result(function(result) {
+						_this._result = result;
+						_this._sendComplete();
+					});
+				} else {
+					this._result =  result || this._rawResult;
+					this._sendComplete();
+				}
 				break;
 			case "progress":
 				this._sendProgress(event);

@@ -38,7 +38,7 @@ this.createjs = this.createjs || {};
 	 * The ImageLoader class description goes here.
 	 *
 	 */
-	function ImageLoader(loadItem, preferXHR) {
+	function ImageLoader (loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.IMAGE);
 
 		// public properties
@@ -46,9 +46,8 @@ this.createjs = this.createjs || {};
 		// protected properties
 		this._tagSrcAttribute = "src";
 
-
 		if (createjs.RequestUtils.isImageTag(loadItem) || createjs.RequestUtils.isImageTag(loadItem.src)) {
-			this._tag = createjs.RequestUtils.isImageTag(loadItem)?loadItem:loadItem.src;
+			this._tag = createjs.RequestUtils.isImageTag(loadItem) ? loadItem : loadItem.src;
 			this._preferXHR = false;
 		} else {
 			this._tag = document.createElement("img");
@@ -84,7 +83,9 @@ this.createjs = this.createjs || {};
 			return;
 		}
 
-		if (this._item.crossOrigin != null) { this._tag.crossOrigin = this._item.crossOrigin; }
+		if (this._item.crossOrigin != null) {
+			this._tag.crossOrigin = this._item.crossOrigin;
+		}
 		this.AbstractLoader_load();
 	};
 
@@ -99,22 +100,33 @@ this.createjs = this.createjs || {};
 	};
 
 	p._formatResult = function (loader) {
-		var URL = window.URL || window.webkitURL;
-		if (!this._preferXHR) {
-			document.body.removeChild(loader.getTag());
-		} else if (URL) {
-			var objURL = URL.createObjectURL(loader.getResult(true));
-			this._tag.src = objURL;
-			this._tag.onload = function () {
-				URL.revokeObjectURL(this.src);
-			}
-		} else {
-			loader.getTag().src = loader.getItem().src;
-		}
+		var _this = this;
+		return function (done) {
+			var tag = _this._tag;
+			var URL = window.URL || window.webkitURL;
 
-		var tag = loader.getTag();
-		tag.style.visibility = "";
-		return tag;
+			if (!_this._preferXHR) {
+				document.body.removeChild(tag);
+			} else if (URL) {
+				var objURL = URL.createObjectURL(loader.getResult(true));
+				tag.src = objURL;
+				tag.onload = function () {
+					URL.revokeObjectURL(_this.src);
+				}
+			} else {
+				tag.src = loader.getItem().src;
+			}
+
+			tag.style.visibility = "";
+
+			if (tag.complete) {
+				done(tag);
+			} else {
+				tag.onload = function () {
+					done(this);
+				}
+			}
+		};
 	};
 
 	createjs.ImageLoader = createjs.promote(ImageLoader, "AbstractLoader");
