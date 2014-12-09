@@ -1,5 +1,5 @@
 /*
- * JavascriptLoader
+ * JavaScriptLoader
  * Visit http://createjs.com/ for documentation, updates and examples.
  *
  *
@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,10 +39,10 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The JavascriptLoader class description goes here.
-	 *
+	 * A loader for JavaScript files.
+	 * @class JavaScriptLoader
 	 */
-	function JavascriptLoader(loadItem, preferXHR) {
+	function JavaScriptLoader(loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.JAVASCRIPT);
 
 		// public properties
@@ -50,8 +54,8 @@ this.createjs = this.createjs || {};
 		this.resultFormatter = this._formatResult;
 	};
 
-	var p = createjs.extend(JavascriptLoader, createjs.AbstractLoader);
-	var s = JavascriptLoader;
+	var p = createjs.extend(JavaScriptLoader, createjs.AbstractLoader);
+	var s = JavaScriptLoader;
 	/**
 	 * LoadQueue calls this when it creates loaders.
 	 * Each loader has the option to say either yes (true) or no (false).
@@ -77,6 +81,6 @@ this.createjs = this.createjs || {};
 		return tag;
 	}
 
-	createjs.JavascriptLoader = createjs.promote(JavascriptLoader, "AbstractLoader");
+	createjs.JavaScriptLoader = createjs.promote(JavaScriptLoader, "AbstractLoader");
 
 }());

@@ -566,7 +566,7 @@ this.createjs = this.createjs || {};
 		 */
 		this._availableLoaders = [
 			createjs.ImageLoader,
-			createjs.JavascriptLoader,
+			createjs.JavaScriptLoader,
 			createjs.CSSLoader,
 			createjs.JSONLoader,
 			createjs.JSONPLoader,
@@ -1623,7 +1623,7 @@ this.createjs = this.createjs || {};
 			|| item.maintainOrder) {
 
 			//TODO: Evaluate removal of the _currentlyLoadingScript
-			if (loader instanceof createjs.JavascriptLoader) {
+			if (loader instanceof createjs.JavaScriptLoader) {
 				this._currentlyLoadingScript = false;
 			}
 
