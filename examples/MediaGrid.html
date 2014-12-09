@@ -133,6 +133,7 @@
 
 <script type="text/javascript" src="../_assets/libs/soundjs-NEXT.min.js"></script>
 <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+<script type="text/javascript" src="../src/preloadjs/loaders/ManifestLoader.js"></script>
 <!-- We also provide hosted minified versions of all CreateJS libraries.
 	http://code.createjs.com -->
 
@@ -153,7 +154,7 @@
 	}
 
 	function loadManifest() {
-		preload.loadManifest({src: "../_assets/static/MediaGridManifest.json", callback: "maps", type: "manifest"}, true, "../_assets/");
+		preload.loadManifest({src: "../_assets/static/MediaGridManifest.json", callback: "loadMediaGrid", type: "manifest"}, true, "../_assets/");
 	}
 
 	function stop() {
@@ -192,7 +193,7 @@
 
 		var div = document.getElementById(id);
 		if (div == null) {
-			console.log(event);
+			console.log("Could not find DIV:", id, event);
 			return;
 		}
 		switch (item.type) {
@@ -242,8 +243,10 @@
 	function handleFileError(event) {
 		var item = event.data;
 		var div = document.getElementById(item.id);
-		div.innerHTML = "<label>Error :(</label>";
-		div.className = "gridBox error";
+		if (div != null) {
+			div.innerHTML = "<label>Error :(</label>";
+			div.className = "gridBox error";
+		}
 	}
 </script>
 

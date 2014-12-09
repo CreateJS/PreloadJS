@@ -1476,12 +1476,18 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._loadItem = function (loader) {
+		loader.on("fileload", this._handleFileLoad, this);
 		loader.on("progress", this._handleProgress, this);
 		loader.on("complete", this._handleFileComplete, this);
 		loader.on("error", this._handleFileError, this);
 		this._currentLoads.push(loader);
 		this._sendFileStart(loader.getItem());
 		loader.load();
+	};
+
+	p._handleFileLoad = function (event) {
+		event.target = null;
+		this.dispatchEvent(event);
 	};
 
 	/**

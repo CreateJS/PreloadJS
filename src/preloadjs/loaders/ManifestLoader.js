@@ -120,13 +120,19 @@ this.createjs = this.createjs || {};
 	p._loadManifest = function (json) {
 		if (json && json.manifest) {
 			var queue = this._manifestQueue = new createjs.LoadQueue();
-			queue.on("complete", this._handleManifestComplete, this, true);
+			queue.on("fileload", this._handleFileLoad, this);
 			queue.on("progress", this._handleManifestProgress, this);
+			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("error", this._handleManifestError, this, true);
 			queue.loadManifest(json);
 		} else {
 			this._sendComplete();
 		}
+	};
+
+	p._handleFileLoad = function (event) {
+		event.target = null;
+		this.dispatchEvent(event);
 	};
 
 	p._handleManifestComplete = function (event) {

@@ -291,9 +291,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleError = function (event) {
 		this._clean();
-
-
-		this.dispatchEvent(new createjs.ErrorEvent(null, null, event));
+		this.dispatchEvent(new createjs.ErrorEvent(event.message));
 	};
 
 	/**
