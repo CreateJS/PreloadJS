@@ -15,7 +15,7 @@ CRITICAL (may break existing content)
 - Refactored XMLHTTP fallback for old IE
 - Added a LoadItem class, a class that can be used in place of the raw objects for load items. Used in the background
 	when string paths are used.
-- Added "headers" and "withCredentials" property on load items, which is injected into XHR request headers
+- Added "headers" and "withCredentials" property on load items, which is injected into XHR request headers.
 - Added support for an optional "maintainOrder" property on load items, which makes PreloadJS ensure they get loaded in
 	order. Items other than tag-loaded scripts will be loaded at any time (depending on the setMaxConnections() value,
 	however they will always finish in the order specified.
@@ -28,7 +28,9 @@ CRITICAL (may break existing content)
 - Changed ManifestLoader to automatically subload content before dispatching complete. Uses internal LoadQueue.
 - Added SpriteSheetLoader to preload json files, their contents, and create a SpriteSheet before "complete".
 - Added resultFormatter to LoadItems to handle XML, JSON, etc parsing, which can be user-overridden.
-
+- Updated json polyfill to use json3
+- Build process updates to remove unnecessary copyright headers from the combined file.
+- Added unit tests. Run them from the tests/ folder.
 
 Version 0.4.1 [December 12, 2013]
 ************************************************************************************************************************
