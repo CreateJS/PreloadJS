@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,13 +39,16 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The SVGLoader class description goes here.
-	 *
+	 * A loader for SVG files.
+	 * @class SVGLoader
+	 * @param {LoadItem|Object}
+	 * @constructor
 	 */
 	function SVGLoader(loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.SVG);
 
 		// public properties
+		this.resultFormatter = this._formatResult;
 
 		// protected properties
 		this._tagSrcAttribute = "data";
@@ -54,29 +61,31 @@ this.createjs = this.createjs || {};
 		}
 
 		this.getTag().style.visibility = "hidden";
-
-		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(SVGLoader, createjs.AbstractLoader);
 	var s = SVGLoader;
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/SVG:property"}}{{/crossLink}}
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.SVG;
 	};
 
-	// static properties
-
-	// public methods
-
 	// protected methods
+	/**
+	 * The result formatter for SVG files.
+	 * @param {AbstractLoader} loader
+	 * @returns {Object}
+	 * @private
+	 */
 	p._formatResult = function (loader) {
 		// mime should be image/svg+xml, but Opera requires text/xml
 		var xml = createjs.DataUtils.parseXML(loader.getResult(true), "text/xml");

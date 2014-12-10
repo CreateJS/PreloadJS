@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,13 +39,16 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The CSSLoader class description goes here.
-	 *
+	 * A loader for CSS files.
+	 * @class CSSLoader
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 */
 	function CSSLoader(loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.CSS);
 
 		// public properties
+		this.resultFormatter = this._formatResult;
 
 		// protected properties
 		this._tagSrcAttribute = "href";
@@ -54,29 +61,31 @@ this.createjs = this.createjs || {};
 
 		this._tag.rel = "stylesheet";
 		this._tag.type = "text/css";
-
-		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(CSSLoader, createjs.AbstractLoader);
 	var s = CSSLoader;
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/CSS:property"}}{{/crossLink}}.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.CSS;
 	};
 
-	// static properties
-
-	// public methods
-
 	// protected methods
+	/**
+	 * The result formatter for CSS files.
+	 * @param {AbstractLoader} loader
+	 * @returns {HTMLLinkElement|HTMLStyleElement}
+	 * @private
+	 */
 	p._formatResult = function (loader) {
 		if (this._preferXHR) {
 			var tag = loader.getTag();

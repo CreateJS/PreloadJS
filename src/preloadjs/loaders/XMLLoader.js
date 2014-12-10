@@ -27,45 +27,52 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
 (function () {
 	"use strict";
 
+	// constructor
 	/**
-	 * The XMLLoader class description goes here.
-	 *
-	 * @constructor
+	 * A loader for XML files.
+	 * @class CSSLoader
+	 * @param {LoadItem|Object} loadItem
 	 */
 	function XMLLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.XML);
 
 		// public properties
-
-		// protected properties
 		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(XMLLoader, createjs.AbstractLoader);
 	var s = XMLLoader;
 
-	// static properties
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/XML:property"}}{{/crossLink}}.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.XML;
 	};
 
-	// public methods
-
 	// protected methods
+	/**
+	 * The result formatter for XML files.
+	 * @param {AbstractLoader} loader
+	 * @returns {XMLDocument}
+	 * @private
+	 */
 	p._formatResult = function (loader) {
 		return createjs.DataUtils.parseXML(loader.getResult(true), "text/xml");
 	};

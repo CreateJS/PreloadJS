@@ -37,13 +37,25 @@ this.createjs = this.createjs || {};
 (function () {
 	"use strict";
 
-	function SpriteSheetLoader(itemSrc) {
-		this.AbstractLoader_constructor(itemSrc, null, createjs.AbstractLoader.SPRITESHEET);
+	// constructor
+	/**
+	 * A loader for EaselJS SpriteSheets. Images inside the spritesheet definition are loaded before the loader
+	 * completes. To load SpriteSheets using JSONP, specify a {{#crossLink "LoadItem/callback:property"}}{{/crossLink}}
+	 * as part of the {{#crossLink "LoadItem"}}{{/crossLink}}. Note that the {{#crossLink "JSONLoader"}}{{/crossLink}}
+	 * and {{#crossLink "JSONPLoader"}}{{/crossLink}} are higher priority loaders, so SpriteSheets <strong>must</strong>
+	 * set the {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property
+	 * to {{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}.
+	 * @class SpriteSheetLoader
+	 * @param {LoadItem|Object}
+	 * @constructor
+	 */
+	function SpriteSheetLoader(loadItem) {
+		this.AbstractLoader_constructor(loadItem, null, createjs.AbstractLoader.SPRITESHEET);
 
-		// public properties
 		// protected properties
 		/**
-		 * An internal queue which loads the contents of the manifest.
+		 * An internal queue which loads the SpriteSheet's images.
+		 * @method _manifestQueue
 		 * @type {LoadQueue}
 		 * @private
 		 */
@@ -58,24 +70,32 @@ this.createjs = this.createjs || {};
 	 * The amount of progress that the manifest itself takes up.
 	 * @property SPRITESHEET_PROGRESS
 	 * @type {number}
+	 * @default 0.25 (25%)
 	 * @private
 	 * @static
 	 */
 	s.SPRITESHEET_PROGRESS = 0.25;
 
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.SPRITESHEET;
 	};
 
 	// public methods
+	p.destroy = function() {
+		this.AbstractLoader_destroy;
+		this._manifestQueue.close();
+	};
+
+	// protected methods
 	p._createRequest = function() {
 		var callback = this._item.callback
 		if (callback != null && callback instanceof Function) {
@@ -103,11 +123,12 @@ this.createjs = this.createjs || {};
 		this.AbstractLoader_handleEvent(event);
 	};
 
-	p.destroy = function() {
-		this.AbstractLoader_destroy;
-		this._manifestQueue.close();
-	};
-
+	/**
+	 * Create and load the images once the SpriteSheet JSON has been loaded.
+	 * @method _loadManifest
+	 * @param {Object} json
+	 * @private
+	 */
 	p._loadManifest = function (json) {
 		if (json && json.images) {
 			var queue = this._manifestQueue = new createjs.LoadQueue();
@@ -119,6 +140,12 @@ this.createjs = this.createjs || {};
 		}
 	};
 
+	/**
+	 * An item from the {{#crossLink "_manifestQueue:property"}}{{/crossLink}} has completed.
+	 * @method _handleManifestFileLoad
+	 * @param {Event} event
+	 * @private
+	 */
 	p._handleManifestFileLoad = function (event) {
 		var image = event.result;
 		if (image != null) {
@@ -128,19 +155,40 @@ this.createjs = this.createjs || {};
 		}
 	};
 
+	/**
+	 * The images have completed loading. This triggers the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}}
+	 * {{#crossLink "Event"}}{{/crossLink}} from the SpriteSheetLoader.
+	 * @method _handleManifestComplete
+	 * @param {Event} event
+	 * @private
+	 */
 	p._handleManifestComplete = function (event) {
 		this._result = new createjs.SpriteSheet(this._result);
 		this._loadedItems = this._manifestQueue.getItems(true);
 		this._sendComplete();
 	};
 
+	/**
+	 * The images {{#crossLink "LoadQueue"}}{{/crossLink}} has reported progress.
+	 * @method _handleManifestProgress
+	 * @param {ProgressEvent} event
+	 * @private
+	 */
 	p._handleManifestProgress = function (event) {
 		this.progress = event.progress * (1 - s.SPRITESHEET_PROGRESS) + s.SPRITESHEET_PROGRESS;
 		this._sendProgress(this.progress);
 	};
 
+	/**
+	 * An image has reported an error.
+	 * @method _handleManifestError
+	 * @param {ErrorEvent} event
+	 * @private
+	 */
 	p._handleManifestError = function (event) {
-		this._sendError(event);
+		var newEvent = new createjs.Event("fileerror");
+		newEvent.item = event.data;
+		this.dispatchEvent(newEvent);
 	};
 
 	createjs.SpriteSheetLoader = createjs.promote(SpriteSheetLoader, "AbstractLoader");

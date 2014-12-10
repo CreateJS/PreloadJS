@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,18 +39,23 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 *
-	 * @param itemSrc
-	 * @param useXHR Default true; Specifies whether or not to load the manifest as JSONP (false), or to use XHR (true/default).
+	 * A loader for JSON manifests. Items inside the manifest are loaded before the loader completes. To load manifests
+	 * using JSONP, specify a {{#crossLink "LoadItem/callback:property"}}{{/crossLink}} as part of the
+	 * {{#crossLink "LoadItem"}}{{/crossLink}}. Note that the {{#crossLink "JSONLoader"}}{{/crossLink}} and
+	 * {{#crossLink "JSONPLoader"}}{{/crossLink}} are higher priority loaders, so manifests <strong>must</strong>
+	 * set the {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property
+	 * to {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}.
+	 * @class ManifestLoader
+	 * @param {LoadItem|Object}
 	 * @constructor
 	 */
-	function ManifestLoader(itemSrc) {
-		this.AbstractLoader_constructor(itemSrc, null, createjs.AbstractLoader.MANIFEST);
+	function ManifestLoader(loadItem) {
+		this.AbstractLoader_constructor(loadItem, null, createjs.AbstractLoader.MANIFEST);
 
-		// public properties
 		// protected properties
 		/**
-		 * An internal queue which loads the contents of the manifest.
+		 * An internal {{#crossLink "LoadQueue"}}{{/crossLink}} that loads the contents of the manifest.
+		 * @property _manifestQueue
 		 * @type {LoadQueue}
 		 * @private
 		 */
@@ -57,23 +66,24 @@ this.createjs = this.createjs || {};
 	var s = ManifestLoader;
 
 	// static properties
-
 	/**
 	 * The amount of progress that the manifest itself takes up.
 	 * @property MANIFEST_PROGRESS
 	 * @type {number}
+	 * @default 0.25 (25%)
 	 * @private
 	 * @static
 	 */
 	s.MANIFEST_PROGRESS = 0.25;
 
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.MANIFEST;
@@ -117,10 +127,16 @@ this.createjs = this.createjs || {};
 		this._manifestQueue.close();
 	};
 
+	/**
+	 * Create and load the manifest items once the actual manifest has been loaded.
+	 * @method _loadManifest
+	 * @param {Object} json
+	 * @private
+	 */
 	p._loadManifest = function (json) {
 		if (json && json.manifest) {
 			var queue = this._manifestQueue = new createjs.LoadQueue();
-			queue.on("fileload", this._handleFileLoad, this);
+			queue.on("fileload", this._handleManifestFileLoad, this);
 			queue.on("progress", this._handleManifestProgress, this);
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("error", this._handleManifestError, this, true);
@@ -130,21 +146,46 @@ this.createjs = this.createjs || {};
 		}
 	};
 
-	p._handleFileLoad = function (event) {
+	/**
+	 * An item from the {{#crossLink "_manifestQueue:property"}}{{/crossLink}} has completed.
+	 * @method _handleManifestFileLoad
+	 * @param {Event} event
+	 * @private
+	 */
+	p._handleManifestFileLoad = function (event) {
 		event.target = null;
 		this.dispatchEvent(event);
 	};
 
+	/**
+	 * The manifest has completed loading. This triggers the {{#crossLink "AbstractLoader/complete:event"}}{{/crossLink}}
+	 * {{#crossLink "Event"}}{{/crossLink}} from the ManifestLoader.
+	 * @method _handleManifestComplete
+	 * @param {Event} event
+	 * @private
+	 */
 	p._handleManifestComplete = function (event) {
 		this._loadedItems = this._manifestQueue.getItems(true);
 		this._sendComplete();
 	};
 
+	/**
+	 * The manifest has reported progress.
+	 * @method _handleManifestProgress
+	 * @param {ProgressEvent} event
+	 * @private
+	 */
 	p._handleManifestProgress = function (event) {
 		this.progress = event.progress * (1 - s.MANIFEST_PROGRESS) + s.MANIFEST_PROGRESS;
 		this._sendProgress(this.progress);
 	};
 
+	/**
+	 * The manifest has reported an error with one of the files.
+	 * @method _handleManifestError
+	 * @param {ErrorEvent} event
+	 * @private
+	 */
 	p._handleManifestError = function (event) {
 		var newEvent = new createjs.Event("fileerror");
 		newEvent.item = event.data;

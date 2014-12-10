@@ -27,53 +27,61 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
 (function () {
 	"use strict";
 
+	// constructor
 	/**
-	 * The JSONLoader class description goes here.
-	 *
-	 * @constructor
+	 * A loader for JSON files. To load JSON cross-domain, use JSONP and the {{#crossLink "JSONPLoader"}}{{/crossLink}}
+	 * instead. To load JSON-formatted manifests, use {{#crossLink "ManifestLoader"}}{{/crossLink}}, and to
+	 * load EaselJS SpriteSheets, use {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
+	 * @class JSONLoader
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 */
 	function JSONLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.JSON);
 
 		// public properties
-
-		// protected properties
 		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(JSONLoader, createjs.AbstractLoader);
 	var s = JSONLoader;
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/JSON:property"}}{{/crossLink}}.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.JSON && !item._loadAsJSONP;
 	};
 
-	// static properties
-
-	// public methods
-
 	// protected methods
+	/**
+	 * The result formatter for JSON files.
+	 * @param {AbstractLoader} loader
+	 * @returns {HTMLLinkElement|HTMLStyleElement}
+	 * @private
+	 */
 	p._formatResult = function (loader) {
 		var json = null;
 		try {
 			json = createjs.DataUtils.parseJSON(loader.getResult(true));
 		} catch (e) {
-			var event = new createjs.ErrorEvent();
-			//event.error = e; // TODO: Populate error
-
+			var event = new createjs.ErrorEvent("JSON_FORMAT", null, e);
 			this._sendError(event);
 			return e;
 		}

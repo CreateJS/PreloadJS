@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,31 +39,41 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The BinaryLoader class description goes here.
-	 *
+	 * A loader for binary files. This is useful for loading web audio, or content that requires an ArrayBuffer.
+	 * @class BinaryLoader
+	 * @param {LoadItem|Object}
+	 * @constructor
 	 */
 	function BinaryLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.BINARY);
-
 		this.on("initialize", this._updateXHR, this);
 	};
 
 	var p = createjs.extend(BinaryLoader, createjs.AbstractLoader);
 	var s = BinaryLoader;
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/BINARY:property"}}{{/crossLink}}
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.BINARY;
 	};
 
-	p._updateXHR = function (evt) {
-		evt.loader.setResponseType("arraybuffer");
+	// private methods
+	/**
+	 * Before the item loads, set the response type to "arraybuffer"
+	 * @property _updateXHR
+	 * @param {Event} event
+	 * @private
+	 */
+	p._updateXHR = function (event) {
+		event.loader.setResponseType("arraybuffer");
 	};
 
 	createjs.BinaryLoader = createjs.promote(BinaryLoader, "AbstractLoader");

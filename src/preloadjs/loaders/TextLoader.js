@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,8 +39,9 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The TextLoader class description goes here.
-	 *
+	 * A loader for Text files.
+	 * @class TextLoader
+	 * @param {LoadItem|Object} loadItem
 	 */
 	function TextLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.TEXT);
@@ -44,13 +49,15 @@ this.createjs = this.createjs || {};
 
 	var p = createjs.extend(TextLoader, createjs.AbstractLoader);
 	var s = TextLoader;
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader loads items that are of type {{#crossLink "AbstractLoader/TEXT:property"}}{{/crossLink}},
+	 * but is also the default loader if a file type can not be determined.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.TEXT;

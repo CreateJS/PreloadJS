@@ -31,7 +31,6 @@
  * @module PreloadJS
  */
 
-
 // namespace:
 this.createjs = this.createjs || {};
 

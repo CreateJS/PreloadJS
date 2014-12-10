@@ -27,6 +27,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,8 +39,10 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The SoundLoader class description goes here.
-	 *
+	 * A loader for video files.
+	 * @class VideoLoader
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 */
 	function VideoLoader(loadItem, preferXHR) {
 		if (createjs.RequestUtils.isVideoTag(loadItem) || createjs.RequestUtils.isVideoTag(loadItem.src)) {
@@ -51,21 +57,18 @@ this.createjs = this.createjs || {};
 	var p = createjs.extend(VideoLoader, createjs.AbstractMediaLoader);
 	var s = VideoLoader;
 
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/VIDEO:property"}}{{/crossLink}}.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.VIDEO;
 	};
-
-	// static properties
-
-	// public methods
 
 	createjs.VideoLoader = createjs.promote(VideoLoader, "AbstractMediaLoader");
 

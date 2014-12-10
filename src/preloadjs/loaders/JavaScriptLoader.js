@@ -41,38 +41,43 @@ this.createjs = this.createjs || {};
 	/**
 	 * A loader for JavaScript files.
 	 * @class JavaScriptLoader
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 */
 	function JavaScriptLoader(loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.JAVASCRIPT);
 
 		// public properties
+		this.resultFormatter = this._formatResult;
 
 		// protected properties
 		this._tagSrcAttribute = "src";
 		this.setTag(document.createElement("script"));
-
-		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(JavaScriptLoader, createjs.AbstractLoader);
 	var s = JavaScriptLoader;
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/JAVASCRIPT:property"}}{{/crossLink}}
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.JAVASCRIPT;
 	};
 
-	// static properties
-
-	// public methods
-
 	// protected methods
+	/**
+	 * The result formatter for JavaScript files.
+	 * @param {AbstractLoader} loader
+	 * @returns {HTMLLinkElement|HTMLStyleElement}
+	 * @private
+	 */
 	p._formatResult = function (loader) {
 		var tag = loader.getTag();
 		if (this._preferXHR) {

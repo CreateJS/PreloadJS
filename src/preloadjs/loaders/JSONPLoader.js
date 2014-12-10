@@ -27,6 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
+/**
+ * @module PreloadJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
@@ -35,15 +40,16 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The JSONPLoader class description goes here.
-	 *
+	 * A loader for JSONP files, which are JSON-formatted text files, wrapped in a callback. To load regular JSON
+	 * without a callback use the {{#crossLink "JSONLoader"}}{{/crossLink}} instead. To load JSON-formatted manifests,
+	 * use {{#crossLink "ManifestLoader"}}{{/crossLink}}, and to load EaselJS SpriteSheets, use
+	 * {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
+	 * @class JSONPLoader
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 */
 	function JSONPLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, false, createjs.AbstractLoader.JSONP);
-
-		// public properties
-
-		// protected properties
 		this.setTag(document.createElement("script"));
 		this.getTag().type = "text/javascript";
 	};
@@ -51,20 +57,19 @@ this.createjs = this.createjs || {};
 	var p = createjs.extend(JSONPLoader, createjs.AbstractLoader);
 	var s = JSONPLoader;
 
+
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/JSONP:property"}}{{/crossLink}}.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @param useXHR
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.JSONP || item._loadAsJSONP;
 	};
-
-	// static properties
 
 	// public methods
 	p.cancel = function () {
@@ -83,11 +88,9 @@ this.createjs = this.createjs || {};
 		//   so we would need to clone the result.
 		if (window[this._item.callback] != null) {
 			throw new Error(
-				'JSONP callback "' +
+				"JSONP callback '" +
 				this._item.callback +
-				'" already exists on window.' +
-				' You need to specify a different callback.' +
-				' Or re-name the current one.');
+				"' already exists on window. You need to specify a different callback or re-name the current one.");
 		}
 
 		window[this._item.callback] = createjs.proxy(this._handleLoad, this);
@@ -97,10 +100,11 @@ this.createjs = this.createjs || {};
 		this._tag.src = this._item.src;
 	};
 
-	// protected methods
+	// private methods
 	/**
-	 * @todo
-	 * @param data
+	 * Handle the JSON callback, which is a public method defined on `window`.
+	 * @method _handleLoad
+	 * @param {Object} The formatted JSON data.
 	 * @private
 	 */
 	p._handleLoad = function (data) {
@@ -109,11 +113,16 @@ this.createjs = this.createjs || {};
 
 		this._dispose();
 	};
-
+	
+	/**
+	 * Clean up the JSONP load. This clears out the callback and script tag that this loader creates.
+	 * @method _dispose
+	 * @private
+	 */
 	p._dispose = function () {
 		window.document.body.removeChild(this._tag);
 		delete window[this._item.callback];
-	}
+	};
 
 	createjs.JSONPLoader = createjs.promote(JSONPLoader, "AbstractLoader");
 

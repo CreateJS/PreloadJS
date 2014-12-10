@@ -26,6 +26,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * PreloadJS provides a consistent way to preload content for use in HTML applications. Preloading can be done using
  * HTML tags, as well as XHR.
@@ -1421,7 +1422,7 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._createLoader = function (item) {
-		if (item._loader != null) {
+		if (item._loader != null) { // A plugin already specified a loader
 			return item._loader;
 		}
 
@@ -1484,7 +1485,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Begin loading an item. Events are not added to the loaders until the load starts.
+	 * Begin loading an item. Event listeners are not added to the loaders until the load starts.
 	 * @method _loadItem
 	 * @param {AbstractLoader} loader The loader instance to start. Currently, this will be an XHRLoader or TagLoader.
 	 * @private
@@ -1552,9 +1553,9 @@ this.createjs = this.createjs || {};
 	/**
 	 * An item has finished loading. We can assume that it is totally loaded, has been parsed for immediate use, and
 	 * is available as the "result" property on the load item. The raw text result for a parsed item (such as JSON, XML,
-	 * CSS, JavaScript, etc) is available as the "rawResult" event, and can also be looked up using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}.
+	 * CSS, JavaScript, etc) is available as the "rawResult" property, and can also be looked up using {{#crossLink "LoadQueue/getResult"}}{{/crossLink}}.
 	 * @method _handleFileComplete
-	 * @param {Object} event The event object from the loader.
+	 * @param {Event} event The event object from the loader.
 	 * @private
 	 */
 	p._handleFileComplete = function (event) {
@@ -1609,7 +1610,8 @@ this.createjs = this.createjs || {};
 	}
 
 	/**
-	 * Flag an item as finished. If the item's order is being managed, then set it up to finish
+	 * Flag an item as finished. If the item's order is being managed, then ensure that it is allowed to finish, and if
+	 * so, trigger prior items to trigger as well.
 	 * @method _finishOrderedItem
 	 * @param {AbstractLoader} loader
 	 * @return {Boolean} If the item's order is being managed. This allows the caller to take an alternate
@@ -1641,8 +1643,8 @@ this.createjs = this.createjs || {};
 	/**
 	 * Ensure the scripts load and dispatch in the correct order. When using XHR, scripts are stored in an array in the
 	 * order they were added, but with a "null" value. When they are completed, the value is set to the load item,
-	 * and then when they are processed and dispatched, the value is set to <code>true</code>. This method simply
-	 * iterates the array, and ensures that any loaded items that are not preceded by a <code>null</code> value are
+	 * and then when they are processed and dispatched, the value is set to `true`. This method simply
+	 * iterates the array, and ensures that any loaded items that are not preceded by a `null` value are
 	 * dispatched.
 	 * @method _checkScriptLoadOrder
 	 * @private
@@ -1668,8 +1670,10 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
+	 * A file has completed loading, and the LoadQueue can move on. This triggers the complete event, and kick-starts
+	 * the next item.
 	 * @method _processFinishedLoad
-	 * @param {Object} item
+	 * @param {LoadItem|Object} item
 	 * @param {AbstractLoader} loader
 	 * @protected
 	 */
@@ -1685,7 +1689,7 @@ this.createjs = this.createjs || {};
 	 * JavaScript items that are being loaded with a TagLoader, since they have to be loaded and completed <strong>before</strong>
 	 * the script can even be started, since it exist in the DOM while loading.
 	 * @method _canStartLoad
-	 * @param {XHRLoader|TagLoader} loader The loader for the item
+	 * @param {AbstractLoader} loader The loader for the item
 	 * @return {Boolean} Whether the item can start a load or not.
 	 * @private
 	 */
@@ -1726,9 +1730,9 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * An item has dispatched progress. Propagate that progress, and update the LoadQueue overall progress.
+	 * An item has dispatched progress. Propagate that progress, and update the LoadQueue's overall progress.
 	 * @method _handleProgress
-	 * @param {Object} event The progress event from the item.
+	 * @param {ProgressEvent} event The progress event from the item.
 	 * @private
 	 */
 	p._handleProgress = function (event) {
@@ -1739,14 +1743,16 @@ this.createjs = this.createjs || {};
 
 	/**
 	 * Overall progress has changed, so determine the new progress amount and dispatch it. This changes any time an
-	 * item dispatches progress or completes. Note that since we don't know the actual filesize of items before they are
-	 * loaded, and even then we can only get the size of items loaded with XHR. In this case, we define a "slot" for
-	 * each item (1 item in 10 would get 10%), and then append loaded progress on top of the already-loaded items.
+	 * item dispatches progress or completes. Note that since we don't always know the actual filesize of items before
+	 * they are loaded. In this case, we define a "slot" for each item (1 item in 10 would get 10%), and then append
+	 * loaded progress on top of the already-loaded items.
 	 *
-	 * For example, if 5/10 items have loaded, and item 6 is 20% loaded, the total progress would be:<ul>
+	 * For example, if 5/10 items have loaded, and item 6 is 20% loaded, the total progress would be:
+	 * <ul>
 	 *      <li>5/10 of the items in the queue (50%)</li>
 	 *      <li>plus 20% of item 6's slot (2%)</li>
-	 *      <li>equals 52%</li></ul>
+	 *      <li>equals 52%</li>
+	 * </ul>
 	 * @method _updateProgress
 	 * @private
 	 */
@@ -1771,7 +1777,7 @@ this.createjs = this.createjs || {};
 	 * Clean out item results, to free them from memory. Mainly, the loaded item and results are cleared from internal
 	 * hashes.
 	 * @method _disposeItem
-	 * @param {Object} item The item that was passed in for preloading.
+	 * @param {LoadItem|Object} item The item that was passed in for preloading.
 	 * @private
 	 */
 	p._disposeItem = function (item) {
@@ -1782,10 +1788,10 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Dispatch a fileprogress event (and onFileProgress callback). Please see the <code>LoadQueue.fileprogress</code>
+	 * Dispatch a "fileprogress" {{#crossLink "Event"}}{{/crossLink}}. Please see the LoadQueue {{#crossLink "LoadQueue/fileprogress:event"}}{{/crossLink}}
 	 * event for details on the event payload.
 	 * @method _sendFileProgress
-	 * @param {Object} item The item that is being loaded.
+	 * @param {LoadItem|Object} item The item that is being loaded.
 	 * @param {Number} progress The amount the item has been loaded (between 0 and 1).
 	 * @protected
 	 */
@@ -1796,6 +1802,7 @@ this.createjs = this.createjs || {};
 		}
 		if (!this.hasEventListener("fileprogress")) { return; }
 
+		//LM: Rework ProgressEvent to support this?
 		var event = new createjs.Event("fileprogress");
 		event.progress = progress;
 		event.loaded = progress;
@@ -1806,11 +1813,11 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Dispatch a fileload event. Please see the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event for
+	 * Dispatch a fileload {{#crossLink "Event"}}{{/crossLink}}. Please see the {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event for
 	 * details on the event payload.
 	 * @method _sendFileComplete
-	 * @param {Object} item The item that is being loaded.
-	 * @param {TagLoader | XHRLoader} loader
+	 * @param {LoadItemObject} item The item that is being loaded.
+	 * @param {AbstractLoader} loader
 	 * @protected
 	 */
 	p._sendFileComplete = function (item, loader) {
@@ -1831,10 +1838,10 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Dispatch a filestart event immediately before a file starts to load. Please see the {{#crossLink "LoadQueue/filestart:event"}}{{/crossLink}}
-	 * event for details on the event payload.
+	 * Dispatch a filestart {{#crossLink "Event"}}{{/crossLink}} immediately before a file starts to load. Please see
+	 * the {{#crossLink "LoadQueue/filestart:event"}}{{/crossLink}} event for details on the event payload.
 	 * @method _sendFileStart
-	 * @param {Object} item The item that is being loaded.
+	 * @param {LoadItem|Object} item The item that is being loaded.
 	 * @protected
 	 */
 	p._sendFileStart = function (item) {

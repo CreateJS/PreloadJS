@@ -35,13 +35,17 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * The ImageLoader class description goes here.
-	 *
+	 * A loader for image files.
+	 * @class ImageLoader
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
+	 * @constructor
 	 */
 	function ImageLoader (loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.IMAGE);
 
 		// public properties
+		this.resultFormatter = this._formatResult;
 
 		// protected properties
 		this._tagSrcAttribute = "src";
@@ -56,25 +60,23 @@ this.createjs = this.createjs || {};
 		this._tag.style.visibility = "hidden";
 
 		this.on("initialize", this._updateXHR, this);
-		this.resultFormatter = this._formatResult;
 	};
 
 	var p = createjs.extend(ImageLoader, createjs.AbstractLoader);
 	var s = ImageLoader;
 
+	// static methods
 	/**
-	 * LoadQueue calls this when it creates loaders.
-	 * Each loader has the option to say either yes (true) or no (false).
-	 *
+	 * Determines if the loader can load a specific item. This loader can only load items that are of type
+	 * {{#crossLink "AbstractLoader/IMAGE:property"}}{{/crossLink}}.
+	 * @method canLoadItem
 	 * @private
-	 * @param item The LoadItem LoadQueue is trying to load.
-	 * @returns {boolean}
+	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+	 * @returns {Boolean} Whether the loader can load the item.
 	 */
 	s.canLoadItem = function (item) {
 		return item.type == createjs.AbstractLoader.IMAGE;
 	};
-
-	// static properties
 
 	// public methods
 	p.load = function () {
@@ -90,15 +92,27 @@ this.createjs = this.createjs || {};
 	};
 
 	// protected methods
-	p._updateXHR = function (evt) {
-		evt.loader.mimeType = 'text/plain; charset=x-user-defined-binary';
+	/**
+	 * Before the item loads, set its mimetype and responseType.
+	 * @property _updateXHR
+	 * @param {Event} event
+	 * @private
+	 */
+	p._updateXHR = function (event) {
+		event.loader.mimeType = 'text/plain; charset=x-user-defined-binary';
 
 		// Only exists for XHR
-		if (evt.loader.setResponseType) {
-			evt.loader.setResponseType("blob");
+		if (event.loader.setResponseType) {
+			event.loader.setResponseType("blob");
 		}
 	};
 
+	/**
+	 * The result formatter for Image files.
+	 * @param {AbstractLoader} loader
+	 * @returns {HTMLImageElement}
+	 * @private
+	 */
 	p._formatResult = function (loader) {
 		var _this = this;
 		return function (done) {
