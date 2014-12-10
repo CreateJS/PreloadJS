@@ -149,6 +149,7 @@
 
 		createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);  // need this so it doesn't default to Web Audio
 		preload.installPlugin(createjs.Sound);
+
 		preload.on("fileload", handleFileLoaded);
 		preload.on("error", handleError);
 	}
@@ -174,12 +175,11 @@
 			src: target.id,
 			id: target.id
 		};
-
+		
 		if (!type) {
-			//preload.loadFile(item, true);
 			preload.loadManifest({path: "../_assets/", manifest: [item]});
 		} else {
-			item.type = type.nodeValue;
+			item.type = type.value;
 			item.callback = "maps";
 			preload.loadFile(item, true);
 		}
