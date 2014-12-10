@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PreloadJS: Custom Loader</title>
+
+	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
+	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+	
+	<style type="text/css">
+		#template {
+			display:none;
+		}
+	</style>
+</head>
+<body onload="init()">
+
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Custom Loaders in Plugins</h1>
+	    <p>This sample shows how to a plugin can provide a custom loader to PreloadJS. This enables plugins to
+        create their own loader classes and instances (and add listeners or additional functionality), but rely
+        on PreloadJS to manage everything else.</p>
+
+        <p>This example uses a simple image loader, and the plugin has an opportunity to modify it once it is loaded
+        (by setting the image size).</p>
+	</header>
+
+    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+
+    <script type="text/javascript">
+
+        // The custom loader "class"
+        (function() {
+
+            function CustomLoader(item) {
+                this.AbstractLoader_constructor(item, false, "loader");
+                this.img = null;
+            }
+
+            // Static Plugin Methods
+            CustomLoader.getPreloadHandlers = function() {
+                return {
+                    types: ["image"],
+                    callback: CustomLoader.preloadHandler
+                };
+            };
+            CustomLoader.preloadHandler = function(loadItem) {
+                var loader = new CustomLoader(loadItem);
+                loader.on("complete", CustomLoader.handleComplete, CustomLoader);
+                return loader;
+            };
+            CustomLoader.handleComplete = function(event) {
+                var img = event.result;
+                img.width = img.height = 200;
+            };
+
+            // Loader Methods
+            var p = createjs.extend(CustomLoader, createjs.AbstractLoader);
+            p.load = function() {
+                this.img = new Image();
+                this.img.onload = createjs.proxy(this.handleLoad, this);
+                this.img.src = this._item.src;
+            };
+            p.handleLoad = function() {
+                this._result = this.img;
+                this._sendComplete();
+            };
+            window.CustomLoader = createjs.promote(CustomLoader, "AbstractLoader");
+
+        }())
+
+
+        function init() {
+            if (window.top != window) {
+                document.getElementById("header").style.display = "none";
+            }
+
+            var loader = new createjs.LoadQueue();
+            loader.installPlugin(CustomLoader);
+            loader.loadFile("../_assets/art/Autumn.png")
+            loader.on("fileload", handleFileLoad);
+            loader.load();
+        }
+
+        function handleFileLoad(event) {
+            console.log(event);
+            document.body.appendChild(event.result);
+        }
+
+    </script>
+
+</body>
+</html>
