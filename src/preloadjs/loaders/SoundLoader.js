@@ -54,9 +54,16 @@ this.createjs = this.createjs || {};
 		// protected properties
 		this._tagType = "audio";
 
-		if (createjs.RequestUtils.isAudioTag(loadItem) || createjs.RequestUtils.isAudioTag(loadItem.src)) {
-			this._preferXHR = false;
+		if (createjs.RequestUtils.isAudioTag(loadItem)) {
+			this._tag = loadItem;
+		} else if (createjs.RequestUtils.isAudioTag(loadItem.src)) {
+			this._tag = loadItem;
+		} else if (createjs.RequestUtils.isAudioTag(loadItem.tag)) {
 			this._tag = createjs.RequestUtils.isAudioTag(loadItem) ? loadItem : loadItem.src;
+		}
+
+		if (this._tag != null) {
+			this._preferXHR = false;
 		}
 	};
 

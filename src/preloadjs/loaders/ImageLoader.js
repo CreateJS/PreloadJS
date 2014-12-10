@@ -50,8 +50,16 @@ this.createjs = this.createjs || {};
 		// protected properties
 		this._tagSrcAttribute = "src";
 
-		if (createjs.RequestUtils.isImageTag(loadItem) || createjs.RequestUtils.isImageTag(loadItem.src)) {
-			this._tag = createjs.RequestUtils.isImageTag(loadItem) ? loadItem : loadItem.src;
+		// Check if the preload item is already a tag.
+		if (createjs.RequestUtils.isImageTag(loadItem)) {
+			this._tag = loadItem;
+		} else if (createjs.RequestUtils.isImageTag(loadItem.src)) {
+			this._tag = loadItem.src;
+		} else if (createjs.RequestUtils.isImageTag(loadItem.tag)) {
+			this._tag = loadItem.tag;
+		}
+
+		if (this._tag != null) {
 			this._preferXHR = false;
 		} else {
 			this._tag = document.createElement("img");
@@ -121,7 +129,7 @@ this.createjs = this.createjs || {};
 			var URL = window.URL || window.webkitURL;
 
 			if (!_this._preferXHR) {
-				document.body.removeChild(tag);
+				//document.body.removeChild(tag);
 			} else if (URL) {
 				var objURL = URL.createObjectURL(loader.getResult(true));
 				tag.src = objURL;
