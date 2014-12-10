@@ -124,6 +124,7 @@
 	 *     <li><strong>completeHandler:</strong> A method to call on the plugin once the item has been loaded. This is
 	 *     useful to provide any necessary post-load functionality. Check out the {{#crossLink "SamplePlugin/fileLoadHandler"}}{{/crossLink}}
 	 *     for more information.</li>
+	 *     <li><strong>loader:</strong> A specific loader instance that will be used to do the load.</li>
 	 * </ul>
 	 *
 	 * <h4>Example</h4>
@@ -170,7 +171,8 @@
 			src: src,
 			id: id,
 			completeHandler: createjs.proxy(s.fileCompleteHandler, s),
-			tag: null
+			tag: null,
+			loader: null
 		}
 	};
 
