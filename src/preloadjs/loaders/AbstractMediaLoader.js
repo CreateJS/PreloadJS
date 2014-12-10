@@ -91,6 +91,7 @@ this.createjs = this.createjs || {};
 
 	/**
 	 * The result formatter for media files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {HTMLVideoElement|HTMLAudioElement}
 	 * @private

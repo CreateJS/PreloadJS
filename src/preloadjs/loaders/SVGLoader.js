@@ -41,7 +41,8 @@ this.createjs = this.createjs || {};
 	/**
 	 * A loader for SVG files.
 	 * @class SVGLoader
-	 * @param {LoadItem|Object}
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 * @constructor
 	 */
 	function SVGLoader(loadItem, preferXHR) {
@@ -82,6 +83,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	/**
 	 * The result formatter for SVG files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {Object}
 	 * @private

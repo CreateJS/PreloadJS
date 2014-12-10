@@ -45,7 +45,7 @@ this.createjs = this.createjs || {};
 	 * {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
 	 * @class JSONPLoader
 	 * @param {LoadItem|Object} loadItem
-	 * @param {Boolean} preferXHR
+	 * @constructor
 	 */
 	function JSONPLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, false, createjs.AbstractLoader.JSONP);

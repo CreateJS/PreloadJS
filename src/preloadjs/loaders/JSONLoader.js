@@ -44,7 +44,7 @@ this.createjs = this.createjs || {};
 	 * load EaselJS SpriteSheets, use {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
 	 * @class JSONLoader
 	 * @param {LoadItem|Object} loadItem
-	 * @param {Boolean} preferXHR
+	 * @constructor
 	 */
 	function JSONLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.JSON);
@@ -72,6 +72,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	/**
 	 * The result formatter for JSON files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {HTMLLinkElement|HTMLStyleElement}
 	 * @private

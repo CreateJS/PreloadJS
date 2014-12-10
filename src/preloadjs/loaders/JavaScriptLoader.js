@@ -43,6 +43,7 @@ this.createjs = this.createjs || {};
 	 * @class JavaScriptLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @constructor
 	 */
 	function JavaScriptLoader(loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.JAVASCRIPT);
@@ -62,7 +63,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
 	 * {{#crossLink "AbstractLoader/JAVASCRIPT:property"}}{{/crossLink}}
-	 * @private
+	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
 	 * @returns {Boolean} Whether the loader can load the item.
 	 * @static
@@ -74,6 +75,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	/**
 	 * The result formatter for JavaScript files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {HTMLLinkElement|HTMLStyleElement}
 	 * @private

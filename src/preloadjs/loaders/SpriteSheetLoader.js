@@ -46,7 +46,7 @@ this.createjs = this.createjs || {};
 	 * set the {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property
 	 * to {{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}.
 	 * @class SpriteSheetLoader
-	 * @param {LoadItem|Object}
+	 * @param {LoadItem|Object} loadItem
 	 * @constructor
 	 */
 	function SpriteSheetLoader(loadItem) {

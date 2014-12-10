@@ -44,7 +44,8 @@ this.createjs = this.createjs || {};
 	 * external framework that handles audio playback. To load content that can be played by WebAudio, use the
 	 * {{#crossLink "BinaryLoader"}}{{/crossLink}}, and handle the audio context decoding manually.
 	 * @class SoundLoader
-	 * @param {LoadItem|Object}
+	 * @param {LoadItem|Object} loadItem
+	 * @param {Boolean} preferXHR
 	 * @constructor
 	 */
 	function SoundLoader(loadItem, preferXHR) {

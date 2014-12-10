@@ -39,9 +39,10 @@ this.createjs = this.createjs || {};
 
 	// constructor
 	/**
-	 * A loader for XML files.
-	 * @class CSSLoader
+	 * A loader for CSS files.
+	 * @class XMLLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @constructor
 	 */
 	function XMLLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.XML);
@@ -69,6 +70,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	/**
 	 * The result formatter for XML files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {XMLDocument}
 	 * @private

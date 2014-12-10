@@ -43,6 +43,7 @@ this.createjs = this.createjs || {};
 	 * @class CSSLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @constructor
 	 */
 	function CSSLoader(loadItem, preferXHR) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.CSS);
@@ -82,6 +83,7 @@ this.createjs = this.createjs || {};
 	// protected methods
 	/**
 	 * The result formatter for CSS files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {HTMLLinkElement|HTMLStyleElement}
 	 * @private

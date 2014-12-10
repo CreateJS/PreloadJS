@@ -43,6 +43,7 @@ this.createjs = this.createjs || {};
 	 * @class VideoLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @constructor
 	 */
 	function VideoLoader(loadItem, preferXHR) {
 		if (createjs.RequestUtils.isVideoTag(loadItem) || createjs.RequestUtils.isVideoTag(loadItem.src)) {

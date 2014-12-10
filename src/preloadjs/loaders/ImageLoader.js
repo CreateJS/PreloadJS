@@ -109,6 +109,7 @@ this.createjs = this.createjs || {};
 
 	/**
 	 * The result formatter for Image files.
+	 * @method _formatResult
 	 * @param {AbstractLoader} loader
 	 * @returns {HTMLImageElement}
 	 * @private
