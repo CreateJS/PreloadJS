@@ -26,7 +26,7 @@
 	<canvas id="testCanvas" width="960" height="400"></canvas>
 </div>
 
-<script src="../../EaselJS/lib/easeljs-NEXT.combined.js"></script>
+<script src="../_assets/libs/easeljs-NEXT.min.js"></script>
 <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
 <!-- We also provide hosted minified versions of all CreateJS libraries.
 	 http://code.createjs.com -->
@@ -63,8 +63,8 @@
 		manifest = [
 			{src: "../_assets/art/sky.png", id: "sky"},
 			{src: "../_assets/art/ground.png", id: "ground"},
-			{src: "../_assets/art/parallaxHill2.png", id: "hill2"},
-			{src: "../_assets/art/parallaxHill1.png", id: "hill"},
+			{src: "../_assets/art/hill2.png", id: "hill2"},
+			{src: "../_assets/art/hill1.png", id: "hill"},
 			{src: "../_assets/static/grant.json", id:"grant", type:"spritesheet"}
 		];
 
@@ -81,13 +81,9 @@
 
 	function handleComplete() {
 		for (var i = 0; i < assets.length; i++) {
-			var item = assets[i]; //loader.getResult(id);
-			var id = item.item.id;
-			var result = item.result;
-
-			if (item.type == createjs.LoadQueue.IMAGE) {
-				var bmp = new createjs.Bitmap(result);
-			}
+			var event = assets[i];
+			var id = event.item.id;
+			var result = event.result;
 
 			switch (id) {
 				case "sky":
@@ -102,7 +98,7 @@
 					ground.y = h - 79;
 					break;
 				case "hill":
-					hill = new createjs.Shape(new createjs.Graphics().f("#f00")/*(result)*/.drawRect(0, 0, 282, 59));
+					hill = new createjs.Shape(new createjs.Graphics().f("#f00").beginBitmapFill(result).drawRect(0, 0, 282, 59));
 					hill.x = Math.random() * w | 0;
 					hill.scaleX = hill.scaleY = 3;
 					hill.y = 144;
@@ -120,14 +116,13 @@
 
 					grant = new createjs.Sprite(spriteSheet, "run")
 							.set({x: -200, y:40, scaleX:0.8, scaleY:0.8});
-					//grant.gotoAndPlay("run");
 			}
 		}
 
 		examples.hideDistractor();
 
 		if (grant == null) {
-			console.log("Can not play. Grant sprite was not loaded.");
+			console.error("Can not play. Grant sprite was not loaded.");
 			return;
 		}
 
