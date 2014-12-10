@@ -13,7 +13,7 @@ h1 {
 }
 
 h1:before {
-	content:"EASELJS ";
+	content:"PRELOADJS ";
 	font-weight: bold;
 }
 
