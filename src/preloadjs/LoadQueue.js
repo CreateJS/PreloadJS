@@ -1363,9 +1363,7 @@ this.createjs = this.createjs || {};
 		var customHandler = this._typeCallbacks[item.type] || this._extensionCallbacks[item.ext];
 		if (customHandler) {
 			// Plugins are now passed both the full source, as well as a combined path+basePath (appropriately)
-			var result = customHandler.callback.call(customHandler.scope, item.src, item.type, item.id, item.data,
-													 bp, this);
-			// NOTE: BasePath argument is deprecated. We pass it to plugins.allow SoundJS to modify the file. The full path is sent to the plugin
+			var result = customHandler.callback.call(customHandler.scope, item, this);
 
 			// The plugin will handle the load, or has canceled it. Ignore it.
 			if (result === false) {
@@ -1375,29 +1373,15 @@ this.createjs = this.createjs || {};
 			} else if (result === true) {
 				// Do Nothing
 
-				// Result is a loader class:
-			} else {
-				if (result.src != null) { item.src = result.src; }
-				if (result.data != null) { item.data = result.data; }
-				if (result.id != null) { item.id = result.id; } // TODO: Evaluate this. An overridden ID could be problematic
-				if (result.tag != null) { // Assumes that the returned tag either has a load method or a src setter.
-					item.tag = result.tag;
-				}
-				if (result.completeHandler != null) {
-					item.completeHandler = result.completeHandler;
-				}
-				if (result.loader != null) {
-					item._loader = result.loader;
-				}
+			// Result is a loader class:
+			} else if (result != null) {
+				item._loader = result;
+			}
 
-				// Allow type overriding:
-				if (result.type) { item.type = result.type; }
-
-				// Update the extension in case the type changed:
-				match = createjs.RequestUtils.parseURI(item.src);
-				if (match.extension != null) {
-					item.ext = match.extension;
-				}
+			// Update the extension in case the type changed:
+			match = createjs.RequestUtils.parseURI(item.src);
+			if (match.extension != null) {
+				item.ext = match.extension;
 			}
 		}
 
