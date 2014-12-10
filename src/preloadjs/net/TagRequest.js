@@ -150,7 +150,7 @@ this.createjs = this.createjs || {};
 	p._clean = function() {
 		this._tag.onload = null;
 		this._tag.onreadystatechange = null;
-		if (this._addedToDOM) {
+		if (this._addedToDOM && this._tag.parentNode != null) {
 			this._tag.parentNode.removeChild(this._tag);
 		}
 	};
