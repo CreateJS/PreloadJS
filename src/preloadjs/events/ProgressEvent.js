@@ -1,5 +1,5 @@
 /*
- * ManifestLoader
+ * ProgressEvent
  * Visit http://createjs.com/ for documentation, updates and examples.
  *
  *
