@@ -107,7 +107,7 @@ this.createjs = this.createjs || {};
 		this._clean();
 		this._tag = null;
 
-		this.AbstractRequest_destory();
+		this.AbstractRequest_destroy();
 	};
 
 	// private methods
