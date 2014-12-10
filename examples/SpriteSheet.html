@@ -98,13 +98,14 @@
 					ground.y = h - 79;
 					break;
 				case "hill":
-					hill = new createjs.Shape(new createjs.Graphics().f("#f00").beginBitmapFill(result).drawRect(0, 0, 282, 59));
+					// Vertically offset the pattern fill by 1 to solve a Chrome bug on BitmapFills
+					hill = new createjs.Shape(new createjs.Graphics().f("#f00").beginBitmapFill(result).drawRect(0, 1, 282, 60));
 					hill.x = Math.random() * w | 0;
 					hill.scaleX = hill.scaleY = 3;
 					hill.y = 144;
 					break;
 				case "hill2":
-					hill2 = new createjs.Shape(new createjs.Graphics().beginBitmapFill(result).drawRect(0, 0, 212, 50));
+					hill2 = new createjs.Shape(new createjs.Graphics().beginBitmapFill(result).drawRect(0, 1, 212, 51));
 					hill2.x = Math.random() * w | 0;
 					hill2.scaleX = hill2.scaleY = 3;
 					hill2.y = 171;
@@ -126,7 +127,7 @@
 			return;
 		}
 
-		stage.addChild(sky, ground, hill, hill2, grant);
+		stage.addChild(sky, hill, hill2, ground, grant);
 		stage.on("mousedown", handleJumpStart);
 
 		createjs.Ticker.setFPS(40);
