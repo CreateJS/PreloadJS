@@ -13,12 +13,11 @@
 <header class="PreloadJS">
 	<h1>Image Gallery</h1>
 
-	<p>This sample loads a number of images, and adds them to a canvas stage
-		when they are complete. Click the image
-		to view the next one. Note that when loading images locally, you need to
-		ensure that PreloadJS
-		uses tag loading to avoid cross-origin errors. Mouse interaction on
-		images may not work locally either.</p>
+	<p>This sample loads a number of images, and adds them to a canvas stage when they are complete. Click an image
+		to put it at the back of the stack.</p>
+
+	<p>Note that when loading images locally, you need to ensure that PreloadJS uses tag loading or CORS to avoid
+		cross-origin errors. Mouse interaction on images may not work locally when these errors occur.</p>
 </header>
 
 <div><canvas id="myCanvas" width="960" height="400"></canvas></div>
@@ -111,45 +110,45 @@
 		var h = image.height;
 
 		var bmp = new createjs.Bitmap(image).set({
-													 scaleX: 0.75,
-													 scaleY: 0.75,
-													 regX: w / 2,
-													 regY: h / 2,
-													 rotation: Math.random() * 16 - 8,
-													 cursor: "pointer",
-													 x: borderPadding / 2 * 0.75,
-													 y: borderPadding / 2 * 0.75
-												 });
+			 scaleX: 0.75, scaleY: 0.75,
+			 regX: w / 2, regY: h / 2,
+			 rotation: Math.random() * 16 - 8,
+			 cursor: "pointer",
+			 x: borderPadding / 2 * 0.75, y: borderPadding / 2 * 0.7
+		});
 		bmp.on("click", handleClick);
 
 		var border = new createjs.Shape(
 				new createjs.Graphics().beginFill("#FFFFFF").drawRect(0, 0, w + borderPadding, h + borderPadding).endFill()
 		).set({
-				  rotation: bmp.rotation,
-				  regX: w / 2,
-				  regY: h / 2,
-				  scaleX: bmp.scaleX,
-				  scaleY: bmp.scaleY,
-				  shadow: new createjs.Shadow("#000000", 0, 0, 2.5)
-			  });
+			rotation: bmp.rotation,
+			regX: w / 2,
+			regY: h / 2,
+			scaleX: bmp.scaleX,
+			scaleY: bmp.scaleY,
+			shadow: new createjs.Shadow("#000000", 0, 0, 2.5)
+		});
 
-		var movieClip = new createjs.Container();
-		movieClip.addChild(border, bmp);
-		imageContainer.addChild(movieClip);
+		var container = new createjs.Container();
+		container.addChild(border, bmp);
+		imageContainer.addChild(container);
 		stage.update();
 	}
 
 	function handleClick(event) {
 		currentItem = event.target.parent;
-		var tween = createjs.Tween.get(currentItem, {override: true}).to({y: -350}, 200).call(tweenUpComplete).to({y: 0}, 500);
-		tween.on("change", handleTweenChange);
+		createjs.Tween.get(currentItem, {override: true})
+				.to({y: -300, rotation:currentItem.rotation+Math.random()*30-15}, 200, createjs.Ease.quadInOut)
+				.call(tweenUpComplete)
+				.to({y: 0, rotation:currentItem.rotation}, 600, createjs.Ease.quadOut)
+				.on("change", handleTweenChange);
 	}
 
 	function handleTweenChange(tween) {
 		stage.update();
 	}
 
-	function tweenUpComplete() {
+	function tweenUpComplete(event) {
 		imageContainer.addChildAt(currentItem, 0);
 	}
 
