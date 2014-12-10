@@ -244,7 +244,7 @@
 		var item = event.data;
 		var div = document.getElementById(item.id);
 		if (div != null) {
-			div.innerHTML = "<label>Error :(</label>";
+			div.innerHTML = "<label>Error " + (item.id == "NoFileHere.png"?":)":":(")+"</label>";
 			div.className = "gridBox error";
 		}
 	}
