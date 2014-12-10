@@ -61,10 +61,10 @@ this.createjs = this.createjs || {};
 		 * either be a string (recommended), or an HTML tag. See the {{#crossLink "AbstractLoader"}}{{/crossLink}}
 		 * class for the full list of supported types.
 		 * @property type
-		 * @type {String|HTMLMediaElement|HTMLImageElement|HTMLLinkElement}
-		 * @default text
+		 * @type {String}
+		 * @default null
 		 */
-		this.type = createjs.AbstractLoader.TEXT;
+		this.type = null;
 
 		/**
 		 * A string identifier which can be used to reference the loaded object. If none is provided, this will be
