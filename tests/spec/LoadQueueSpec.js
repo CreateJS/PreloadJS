@@ -80,9 +80,8 @@ describe("PreloadJS.LoadQueue", function () {
 			});
 
 			var tag = document.createElement("video");
-			tag.autoplay = false;
-			tag.preload = "none";
 			tag.src = "static/video.mp4";
+
 			this.queue.loadFile(tag);
 		});
 
@@ -93,8 +92,6 @@ describe("PreloadJS.LoadQueue", function () {
 			});
 
 			var tag = document.createElement("audio");
-			tag.autoplay = false;
-			tag.preload = "none";
 			tag.src = "audio/Thunder.mp3";
 			this.queue.loadFile(tag);
 		});
