@@ -100,6 +100,8 @@ this.createjs = this.createjs || {};
 				var textNode = document.createTextNode(loader.getResult(true));
 				tag.appendChild(textNode);
 			}
+		} else {
+			tag = this._tag;
 		}
 
 		return tag;
