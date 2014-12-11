@@ -8,6 +8,11 @@ CRITICAL (may break existing content)
 	easier. This includes the net/Request classes, and utils/.
 - Completely revisited how file paths are parsed. The new version is much less aggressive, and should be more reliable
 	and simple to edit.
+- re-architected the class and inheritance model
+	- initialize methods removed, use MySuperClass_constructor instead
+	- helper methods: extend & promote (see the "Utility Methods" docs)
+	- property definitions are now instance level, and in the constructor (performance gains)
+	- the .constructor is now set correctly on all classes (thanks kaesve)
 
 ****
 -
@@ -25,12 +30,13 @@ CRITICAL (may break existing content)
 - Improved EventDispatcher's handling of redispatched event objects
 - Added ProgressEvent to simplify progress events, and for usage in the new system
 - Added ErrorEvent to createjs package, and changed usages throughout PreloadJS
-- Changed ManifestLoader to automatically subload content before dispatching complete. Uses internal LoadQueue.
+- Changed ManifestLoader to automatically load sub-content before dispatching complete. Uses an internal LoadQueue.
 - Added SpriteSheetLoader to preload json files, their contents, and create a SpriteSheet before "complete".
 - Added resultFormatter to LoadItems to handle XML, JSON, etc parsing, which can be user-overridden.
 - Updated json polyfill to use json3
 - Build process updates to remove unnecessary copyright headers from the combined file.
 - Added unit tests. Run them from the tests/ folder.
+
 
 Version 0.4.1 [December 12, 2013]
 ************************************************************************************************************************
