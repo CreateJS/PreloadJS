@@ -298,7 +298,7 @@ describe("PreloadJS.LoadQueue", function () {
 			}
 		};
 
-		s.preloadHandler = function (src, type, id, data, basePath, queue) {
+		s.preloadHandler = function (loadItem) {
 			var options = {};
 
 			// Tell PreloadJS to skip this file
@@ -307,13 +307,10 @@ describe("PreloadJS.LoadQueue", function () {
 			// Tell PreloadJS to continue normally
 			if (options.doNothing) { return true; }
 
-			// Return modified values, as well as additional instructions
-			return {
-				src: src,
-				id: "foo",
-				data: "foo",
-				tag: null
-			}
+			loadItem.id = "foo";
+			loadItem.data = "foo";
+
+			return true; // Allow the loader to load this.
 		};
 
 		this.queue.installPlugin(SamplePlugin);
