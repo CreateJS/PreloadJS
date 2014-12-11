@@ -93,7 +93,7 @@ this.createjs = this.createjs || {};
 		var xml = createjs.DataUtils.parseXML(loader.getResult(true), "text/xml");
 		var tag = loader.getTag();
 
-		if (!this._preferXHR) {
+		if (!this._preferXHR && document.body.contains(tag)) {
 			document.body.removeChild(tag);
 		}
 
