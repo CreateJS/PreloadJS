@@ -65,8 +65,6 @@ this.createjs = this.createjs || {};
 			this._tag = document.createElement("img");
 		}
 
-		this._tag.style.visibility = "hidden";
-
 		this.on("initialize", this._updateXHR, this);
 	};
 
@@ -139,8 +137,6 @@ this.createjs = this.createjs || {};
 			} else {
 				tag.src = loader.getItem().src;
 			}
-
-			tag.style.visibility = "";
 
 			if (tag.complete) {
 				done(tag);
