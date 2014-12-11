@@ -46,18 +46,27 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function VideoLoader(loadItem, preferXHR) {
+		this.AbstractMediaLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.VIDEO);
+
 		if (createjs.RequestUtils.isVideoTag(loadItem) || createjs.RequestUtils.isVideoTag(loadItem.src)) {
 			this.setTag(createjs.RequestUtils.isVideoTag(loadItem)?loadItem:loadItem.src);
-		} else {
-			this.setTag(document.createElement("video"));
-		}
 
-		this.AbstractMediaLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.VIDEO);
+			// We can't use XHR for a tag that's passed in.
+			this._preferXHR = false;
+		} else {
+			this.setTag(this._createTag());
+		}
 	};
 
 	var p = createjs.extend(VideoLoader, createjs.AbstractMediaLoader);
 	var s = VideoLoader;
 
+	/**
+	 * Create a new video tag
+	 *
+	 * @returns {HTMLElement}
+	 * @private
+	 */
 	p._createTag = function () {
 		return document.createElement("video");
 	};

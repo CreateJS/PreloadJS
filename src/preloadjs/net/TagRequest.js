@@ -42,12 +42,11 @@ this.createjs = this.createjs || {};
 	 * An {{#crossLink "AbstractRequest"}}{{/crossLink}} that loads HTML tags, such as images and scripts.
 	 * @class TagRequest
 	 * @param {LoadItem} loadItem
-	 * @param {Boolean} preferXHR
 	 * @param {HTMLElement} tag
 	 * @param {String} srcAttribute The tag attribute that specifies the source, such as "src", "href", etc.
 	 */
-	function TagRequest(loadItem, preferXHR, tag, srcAttribute) {
-		this.AbstractRequest_constructor(loadItem, preferXHR);
+	function TagRequest(loadItem, tag, srcAttribute) {
+		this.AbstractRequest_constructor(loadItem);
 
 		// protected properties
 		/**
