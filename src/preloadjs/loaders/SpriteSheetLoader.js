@@ -193,4 +193,4 @@ this.createjs = this.createjs || {};
 
 	createjs.SpriteSheetLoader = createjs.promote(SpriteSheetLoader, "AbstractLoader");
 
-}())
+}());
