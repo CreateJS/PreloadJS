@@ -58,6 +58,10 @@ this.createjs = this.createjs || {};
 	var p = createjs.extend(VideoLoader, createjs.AbstractMediaLoader);
 	var s = VideoLoader;
 
+	p._createTag = function () {
+		return document.createElement("video");
+	};
+
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
