@@ -1,4 +1,4 @@
-Version NEXT [Not Released]
+Version 0.6.0
 ************************************************************************************************************************
 CRITICAL (may break existing content)
 - Completely changed how loaders are structured. Tag & XHR loaders have been turned into utilities, and top-level
