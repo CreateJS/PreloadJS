@@ -1,4 +1,11 @@
-Version 0.6.0
+Version NEXT [not yet released]
+****************************************************************************************************
+
+
+
+Version 0.6.0 [December 12, 2014]
+************************************************************************************************************************
+**   Please note PreloadJS 0.6.0 is only compatible with SoundJS 0.6.0 and later. Earlier versions are incompatible. ***
 ************************************************************************************************************************
 CRITICAL (may break existing content)
 - Completely changed how loaders are structured. Tag & XHR loaders have been turned into utilities, and top-level
@@ -15,7 +22,7 @@ CRITICAL (may break existing content)
 	- the .constructor is now set correctly on all classes (thanks kaesve)
 
 ****
--
+OTHER:
 - Fixed issue with erroneous fileload events when manually changing the src property of an image loaded with PreloadJS.
 - Refactored XMLHTTP fallback for old IE
 - Added a LoadItem class, a class that can be used in place of the raw objects for load items. Used in the background
