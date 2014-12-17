@@ -91,7 +91,7 @@ this.createjs = this.createjs || {};
 			return;
 		}
 
-		if (this._item.crossOrigin != null) {
+		if (this._preferXHR && this._item.crossOrigin != null) {
 			this._tag.crossOrigin = this._item.crossOrigin;
 		}
 		this.AbstractLoader_load();
