@@ -227,8 +227,9 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 
-		this.queue.preferXHR = false;
-		this.queue.loadFile("http://dev.gskinner.com/createjs/cors/daisy.png");
+		//this.queue.preferXHR = false;
+		this.queue._crossOrigin = true;
+		this.queue.loadFile({src:"http://dev.gskinner.com/createjs/cors/daisy.png", crossOrigin:true});
 	});
 
 	xit("should load a manifest and its children", function (done) {
