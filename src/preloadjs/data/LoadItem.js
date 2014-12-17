@@ -154,7 +154,7 @@ this.createjs = this.createjs || {};
 		 * @type {boolean}
 		 * @default Anonymous
 		 */
-		this.crossOrigin = "Anonymous";
+		this.crossOrigin = null;
 
 		/**
 		 * The duration in milliseconds to wait before a request times out. This only applies to tag-based and and XHR

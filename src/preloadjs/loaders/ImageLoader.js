@@ -91,8 +91,10 @@ this.createjs = this.createjs || {};
 			return;
 		}
 
-		if (!createjs.RequestUtils.isLocal(this._item.src) && this._item.crossOrigin != null) {
-			this._tag.crossOrigin = this._item.crossOrigin;
+		var crossOrigin = this._item.crossOrigin;
+		if (crossOrigin == true) { crossOrigin = "Anonymous"; }
+		if (crossOrigin != null && !createjs.RequestUtils.isLocal(this._item.src)) {
+			this._tag.crossOrigin = crossOrigin;
 		}
 
 		this.AbstractLoader_load();
