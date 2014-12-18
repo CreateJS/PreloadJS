@@ -275,6 +275,20 @@ this.createjs = this.createjs || {};
 	var s = LoadQueue;
 
 	/**
+	 * <strong>REMOVED</strong>. Removed in favor of using `MySuperClass_constructor`.
+	 * See {{#crossLink "Utility Methods/extend"}}{{/crossLink}} and {{#crossLink "Utility Methods/promote"}}{{/crossLink}}
+	 * for details.
+	 *
+	 * There is an inheritance tutorial distributed with EaselJS in /tutorials/Inheritance.
+	 *
+	 * @method initialize
+	 * @protected
+	 * @deprecated
+	 */
+	// p.initialize = function() {}; // searchable for devs wondering where it is.
+
+
+	/**
 	 * An internal initialization method, which is used for initial set up, but also to reset the LoadQueue.
 	 * @method init
 	 * @param preferXHR
