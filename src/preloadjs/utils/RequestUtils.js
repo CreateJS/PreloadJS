@@ -267,6 +267,7 @@
 			case createjs.AbstractLoader.CSS:
 			case createjs.AbstractLoader.SVG:
 			case createjs.AbstractLoader.JAVASCRIPT:
+			case createjs.AbstractLoader.SPRITESHEET:
 				return true;
 			default:
 				return false;
