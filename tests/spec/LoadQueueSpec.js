@@ -337,8 +337,7 @@ describe("PreloadJS.LoadQueue", function () {
 	});
 
 	it("destory() should remove all references in a LoadQueue", function () {
-		this.queue.addEventListener("fileload", function (evt) {
-		});
+		this.queue.addEventListener("fileload", function (evt) { });
 		this.loadFile({
 						  src: "art/gbot.svg",
 						  type: createjs.LoadQueue.TEXT,
@@ -360,6 +359,24 @@ describe("PreloadJS.LoadQueue", function () {
 		this.queue.load();
 
 		expect(this.queue._numItems).toBe(0);
+	});
+
+	it("remove('foo') should remove foo from the LoadQueue", function (done) {
+		var _this = this;
+
+		this.queue.addEventListener("complete", function (evt) {
+			expect(_this.queue.getItem("foo")).toBeDefined();
+			_this.queue.remove("foo");
+			expect(_this.queue.getItem("foo")).not.toBeDefined();
+			done();
+		});
+
+		this.loadFile({
+						  src: "art/gbot.svg",
+						  id:"foo",
+						  type: createjs.LoadQueue.TEXT,
+						  data: "foo"
+					  });
 	});
 
 });
