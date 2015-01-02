@@ -42,6 +42,7 @@ this.createjs = this.createjs || {};
 	 * A loader for CSS files.
 	 * @class XMLLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function XMLLoader(loadItem) {

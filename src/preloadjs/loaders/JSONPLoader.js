@@ -49,6 +49,7 @@ this.createjs = this.createjs || {};
 	 * or set {{#crossLink "LoadItem/maintainOrder:property"}}{{/crossLink}} on items with the same callback.
 	 * @class JSONPLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function JSONPLoader(loadItem) {

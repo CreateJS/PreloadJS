@@ -43,6 +43,7 @@ this.createjs = this.createjs || {};
 	 * @class VideoLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @extends AbstractMediaLoader
 	 * @constructor
 	 */
 	function VideoLoader(loadItem, preferXHR) {

@@ -42,6 +42,7 @@ this.createjs = this.createjs || {};
 	 * A loader for binary files. This is useful for loading web audio, or content that requires an ArrayBuffer.
 	 * @class BinaryLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function BinaryLoader(loadItem) {

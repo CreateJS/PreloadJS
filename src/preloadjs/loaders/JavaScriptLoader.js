@@ -43,6 +43,7 @@ this.createjs = this.createjs || {};
 	 * @class JavaScriptLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function JavaScriptLoader(loadItem, preferXHR) {

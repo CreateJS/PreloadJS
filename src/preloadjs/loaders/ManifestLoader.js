@@ -47,6 +47,7 @@ this.createjs = this.createjs || {};
 	 * to {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}.
 	 * @class ManifestLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function ManifestLoader(loadItem) {

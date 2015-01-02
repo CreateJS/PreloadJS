@@ -42,6 +42,7 @@ this.createjs = this.createjs || {};
 	 * A loader for Text files.
 	 * @class TextLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function TextLoader(loadItem) {

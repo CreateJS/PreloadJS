@@ -39,6 +39,7 @@ this.createjs = this.createjs || {};
 	 * @class ImageLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function ImageLoader (loadItem, preferXHR) {

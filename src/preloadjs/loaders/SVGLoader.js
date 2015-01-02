@@ -43,6 +43,7 @@ this.createjs = this.createjs || {};
 	 * @class SVGLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @param {Boolean} preferXHR
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function SVGLoader(loadItem, preferXHR) {

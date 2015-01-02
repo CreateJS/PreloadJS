@@ -44,6 +44,7 @@ this.createjs = this.createjs || {};
 	 * load EaselJS SpriteSheets, use {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
 	 * @class JSONLoader
 	 * @param {LoadItem|Object} loadItem
+	 * @extends AbstractLoader
 	 * @constructor
 	 */
 	function JSONLoader(loadItem) {
