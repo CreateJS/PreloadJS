@@ -191,6 +191,7 @@ this.createjs = this.createjs || {};
 	 * @property POST
 	 * @type {string}
 	 * @default post
+	 * @static
 	 */
 	s.POST = "POST";
 
@@ -199,6 +200,7 @@ this.createjs = this.createjs || {};
 	 * @property GET
 	 * @type {string}
 	 * @default get
+	 * @static
 	 */
 	s.GET = "GET";
 
