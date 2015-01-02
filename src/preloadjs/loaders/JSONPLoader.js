@@ -43,6 +43,10 @@ this.createjs = this.createjs || {};
 	 * without a callback use the {{#crossLink "JSONLoader"}}{{/crossLink}} instead. To load JSON-formatted manifests,
 	 * use {{#crossLink "ManifestLoader"}}{{/crossLink}}, and to load EaselJS SpriteSheets, use
 	 * {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
+	 *
+	 * Note that JSONP files loaded concurrently require a <em>unique</em> callback. To ensure JSONP files are loaded
+	 * in order, either use the {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}} method (set to 1),
+	 * or set {{#crossLink "LoadItem/maintainOrder:property"}}{{/crossLink}} on items with the same callback.
 	 * @class JSONPLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @constructor
@@ -101,7 +105,7 @@ this.createjs = this.createjs || {};
 
 	// private methods
 	/**
-	 * Handle the JSON callback, which is a public method defined on `window`.
+	 * Handle the JSONP callback, which is a public method defined on `window`.
 	 * @method _handleLoad
 	 * @param {Object} The formatted JSON data.
 	 * @private
