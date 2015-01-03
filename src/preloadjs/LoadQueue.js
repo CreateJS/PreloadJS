@@ -787,7 +787,7 @@ this.createjs = this.createjs || {};
 	 * It is recommended that loaders extend {{#crossLink "AbstractLoader"}}{{/crossLink}}. Loaders can only be added
 	 * once, and will be prepended to the list of available loaders.
 	 * @method registerLoader
-	 * @param {AbstractLoader} loader - The AbstractLoader class to add.
+	 * @param {Function|AbstractLoader} loader The AbstractLoader class to add.
 	 * @since 0.6.0
 	 */
 	p.registerLoader = function (loader) {
@@ -804,7 +804,7 @@ this.createjs = this.createjs || {};
 	 * Remove a custom loader added usig {{#crossLink "registerLoader"}}{{/crossLink}}. Only custom loaders can be
 	 * unregistered, the default loaders will always be available.
 	 * @method unregisterLoader
-	 * @param {AbstractLoader} loader - The AbstractLoader class to remove
+	 * @param {AbstractLoader} loader The AbstractLoader class to remove
 	 */
 	p.unregisterLoader = function (loader) {
 		var idx = this._availableLoaders.indexOf(loader);
@@ -1501,7 +1501,7 @@ this.createjs = this.createjs || {};
 	 * The callback that is fired when a loader loads a file. This enables loaders like {{#crossLink "ManifestLoader"}}{{/crossLink}}
 	 * to maintain internal queues, but for this queue to dispatch the {{#crossLink "fileload:event"}}{{/crossLink}}
 	 * events.
-	 * @param {Event} event - The {{#crossLink "AbstractLoader/fileload:event"}}{{/crossLink}} event from the loader.
+	 * @param {Event} event The {{#crossLink "AbstractLoader/fileload:event"}}{{/crossLink}} event from the loader.
 	 * @private
 	 * @since 0.6.0
 	 */

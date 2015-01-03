@@ -103,7 +103,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * Handle the JSON callback, which is a public method defined on `window`.
 	 * @method _handleLoad
-	 * @param {Object} data - The formatted JSON data.
+	 * @param {Object} data The formatted JSON data.
 	 * @private
 	 */
 	p._handleLoad = function (data) {
