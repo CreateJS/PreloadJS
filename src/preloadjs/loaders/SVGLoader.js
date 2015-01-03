@@ -104,7 +104,7 @@ this.createjs = this.createjs || {};
 		} else { // For browsers that don't support SVG, just give them the XML. (IE 9-8)
 			return xml;
 		}
-	}
+	};
 
 	createjs.SVGLoader = createjs.promote(SVGLoader, "AbstractLoader");
 

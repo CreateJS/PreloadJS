@@ -96,7 +96,7 @@ this.createjs = this.createjs || {};
 
 	// protected methods
 	p._createRequest = function() {
-		var callback = this._item.callback
+		var callback = this._item.callback;
 		if (callback != null) {
 			this._request = new createjs.JSONPLoader(this._item);
 		} else {

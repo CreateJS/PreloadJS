@@ -239,7 +239,7 @@
 	/**
 	 * Check if item is a valid HTMLVideoElement
 	 * @method isVideoTag
-	 * @param {Objectitem
+	 * @param {Object} item
 	 * @returns {Boolean}
 	 * @static
 	 */
@@ -247,7 +247,7 @@
 		if (window.HTMLVideoElement) {
 			return item instanceof HTMLVideoElement;
 		} else {
-			false;
+			return false;
 		}
 	};
 

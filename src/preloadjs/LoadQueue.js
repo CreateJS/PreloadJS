@@ -787,7 +787,7 @@ this.createjs = this.createjs || {};
 	 * It is recommended that loaders extend {{#crossLink "AbstractLoader"}}{{/crossLink}}. Loaders can only be added
 	 * once, and will be prepended to the list of available loaders.
 	 * @method registerLoader
-	 * @param {Class} The AbstractLoader class to add.
+	 * @param {AbstractLoader} loader - The AbstractLoader class to add.
 	 * @since 0.6.0
 	 */
 	p.registerLoader = function (loader) {
@@ -804,7 +804,7 @@ this.createjs = this.createjs || {};
 	 * Remove a custom loader added usig {{#crossLink "registerLoader"}}{{/crossLink}}. Only custom loaders can be
 	 * unregistered, the default loaders will always be available.
 	 * @method unregisterLoader
-	 * @param {Class} loader The AbstractLoader class to remove
+	 * @param {AbstractLoader} loader - The AbstractLoader class to remove
 	 */
 	p.unregisterLoader = function (loader) {
 		var idx = this._availableLoaders.indexOf(loader);
@@ -1222,14 +1222,14 @@ this.createjs = this.createjs || {};
 	 * @method getItems
 	 * @param {Boolean} loaded Determines if only items that have been loaded should be returned. If false, in-progress
 	 * and failed load items will also be included.
-	 * @returns {Array} A list of objects that have been loaded. Each item includes the {{#crossLink "LoadItem"}}{{/crossLink}},
+	 * @returns {Object[]} A list of objects that have been loaded. Each item includes the {{#crossLink "LoadItem"}}{{/crossLink}},
 	 * result, and rawResult.
 	 * @since 0.6.0
 	 */
 	p.getItems = function(loaded) {
 		var arr = [];
 		for (var i= 0, l=this._loadQueueBackup.length; i<l; i++) {
-			var loader = this._loadQueueBackup[i]
+			var loader = this._loadQueueBackup[i];
 			var item = loader.getItem();
 			if (loaded === true && !loader.loaded) { continue; }
 			arr.push({
@@ -1501,7 +1501,7 @@ this.createjs = this.createjs || {};
 	 * The callback that is fired when a loader loads a file. This enables loaders like {{#crossLink "ManifestLoader"}}{{/crossLink}}
 	 * to maintain internal queues, but for this queue to dispatch the {{#crossLink "fileload:event"}}{{/crossLink}}
 	 * events.
-	 * @param {Event} The {{#crossLink "AbstractLoader/fileload:event"}}{{/crossLink}} event from the loader.
+	 * @param {Event} event - The {{#crossLink "AbstractLoader/fileload:event"}}{{/crossLink}} event from the loader.
 	 * @private
 	 * @since 0.6.0
 	 */
@@ -1603,13 +1603,14 @@ this.createjs = this.createjs || {};
 			this._loadedResults[item.id] = list[i].result;
 			this._loadedRawResults[item.id] = list[i].rawResult;
 		}
-	}
+	};
 
 	/**
 	 * Flag an item as finished. If the item's order is being managed, then ensure that it is allowed to finish, and if
 	 * so, trigger prior items to trigger as well.
 	 * @method _finishOrderedItem
 	 * @param {AbstractLoader} loader
+	 * @param {Boolean} loadFailed
 	 * @return {Boolean} If the item's order is being managed. This allows the caller to take an alternate
 	 * behaviour if it is.
 	 * @private
