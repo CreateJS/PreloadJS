@@ -804,7 +804,7 @@ this.createjs = this.createjs || {};
 	 * Remove a custom loader added usig {{#crossLink "registerLoader"}}{{/crossLink}}. Only custom loaders can be
 	 * unregistered, the default loaders will always be available.
 	 * @method unregisterLoader
-	 * @param {AbstractLoader} loader The AbstractLoader class to remove
+	 * @param {Function|AbstractLoader} loader The AbstractLoader class to remove
 	 */
 	p.unregisterLoader = function (loader) {
 		var idx = this._availableLoaders.indexOf(loader);
