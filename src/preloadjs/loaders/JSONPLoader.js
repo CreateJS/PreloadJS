@@ -81,6 +81,13 @@ this.createjs = this.createjs || {};
 		this._dispose();
 	};
 
+	/**
+	 * Loads the JSONp file.  Because of the unique loading needs of jsonP
+	 * we don't use the AbstractLoader.load() method.
+	 *
+	 * @method load
+	 *
+	 */
 	p.load = function () {
 		if (this._item.callback == null) {
 			throw new Error('callback is required for loading JSONP requests.');
@@ -100,6 +107,8 @@ this.createjs = this.createjs || {};
 		window[this._item.callback] = createjs.proxy(this._handleLoad, this);
 		window.document.body.appendChild(this._tag);
 
+		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), this._item.loadTimeout);
+
 		// Load the tag
 		this._tag.src = this._item.src;
 	};
@@ -117,7 +126,18 @@ this.createjs = this.createjs || {};
 
 		this._dispose();
 	};
-	
+
+	/**
+	 * The tag request has not loaded within the time specfied in loadTimeout.
+	 * @method _handleError
+	 * @param {Object} event The XHR error event.
+	 * @private
+	 */
+	p._handleTimeout = function () {
+		this._dispose();
+		this.dispatchEvent(new createjs.ErrorEvent("timeout"));
+	};
+
 	/**
 	 * Clean up the JSONP load. This clears out the callback and script tag that this loader creates.
 	 * @method _dispose
@@ -126,6 +146,8 @@ this.createjs = this.createjs || {};
 	p._dispose = function () {
 		window.document.body.removeChild(this._tag);
 		delete window[this._item.callback];
+
+		clearTimeout(this._loadTimeout);
 	};
 
 	createjs.JSONPLoader = createjs.promote(JSONPLoader, "AbstractLoader");

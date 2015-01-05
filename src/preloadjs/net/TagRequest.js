@@ -109,6 +109,8 @@ this.createjs = this.createjs || {};
 
 		this._hideTag();
 
+		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), this._item.loadTimeout);
+
 		this._tag[this._tagSrcAttribute] = this._item.src;
 	};
 
@@ -153,6 +155,17 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
+	 * The tag request has not loaded within the time specfied in loadTimeout.
+	 * @method _handleError
+	 * @param {Object} event The XHR error event.
+	 * @private
+	 */
+	p._handleTimeout = function () {
+		this._clean();
+		this.dispatchEvent(new createjs.Event("timeout"));
+	};
+
+	/**
 	 * Remove event listeners, but don't destroy the request object
 	 * @method _clean
 	 * @private
@@ -163,6 +176,7 @@ this.createjs = this.createjs || {};
 		if (this._addedToDOM && this._tag.parentNode != null) {
 			this._tag.parentNode.removeChild(this._tag);
 		}
+		clearTimeout(this._loadTimeout);
 	};
 
 	p._hideTag = function() {
