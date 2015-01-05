@@ -63,7 +63,7 @@ this.createjs = this.createjs||{};
 	 */
 	function BrowserDetect() {
 		throw "BrowserDetect cannot be instantiated";
-	};
+	}
 
 	var agent = BrowserDetect.agent = window.navigator.userAgent;
 	BrowserDetect.isWindowPhone = (agent.indexOf("IEMobile") > -1) || (agent.indexOf("Windows Phone") > -1);

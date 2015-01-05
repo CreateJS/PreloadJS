@@ -47,7 +47,7 @@
 	 * @static
 	 */
 	var SamplePlugin = function () {
-	}
+	};
 	var s = SamplePlugin;
 
 	/**

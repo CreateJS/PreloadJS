@@ -87,7 +87,7 @@ this.createjs = this.createjs || {};
 			tag.text = loader.getResult(true);
 		}
 		return tag;
-	}
+	};
 
 	createjs.JavaScriptLoader = createjs.promote(JavaScriptLoader, "AbstractLoader");
 
