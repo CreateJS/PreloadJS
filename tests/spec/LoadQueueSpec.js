@@ -6,9 +6,9 @@ describe("PreloadJS.LoadQueue", function () {
 		this.queue = new createjs.LoadQueue();
 
 		var _this = this;
-		this.loadFile = function (fileObj, useXHR) {
-			if (useXHR === false || useXHR === true) {
-				_this.queue.useXHR = useXHR;
+		this.loadFile = function (fileObj, preferXHR) {
+			if (preferXHR === false || preferXHR === true) {
+				_this.queue.preferXHR = preferXHR;
 			}
 
 			if (typeof fileObj == "string") {
@@ -21,6 +21,11 @@ describe("PreloadJS.LoadQueue", function () {
 	});
 
 	describe("Tag Loading", function () {
+		beforeEach(function() {
+			this.queue.setPreferXHR(false);
+			jasmine.DEFAULT_TIMEOUT_INTERVAL = 9000;
+		});
+
 		it("should load JSONp", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
 				expect(evt.result instanceof Object).toBe(true);
@@ -129,6 +134,18 @@ describe("PreloadJS.LoadQueue", function () {
 			var tag = document.createElement("img");
 			tag.src = "art/image0.jpg";
 			this.queue.loadFile(tag);
+		});
+
+		it("jsonP should error on a 404", function (done) {
+			this.queue.addEventListener("error", function (evt) {
+				expect(true).toBe(true);
+				done();
+			});
+			this.loadFile({
+							  src: "static/no_jsonp_here.json",
+							  callback: "x",
+							  type: createjs.LoadQueue.JSONP
+						  }, false);
 		});
 	});
 
@@ -264,7 +281,7 @@ describe("PreloadJS.LoadQueue", function () {
 					  });
 	});
 
-	it("should error on a 404", function (done) {
+	it("XHR should error on a 404", function (done) {
 		this.queue.addEventListener("error", function (evt) {
 			expect(evt.title).toBe("FILE_LOAD_ERROR");
 			done();
