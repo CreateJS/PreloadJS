@@ -1222,7 +1222,7 @@ this.createjs = this.createjs || {};
 	 * @method getItems
 	 * @param {Boolean} loaded Determines if only items that have been loaded should be returned. If false, in-progress
 	 * and failed load items will also be included.
-	 * @returns {Object[]} A list of objects that have been loaded. Each item includes the {{#crossLink "LoadItem"}}{{/crossLink}},
+	 * @returns {Array} A list of objects that have been loaded. Each item includes the {{#crossLink "LoadItem"}}{{/crossLink}},
 	 * result, and rawResult.
 	 * @since 0.6.0
 	 */

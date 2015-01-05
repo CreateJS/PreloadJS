@@ -530,7 +530,7 @@ this.createjs = this.createjs || {};
 	 * Get any items loaded internally by the loader. The enables loaders such as {{#crossLink "ManifestLoader"}}{{/crossLink}}
 	 * to expose items it loads internally.
 	 * @method getLoadedItems
-	 * @return {Object[]} A list of the items loaded by the loader.
+	 * @return {Array} A list of the items loaded by the loader.
 	 * @since 0.6.0
 	 */
 	p.getLoadedItems = function () {
