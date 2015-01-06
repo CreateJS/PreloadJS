@@ -155,7 +155,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * The tag request has not loaded within the time specfied in loadTimeout.
+	 * The tag request has not loaded within the time specified in loadTimeout.
 	 * @method _handleError
 	 * @param {Object} event The XHR error event.
 	 * @private
