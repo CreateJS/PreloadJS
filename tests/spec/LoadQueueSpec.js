@@ -63,7 +63,7 @@ describe("PreloadJS.LoadQueue", function () {
 			this.loadFile({
 							  src: "audio/Thunder.mp3",
 							  type: createjs.AbstractLoader.SOUND
-						  }, false);
+						  });
 		});
 
 		it("should load video", function (done) {
