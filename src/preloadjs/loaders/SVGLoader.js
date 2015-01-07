@@ -61,8 +61,6 @@ this.createjs = this.createjs || {};
 			this.setTag(document.createElement("object"));
 			this.getTag().type = "image/svg+xml";
 		}
-
-		this.getTag().style.visibility = "hidden";
 	};
 
 	var p = createjs.extend(SVGLoader, createjs.AbstractLoader);
