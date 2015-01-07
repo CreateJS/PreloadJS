@@ -277,7 +277,7 @@ describe("PreloadJS.LoadQueue", function () {
 		this.queue.addEventListener("progress", callback);
 		this.loadFile({
 						  src: "audio/Thunder.mp3",
-						  type: createjs.LoadQueue.BINARY
+						  type: createjs.LoadQueue.SOUND
 					  });
 	});
 
