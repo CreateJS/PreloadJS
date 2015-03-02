@@ -1,7 +1,6 @@
 Version NEXT [not yet released]
 ****************************************************************************************************
-- fix github issue 124, added error handler to TagRequest
-- added support for loading files with src set to an object that is then decoded by a plugin
+
 
 
 Version 0.6.0 [December 12, 2014]
