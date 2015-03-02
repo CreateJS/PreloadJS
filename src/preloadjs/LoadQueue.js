@@ -1337,22 +1337,14 @@ this.createjs = this.createjs || {};
 		var item = createjs.LoadItem.create(value);
 		if (item == null) { return null; }
 
-		// Determine Extension, etc.
-		var match = createjs.RequestUtils.parseURI(item.src);
-		if (match.extension) { item.ext = match.extension; }
-		if (item.type == null) {
-			item.type = createjs.RequestUtils.getTypeByExtension(item.ext);
-		}
-
-		// Inject path & basePath
 		var bp = ""; // Store the generated basePath
 		var useBasePath = basePath || this._basePath;
-		var autoId = item.src;
-		if (!match.absolute && !match.relative) {
+
+		if(item.src instanceof Object) {
+			if(!item.type) {return null;} // the the src is an object, type is required to pass off to plugin
 			if (path) {
 				bp = path;
 				var pathMatch = createjs.RequestUtils.parseURI(path);
-				autoId = path + autoId;
 				// Also append basePath
 				if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
 					bp = useBasePath + bp;
@@ -1360,8 +1352,33 @@ this.createjs = this.createjs || {};
 			} else if (useBasePath != null) {
 				bp = useBasePath;
 			}
+		} else {
+			// Determine Extension, etc.
+			var match = createjs.RequestUtils.parseURI(item.src);
+			if (match.extension) {
+				item.ext = match.extension;
+			}
+			if (item.type == null) {
+				item.type = createjs.RequestUtils.getTypeByExtension(item.ext);
+			}
+
+			// Inject path & basePath
+			var autoId = item.src;
+			if (!match.absolute && !match.relative) {
+				if (path) {
+					bp = path;
+					var pathMatch = createjs.RequestUtils.parseURI(path);
+					autoId = path + autoId;
+					// Also append basePath
+					if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
+						bp = useBasePath + bp;
+					}
+				} else if (useBasePath != null) {
+					bp = useBasePath;
+				}
+			}
+			item.src = bp + item.src;
 		}
-		item.src = bp + item.src;
 		item.path = bp;
 
 		// If there's no id, set one now.

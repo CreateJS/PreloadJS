@@ -49,7 +49,8 @@ this.createjs = this.createjs || {};
 	function LoadItem() {
 		/**
 		 * The source of the file that is being loaded. This property is <b>required</b>. The source can either be a
-		 * string (recommended), or an HTML tag.</li>
+		 * string (recommended), or an HTML tag.
+		 * This can also be an object, but in that case it has to include a type and be handled by a plugin.
 		 * @property src
 		 * @type {String}
 		 * @default null
