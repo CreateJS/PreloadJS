@@ -57,9 +57,8 @@ this.createjs = this.createjs || {};
 		this.src = null;
 
 		/**
-		 * The source of the file that is being loaded. This property is <strong>required</strong>. The source can
-		 * either be a string (recommended), or an HTML tag. See the {{#crossLink "AbstractLoader"}}{{/crossLink}}
-		 * class for the full list of supported types.
+		 * The type file that is being loaded. The type of the file is usually inferred by the extension, but can also
+		 * be set manually. This is helpful in cases where a file does not have an extension.
 		 * @property type
 		 * @type {String}
 		 * @default null
