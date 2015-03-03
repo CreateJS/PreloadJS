@@ -1340,8 +1340,8 @@ this.createjs = this.createjs || {};
 		var bp = ""; // Store the generated basePath
 		var useBasePath = basePath || this._basePath;
 
-		if(item.src instanceof Object) {
-			if(!item.type) {return null;} // the the src is an object, type is required to pass off to plugin
+		if (item.src instanceof Object) {
+			if (!item.type) {return null;} // the the src is an object, type is required to pass off to plugin
 			if (path) {
 				bp = path;
 				var pathMatch = createjs.RequestUtils.parseURI(path);
