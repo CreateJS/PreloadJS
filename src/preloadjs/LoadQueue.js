@@ -302,7 +302,7 @@ this.createjs = this.createjs || {};
 		/**
 		 * @property useXHR
 		 * @type {Boolean}
-		 * @readOnly
+		 * @readonly
 		 * @default true
 		 * @deprecated Use preferXHR instead.
 		 */

@@ -70,6 +70,7 @@ this.createjs = this.createjs || {};
 		 * @property canceled
 		 * @type {Boolean}
 		 * @default false
+		 * @readonly
 		 */
 		this.canceled = false;
 
