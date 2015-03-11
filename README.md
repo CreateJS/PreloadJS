@@ -5,13 +5,15 @@ file types, automatic detection of XHR (XMLHttpRequest) availability with a fall
 progress events, and a plugin model to assist with preloading in other libraries such as [SoundJS](http://www.soundjs.com).
 
 ## Example
-	var preload = new createjs.LoadQueue();
-	preload.addEventListener("fileload", handleFileComplete);
-	preload.loadFile('http://createjs.com/images/404/gBot-confused.jpg');
-	function handleFileComplete(event) {
-		document.body.appendChild(event.result);
-	}
 
+```javascript
+var preload = new createjs.LoadQueue();
+preload.addEventListener("fileload", handleFileComplete);
+preload.loadFile('http://createjs.com/images/404/gBot-confused.jpg');
+function handleFileComplete(event) {
+	document.body.appendChild(event.result);
+}
+```
 
 ## Support and Resources
 * Find examples and more information at the [PreloadJS web site](http://www.preloadjs.com/)
