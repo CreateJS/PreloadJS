@@ -613,7 +613,7 @@ this.createjs = this.createjs || {};
 	 * @default 8000
 	 * @static
 	 * @since 0.4.1
-	 * @deprecated In favour of LoadItem.loadTimeout
+	 * @deprecated In favour of {{#crossLink "LoadItem/LOAD_TIMEOUT_DEFAULT:property}}{{/crossLink}} property.
 	 */
 	s.loadTimeout = 8000;
 
@@ -1415,10 +1415,6 @@ this.createjs = this.createjs || {};
 		// Store the item for lookup. This also helps clean-up later.
 		this._loadItemsById[item.id] = item;
 		this._loadItemsBySrc[item.src] = item;
-
-		if (item.loadTimeout == null) {
-			item.loadTimeout = s.loadTimeout;
-		}
 
 		if (item.crossOrigin == null) {
 			item.crossOrigin = this._crossOrigin;
