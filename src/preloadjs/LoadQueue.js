@@ -896,7 +896,7 @@ this.createjs = this.createjs || {};
 		} else {
 			while (args.length) {
 				var item = args.pop();
-				var r = this.getResult(item);
+				var r = this.getItem(item);
 
 				//Remove from the main load Queue
 				for (i = this._loadQueue.length - 1; i >= 0; i--) {
