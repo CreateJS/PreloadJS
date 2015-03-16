@@ -78,7 +78,7 @@ this.createjs = this.createjs || {};
 		 * @private
 		 * @since 0.6.1
 		 */
-		this.plugins = [];
+		this.plugins = null;
 
 
 	// Protected Properties

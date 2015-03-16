@@ -411,7 +411,7 @@ this.createjs = this.createjs || {};
 		 * @private
 		 * @since 0.6.1
 		 */
-		this._plugins = [];	// TODO this might make a good getter / setter
+		this._plugins = [];
 
 		/**
 		 * An object hash of callbacks that are fired for each file type before the file is loaded, giving plugins the
@@ -1307,7 +1307,7 @@ this.createjs = this.createjs || {};
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
 		var loader = this._createLoader(item);
 		if (loader != null) {
-			if (loader.plugins) { loader.plugins = this._plugins; }
+			if ("plugins" in loader) { loader.plugins = this._plugins; }
 			item._loader = loader;
 			this._loadQueue.push(loader);
 			this._loadQueueBackup.push(loader);
