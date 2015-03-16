@@ -187,7 +187,7 @@ this.createjs = this.createjs || {};
 	 * </ul>
 	 * @method create
 	 * @param {LoadItem|String|Object} value The load item value
-	 * @returns {LoadItem}
+	 * @returns {LoadItem|Object}
 	 * @static
 	 */
 	s.create = function (value) {
@@ -198,7 +198,7 @@ this.createjs = this.createjs || {};
 		} else if (value instanceof s) {
 			return value;
 		} else if (value instanceof Object && value.src) {
-			if(value.loadTimeout == null) {
+			if (value.loadTimeout == null) {
 				value.loadTimeout = s.LOAD_TIMEOUT_DEFAULT;
 			}
 			return value;
