@@ -405,6 +405,15 @@ this.createjs = this.createjs || {};
 		this._crossOrigin = crossOrigin;
 
 		/**
+		 * An array of the plugins registered using {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}}.
+		 * @property _plugins
+		 * @type {Array}
+		 * @private
+		 * @since 0.6.1
+		 */
+		this._plugins = [];
+
+		/**
 		 * An object hash of callbacks that are fired for each file type before the file is loaded, giving plugins the
 		 * ability to override properties of the load. Please see the {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}}
 		 * method for more information.
@@ -982,6 +991,7 @@ this.createjs = this.createjs || {};
 		if (plugin == null) { return; }
 
 		if (plugin.getPreloadHandlers != null) {
+			this._plugins.push(plugin);
 			var map = plugin.getPreloadHandlers();
 			map.scope = plugin;
 
@@ -1297,6 +1307,7 @@ this.createjs = this.createjs || {};
 		if (item == null) { return; } // Sometimes plugins or types should be skipped.
 		var loader = this._createLoader(item);
 		if (loader != null) {
+			if ("plugins" in loader) { loader.plugins = this._plugins; }
 			item._loader = loader;
 			this._loadQueue.push(loader);
 			this._loadQueueBackup.push(loader);

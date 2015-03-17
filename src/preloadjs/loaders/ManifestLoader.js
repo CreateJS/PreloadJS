@@ -69,7 +69,19 @@ this.createjs = this.createjs || {};
 	function ManifestLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, null, createjs.AbstractLoader.MANIFEST);
 
-		// protected properties
+	// Public Properties
+		/**
+		 * An array of the plugins registered using {{#crossLink "LoadQueue/installPlugin"}}{{/crossLink}},
+		 * used to pass plugins to new LoadQueues that may be created.
+		 * @property _plugins
+		 * @type {Array}
+		 * @private
+		 * @since 0.6.1
+		 */
+		this.plugins = null;
+
+
+	// Protected Properties
 		/**
 		 * An internal {{#crossLink "LoadQueue"}}{{/crossLink}} that loads the contents of the manifest.
 		 * @property _manifestQueue
@@ -157,6 +169,9 @@ this.createjs = this.createjs || {};
 			queue.on("progress", this._handleManifestProgress, this);
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("error", this._handleManifestError, this, true);
+			for(var i = 0, l = this.plugins.length; i < l; i++) {	// conserve order of plugins
+				queue.installPlugin(this.plugins[i]);
+			}
 			queue.loadManifest(json);
 		} else {
 			this._sendComplete();
