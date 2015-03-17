@@ -437,7 +437,7 @@ this.createjs = this.createjs || {};
 			for (var i = 0, l = s.ACTIVEX_VERSIONS.length; i < l; i++) {
 				var axVersion = s.ACTIVEX_VERSIONS[i];
 				try {
-					req = new ActiveXObject(axVersions);
+					req = new ActiveXObject(axVersion);
 					break;
 				} catch (e) {}
 			}
