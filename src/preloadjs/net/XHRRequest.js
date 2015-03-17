@@ -205,6 +205,10 @@ this.createjs = this.createjs || {};
 	};
 
 	p.setResponseType = function (type) {
+		// Some old browsers doesn't support blob, so we convert arraybuffer to blob after response is downloaded
+		if (type === 'blob') {
+			type = window.URL ? 'blob' : 'arraybuffer';
+		}
 		this._request.responseType = type;
 	};
 
@@ -327,6 +331,10 @@ this.createjs = this.createjs || {};
 		}
 
 		this._response = this._getResponse();
+		// convert arraybuffer back to blob
+		if (this._request.responseType === 'arraybuffer') {
+			this._response = new Blob([this._response]);
+		}
 		this._clean();
 
 		this.dispatchEvent(new createjs.Event("complete"));
