@@ -209,8 +209,6 @@ this.createjs = this.createjs || {};
 		if (type === 'blob') {
 			type = window.URL ? 'blob' : 'arraybuffer';
 			this._responseType = type;
-		} else if (type === 'arraybuffer') {
-			this._responseType = 'arraybuffer';
 		}
 		this._request.responseType = type;
 	};
@@ -334,9 +332,20 @@ this.createjs = this.createjs || {};
 		}
 
 		this._response = this._getResponse();
-		// convert arraybuffer back to blob
-		if (this._responseType === 'blob') {
-			this._response = new Blob([this._response]);
+		// Convert arraybuffer back to blob
+		if (this._responseType === 'arraybuffer') {
+			try {
+				this._response = new Blob([this._response]);
+			} catch (e) {
+				// Fallback to use BlobBuilder if Blob constructor is not supported
+				// Tested on Android 2.3 ~ 4.2 and iOS5 safari
+				window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
+				if (e.name === 'TypeError' && window.BlobBuilder) {
+					var builder = new BlobBuilder();
+					builder.append(this._response);
+					this._response = builder.getBlob();
+				}
+			}
 		}
 		this._clean();
 
