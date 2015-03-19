@@ -249,7 +249,7 @@ describe("PreloadJS.LoadQueue", function () {
 		this.queue.loadFile({src:"http://dev.gskinner.com/createjs/cors/daisy.png", crossOrigin:true});
 	});
 
-	xit("should load a manifest and its children", function (done) {
+	it("should load a manifest and its children", function (done) {
 		var fileCount = 0;
 
 		this.queue.addEventListener("fileload", function (evt) {
@@ -257,12 +257,11 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 
 		this.queue.addEventListener("complete", function (evt) {
-			expect(fileCount).toBe(10);
+			expect(fileCount).toBe(5);
 			done();
 		});
 		this.loadFile({
-						  src: "static/ManifestTest.json",
-						  callback: "maps",
+						  src: "static/manifest.json",
 						  type: createjs.LoadQueue.MANIFEST
 					  });
 	});
