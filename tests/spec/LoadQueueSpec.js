@@ -21,7 +21,7 @@ describe("PreloadJS.LoadQueue", function () {
 	});
 
 	describe("Tag Loading", function () {
-		beforeEach(function() {
+		beforeEach(function () {
 			this.queue.setPreferXHR(false);
 			jasmine.DEFAULT_TIMEOUT_INTERVAL = 9000;
 		});
@@ -32,10 +32,10 @@ describe("PreloadJS.LoadQueue", function () {
 				done();
 			});
 			this.loadFile({
-							  src: "static/jsonpSample.json",
-							  callback: "x",
-							  type: createjs.LoadQueue.JSONP
-						  }, false);
+				src: "static/jsonpSample.json",
+				callback: "x",
+				type: createjs.LoadQueue.JSONP
+			}, false);
 		});
 
 		it("should load and execute Javascript (tag)", function (done) {
@@ -61,9 +61,9 @@ describe("PreloadJS.LoadQueue", function () {
 			});
 
 			this.loadFile({
-							  src: "audio/Thunder.mp3",
-							  type: createjs.AbstractLoader.SOUND
-						  });
+				src: "audio/Thunder.mp3",
+				type: createjs.AbstractLoader.SOUND
+			});
 		});
 
 		it("should load video", function (done) {
@@ -73,9 +73,9 @@ describe("PreloadJS.LoadQueue", function () {
 			});
 
 			this.loadFile({
-							  src: "static/video.mp4",
-							  type: createjs.AbstractLoader.VIDEO
-						  }, false);
+				src: "static/video.mp4",
+				type: createjs.AbstractLoader.VIDEO
+			}, false);
 		});
 
 		it("should load an existing video tag", function (done) {
@@ -110,9 +110,9 @@ describe("PreloadJS.LoadQueue", function () {
 			};
 
 			var sound = new createjs.SoundLoader({
-													 src: "audio/Thunder.mp3",
-													 type: createjs.LoadQueue.SOUND
-												 });
+				src: "audio/Thunder.mp3",
+				type: createjs.LoadQueue.SOUND
+			});
 			sound.addEventListener("progress", callback);
 			sound.load();
 		});
@@ -142,10 +142,10 @@ describe("PreloadJS.LoadQueue", function () {
 				done();
 			});
 			this.loadFile({
-							  src: "static/no_jsonp_here.json",
-							  callback: "x",
-							  type: createjs.LoadQueue.JSONP
-						  }, false);
+				src: "static/no_jsonp_here.json",
+				callback: "x",
+				type: createjs.LoadQueue.JSONP
+			}, false);
 		});
 	});
 
@@ -196,9 +196,9 @@ describe("PreloadJS.LoadQueue", function () {
 				done();
 			});
 			this.loadFile({
-							  src: "audio/Thunder.mp3",
-							  type: createjs.AbstractLoader.BINARY
-						  });
+				src: "audio/Thunder.mp3",
+				type: createjs.AbstractLoader.BINARY
+			});
 		});
 
 		it("should load svg (xhr)", function (done) {
@@ -224,9 +224,9 @@ describe("PreloadJS.LoadQueue", function () {
 			});
 
 			this.loadFile({
-							  src: "audio/Thunder.mp3",
-							  type: createjs.AbstractLoader.SOUND
-						  }, true);
+				src: "audio/Thunder.mp3",
+				type: createjs.AbstractLoader.SOUND
+			}, true);
 		});
 	});
 
@@ -244,9 +244,10 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 
-		//this.queue.preferXHR = false;
-		this.queue._crossOrigin = true;
-		this.queue.loadFile({src:"http://dev.gskinner.com/createjs/cors/daisy.png", crossOrigin:true});
+		this.queue.loadFile({
+			src: "http://dev.gskinner.com/createjs/cors/daisy.png",
+			crossOrigin: true
+		});
 	});
 
 	it("should load a manifest and its children", function (done) {
@@ -261,9 +262,9 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 		this.loadFile({
-						  src: "static/manifest.json",
-						  type: createjs.LoadQueue.MANIFEST
-					  });
+			src: "static/manifest.json",
+			type: createjs.LoadQueue.MANIFEST
+		});
 	});
 
 	it("should send progress events.", function (done) {
@@ -275,9 +276,9 @@ describe("PreloadJS.LoadQueue", function () {
 		};
 		this.queue.addEventListener("progress", callback);
 		this.loadFile({
-						  src: "audio/Thunder.mp3",
-						  type: createjs.LoadQueue.SOUND
-					  });
+			src: "audio/Thunder.mp3",
+			type: createjs.LoadQueue.SOUND
+		});
 	});
 
 	it("XHR should error on a 404", function (done) {
@@ -294,10 +295,10 @@ describe("PreloadJS.LoadQueue", function () {
 			done();
 		});
 		this.loadFile({
-						  src: "art/gbot.svg",
-						  type: createjs.LoadQueue.TEXT,
-						  data: "foo"
-					  });
+			src: "art/gbot.svg",
+			type: createjs.LoadQueue.TEXT,
+			data: "foo"
+		});
 	});
 
 	it("should have custom plugins", function (done) {
@@ -316,10 +317,14 @@ describe("PreloadJS.LoadQueue", function () {
 			var options = {};
 
 			// Tell PreloadJS to skip this file
-			if (options.stopDownload) { return false; }
+			if (options.stopDownload) {
+				return false;
+			}
 
 			// Tell PreloadJS to continue normally
-			if (options.doNothing) { return true; }
+			if (options.doNothing) {
+				return true;
+			}
 
 			loadItem.id = "foo";
 			loadItem.data = "foo";
@@ -346,19 +351,20 @@ describe("PreloadJS.LoadQueue", function () {
 
 		// the grunt server will echo back whatever we send it.
 		this.loadFile({
-						  src: "",
-						  method: createjs.LoadQueue.POST,
-						  values: value
-					  });
+			src: "",
+			method: createjs.LoadQueue.POST,
+			values: value
+		});
 	});
 
-	it("destory() should remove all references in a LoadQueue", function () {
-		this.queue.addEventListener("fileload", function (evt) { });
+	it("destroy() should remove all references in a LoadQueue", function () {
+		this.queue.addEventListener("fileload", function (evt) {
+		});
 		this.loadFile({
-						  src: "art/gbot.svg",
-						  type: createjs.LoadQueue.TEXT,
-						  data: "foo"
-					  });
+			src: "art/gbot.svg",
+			type: createjs.LoadQueue.TEXT,
+			data: "foo"
+		});
 
 		this.queue.destroy();
 		expect(this.queue.hasEventListener("fileload")).toBe(false);
@@ -369,6 +375,7 @@ describe("PreloadJS.LoadQueue", function () {
 	it("removeAll() should remove all the items in a LoadQueue", function () {
 		this.queue.loadFile("foo.baz", false);
 		this.queue.loadFile("baz.foo", false);
+		expect(this.queue._numItems).toBe(2);
 
 		this.queue.removeAll();
 
@@ -388,11 +395,11 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 
 		this.loadFile({
-						  src: "art/gbot.svg",
-						  id:"foo",
-						  type: createjs.LoadQueue.TEXT,
-						  data: "foo"
-					  });
+			src: "art/gbot.svg",
+			id: "foo",
+			type: createjs.LoadQueue.TEXT,
+			data: "foo"
+		});
 	});
 
 });
