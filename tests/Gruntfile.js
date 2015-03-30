@@ -81,7 +81,7 @@ module.exports = function (grunt) {
 	grunt.loadTasks('tasks/');
 
 	grunt.registerTask("default", "Launches browser-based tests", "serve");
-	grunt.registerTask("serve", "Launches browser-based tests", ["listips", "connect"]);
+	grunt.registerTask("serve", "Launches browser-based tests", ["jasmine:run:build", "listips", "connect"]);
 
 	grunt.registerTask("headless", "phantom");
 	grunt.registerTask("phantom", "Launches phantom-based tests", ["configureConnectHeadless", "connect", "jasmine"]);
