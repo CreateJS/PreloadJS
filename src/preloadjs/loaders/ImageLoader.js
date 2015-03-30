@@ -103,7 +103,7 @@ this.createjs = this.createjs || {};
 
 	// protected methods
 	/**
-	 * Before the item loads, set its mimetype and responseType.
+	 * Before the item loads, set its mimeType and responseType.
 	 * @property _updateXHR
 	 * @param {Event} event
 	 * @private
