@@ -1567,6 +1567,8 @@ this.createjs = this.createjs || {};
 		if (!this.stopOnError) {
 			this._removeLoadItem(loader);
 			this._loadNext();
+		} else {
+			this.setPaused(true);
 		}
 	};
 
@@ -1817,10 +1819,7 @@ this.createjs = this.createjs || {};
 	 * @protected
 	 */
 	p._sendFileProgress = function (item, progress) {
-		if (this._isCanceled()) {
-			this._cleanUp();
-			return;
-		}
+		if (this._isCanceled() || this._paused) { return; }
 		if (!this.hasEventListener("fileprogress")) { return; }
 
 		//LM: Rework ProgressEvent to support this?
@@ -1842,7 +1841,7 @@ this.createjs = this.createjs || {};
 	 * @protected
 	 */
 	p._sendFileComplete = function (item, loader) {
-		if (this._isCanceled()) { return; }
+		if (this._isCanceled() || this._paused) { return; }
 
 		var event = new createjs.Event("fileload");
 		event.loader = loader;
