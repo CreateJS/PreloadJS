@@ -1238,15 +1238,15 @@ this.createjs = this.createjs || {};
 	 */
 	p.getItems = function(loaded) {
 		var arr = [];
-		for (var i= 0, l=this._loadQueueBackup.length; i<l; i++) {
-			var loader = this._loadQueueBackup[i];
-			var item = loader.getItem();
-			if (loaded === true && !loader.loaded) { continue; }
+		for (var n in this._loadItemsById) {
+			var item = this._loadItemsById[n];
+			var result = this.getResult(n);
+			if (loaded === true && result == null) { continue; }
 			arr.push({
 				item: item,
-				result: this.getResult(item.id),
-				rawResult: this.getResult(item.id, true)
-			 });
+				result: result,
+				rawResult: this.getResult(n, true)
+			});
 		}
 		return arr;
 	};
