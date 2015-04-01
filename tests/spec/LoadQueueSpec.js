@@ -402,4 +402,27 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 	});
 
+	it("stopOnError should suppress events", function (done) {
+		var _this = this;
+
+		var func = {
+			complete: function () {
+
+			}
+		};
+
+		spyOn(func, 'complete');
+
+		setTimeout(function () {
+			expect(func.complete).not.toHaveBeenCalled();
+			done();
+		}, 750);
+
+		this.queue.addEventListener("complete", func.complete);
+		this.queue.stopOnError = true;
+		this.queue.setMaxConnections(2);
+		this.queue.loadManifest(['static/manifest.json', "FileWill404.html", "static/grant.xml", "static/grant.json"], true);
+
+	});
+
 });
