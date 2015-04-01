@@ -251,14 +251,16 @@ describe("PreloadJS.LoadQueue", function () {
 	});
 
 	it("should load a manifest and its children", function (done) {
-		var fileCount = 0;
+		var func = {
+			fileload:function() { }
+		};
 
-		this.queue.addEventListener("fileload", function (evt) {
-			fileCount++;
-		});
+		spyOn(func, "fileload");
+
+		this.queue.addEventListener("fileload", func.fileload);
 
 		this.queue.addEventListener("complete", function (evt) {
-			expect(fileCount).toBe(5);
+			expect(func.fileload.calls.count()).toBe(5);
 			done();
 		});
 		this.loadFile({
