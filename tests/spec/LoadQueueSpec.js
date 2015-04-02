@@ -252,7 +252,8 @@ describe("PreloadJS.LoadQueue", function () {
 
 	it("should load a manifest and its children", function (done) {
 		var func = {
-			fileload:function() { }
+			fileload: function () {
+			}
 		};
 
 		spyOn(func, "fileload");
@@ -386,7 +387,25 @@ describe("PreloadJS.LoadQueue", function () {
 		expect(this.queue._numItems).toBe(0);
 	});
 
-	it("remove('foo') should remove foo from the LoadQueue", function (done) {
+	it("remove by src should remove foo from the LoadQueue", function (done) {
+		var _this = this;
+
+		this.queue.addEventListener("complete", function (evt) {
+			expect(_this.queue.getItem("foo")).toBeDefined();
+			_this.queue.remove(_this.getFilePath("art/gbot.svg"));
+			expect(_this.queue.getItem("foo")).not.toBeDefined();
+			done();
+		});
+
+		this.loadFile({
+			src: "art/gbot.svg",
+			id: "foo",
+			type: createjs.LoadQueue.TEXT,
+			data: "foo"
+		});
+	});
+
+	it("remove by id should remove foo from the LoadQueue", function (done) {
 		var _this = this;
 
 		this.queue.addEventListener("complete", function (evt) {
