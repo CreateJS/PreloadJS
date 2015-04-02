@@ -50,17 +50,29 @@
 	 */
 	s.parseXML = function (text, type) {
 		var xml = null;
+		// CocoonJS does not support XML parsing with either method.
+
+		// Most browsers will use DOMParser
+		// IE fails on certain SVG files, so we have a fallback below.
 		try {
-			// CocoonJS does not support XML parsing with either method.
 			if (window.DOMParser) {
 				var parser = new DOMParser();
 				xml = parser.parseFromString(text, type);
-			} else { // IE
+			}
+		} catch (e) {
+		}
+
+		// Fallback for IE support.
+		if (!xml) {
+			try {
 				xml = new ActiveXObject("Microsoft.XMLDOM");
 				xml.async = false;
 				xml.loadXML(text);
+			} catch (e) {
+				xml = null;
 			}
-		} catch (e) {}
+		}
+
 		return xml;
 	};
 
