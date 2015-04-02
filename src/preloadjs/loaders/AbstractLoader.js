@@ -659,7 +659,7 @@ this.createjs = this.createjs || {};
 	 * @return {Object} The formatted result
 	 * @since 0.6.0
 	 */
-	p.resultFormatter = null; //TODO: Add support for async formatting.
+	p.resultFormatter = null;
 
 	/**
 	 * Handle events from internal requests. By default, loaders will handle, and redispatch the necessary events, but
