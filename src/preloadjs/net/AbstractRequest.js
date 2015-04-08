@@ -32,9 +32,10 @@
  */
 
 // namespace:
-this.createjs = this.createjs || {};
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
 
-(function () {
+(function (createjs) {
 	"use strict";
 
 	/**
@@ -72,4 +73,4 @@ this.createjs = this.createjs || {};
 
 	createjs.AbstractRequest = createjs.promote(AbstractRequest, "EventDispatcher");
 
-}());
+}(scope.createjs));

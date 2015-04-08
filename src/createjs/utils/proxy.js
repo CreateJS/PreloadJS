@@ -31,7 +31,8 @@
  */
 
 // namespace:
-this.createjs = this.createjs||{};
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
 
 /**
  * Various utilities that the CreateJS Suite uses. Utilities are created as separate files, and will be available on the
@@ -45,7 +46,7 @@ this.createjs = this.createjs||{};
  * @main Utility Methods
  */
 
-(function() {
+(function(createjs) {
 	"use strict";
 
 	/**
@@ -77,4 +78,4 @@ this.createjs = this.createjs||{};
 		};
 	}
 
-}());
+}(scope.createjs));

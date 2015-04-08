@@ -31,7 +31,8 @@
  */
 
 // namespace:
-this.createjs = this.createjs||{};
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
 
 /**
  * @class Utility Methods
@@ -48,7 +49,7 @@ this.createjs = this.createjs||{};
  * @param searchElement Element to find in array.
  * @return {Number} The first index of searchElement in array.
  */
-createjs.indexOf = function (array, searchElement){
+scope.createjs.indexOf = function (array, searchElement){
 	"use strict";
 
 	for (var i = 0,l=array.length; i < l; i++) {

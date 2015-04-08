@@ -30,8 +30,10 @@
 /**
  * @module PreloadJS
  */
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
 
-(function () {
+(function (createjs) {
 
 	/**
 	 * Utilities that assist with parsing load items, and determining file types, etc.
@@ -321,4 +323,4 @@
 
 	createjs.RequestUtils = s;
 
-}());
+}(scope.createjs));

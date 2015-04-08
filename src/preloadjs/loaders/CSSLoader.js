@@ -32,9 +32,10 @@
  */
 
 // namespace:
-this.createjs = this.createjs || {};
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
 
-(function () {
+(function (createjs) {
 	"use strict";
 
 	// constructor
@@ -110,4 +111,4 @@ this.createjs = this.createjs || {};
 
 	createjs.CSSLoader = createjs.promote(CSSLoader, "AbstractLoader");
 
-}());
+}(scope.createjs));

@@ -31,7 +31,10 @@
  * @module PreloadJS
  */
 
-(function () {
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
+
+(function (createjs) {
 
 	/**
 	 * A few utilities for interacting with the dom.
@@ -53,4 +56,4 @@
 
 	createjs.DomUtils = s;
 
-}());
+}(scope.createjs));

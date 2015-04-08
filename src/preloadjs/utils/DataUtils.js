@@ -31,7 +31,11 @@
  * @module PreloadJS
  */
 
-(function () {
+
+var scope = (typeof window == 'undefined')?this:window;
+scope.createjs = scope.createjs || {};
+
+(function (createjs) {
 
 	/**
 	 * A few data utilities for formatting different data types.
@@ -97,4 +101,4 @@
 
 	createjs.DataUtils = s;
 
-}());
+}(scope.createjs));
