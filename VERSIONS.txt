@@ -2,7 +2,14 @@ Version NEXT [not yet released]
 ****************************************************************************************************
 - fix github issue 124, added error handler to TagRequest
 - added support for loading files with src set to an object that is then decoded by a plugin
-
+- Fixed parsing of certain SVG files in IE 9/10
+- Fixed propagating loaded sub-manifest items
+- Fixed XHR support for IE 9
+- Support for IE8 has been dropped
+- Fixed loading binary files when BLob constructor is not supported (thanks to @thammin)
+- Fixed propagating plugins to sub loaders
+- Fixed SVG loading on iOS
+- XHR text loads now default to UTF-8
 
 Version 0.6.0 [December 12, 2014]
 ************************************************************************************************************************
