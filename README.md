@@ -18,7 +18,9 @@ function handleFileComplete(event) {
 ## Support and Resources
 * Find examples and more information at the [PreloadJS web site](http://www.preloadjs.com/)
 * Read the [documentation](http://createjs.com/Docs/PreloadJS/)
-* You can also ask questions and interact with other users at our [Community](http://community.createjs.com) site.
+* Discuss, share projects, and interact with other users on [reddit](http://www.reddit.com/r/createjs/).
+* Ask technical questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/preloadjs).
+* File verified bugs or formal feature requests using Issues on [GitHub](https://github.com/createjs/PreloadJS/issues).
 * Have a look at the included [examples](https://github.com/CreateJS/PreloadJS/tree/master/examples) and [API documentation](http://createjs.com/Docs/PreloadJS/) for more in-depth information.
 
 Built by [gskinner.com](http://www.gskinner.com), and is released for free under the MIT license, which means you can
