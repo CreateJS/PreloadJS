@@ -133,7 +133,6 @@
 
 <script type="text/javascript" src="../_assets/libs/soundjs-NEXT.min.js"></script>
 <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
-<script type="text/javascript" src="../src/preloadjs/loaders/ManifestLoader.js"></script>
 <!-- We also provide hosted minified versions of all CreateJS libraries.
 	http://code.createjs.com -->
 
@@ -144,7 +143,7 @@
 		// Create a new queue.
 		//preload = new createjs.LoadQueue(true, "assets/");
 
-		// Use this instead to favor tag loading
+		// Use this instead to favor XHR loading
 		preload = new createjs.LoadQueue(true);
 
 		createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);  // need this so it doesn't default to Web Audio
@@ -175,7 +174,7 @@
 			src: target.id,
 			id: target.id
 		};
-		
+
 		if (!type) {
 			preload.loadManifest({path: "../_assets/", manifest: [item]});
 		} else {
