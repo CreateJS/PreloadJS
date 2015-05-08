@@ -1586,6 +1586,7 @@ this.createjs = this.createjs || {};
 
 		if (!this.stopOnError) {
 			this._removeLoadItem(loader);
+			this._cleanLoadItem(loader);
 			this._loadNext();
 		} else {
 			this.setPaused(true);
@@ -1613,13 +1614,16 @@ this.createjs = this.createjs || {};
 
 		this._saveLoadedItems(loader);
 
-		// Clean up the load item
+		// Remove the load item
 		this._removeLoadItem(loader);
 
 		if (!this._finishOrderedItem(loader)) {
 			// The item was NOT managed, so process it now
 			this._processFinishedLoad(item, loader);
 		}
+
+		// Clean up the load item
+		this._cleanLoadItem(loader);
 	};
 
 	/**
@@ -1710,8 +1714,8 @@ this.createjs = this.createjs || {};
 
 			var loadItem = this._loadedResults[item.id];
 			if (item.type == createjs.LoadQueue.JAVASCRIPT) {
-				// Append script tags to the head automatically. Tags do this in the loader, but XHR scripts have to maintain order.
-				(document.body || document.getElementsByTagName("body")[0]).appendChild(loadItem);
+				// Append script tags to the head automatically.
+				createjs.DomUtils.appendToHead(loadItem);
 			}
 
 			var loader = item._loader;
@@ -1730,6 +1734,13 @@ this.createjs = this.createjs || {};
 	 */
 	p._processFinishedLoad = function (item, loader) {
 		this._numItemsLoaded++;
+
+		// Since LoadQueue needs maintain order, we can't append scripts in the loader.
+		// So we do it here instead. Or in _checkScriptLoadOrder();
+		if (!this.maintainScriptOrder && item.type == createjs.LoadQueue.JAVASCRIPT) {
+			createjs.DomUtils.appendToHead(item.result);
+		}
+
 		this._updateProgress();
 		this._sendFileComplete(item, loader);
 		this._loadNext();
@@ -1776,9 +1787,6 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._removeLoadItem = function (loader) {
-		var item = loader.getItem();
-		delete item._loader;
-
 		var l = this._currentLoads.length;
 		for (var i = 0; i < l; i++) {
 			if (this._currentLoads[i] == loader) {
@@ -1787,6 +1795,19 @@ this.createjs = this.createjs || {};
 			}
 		}
 	};
+
+	/**
+	 * Remove unneeded references from a loader.
+	 *
+	 * @param loader
+	 * @private
+	 */
+	p._cleanLoadItem = function(loader) {
+		var item = loader.getItem();
+		if (item) {
+			delete item._loader;
+		}
+	}
 
 	/**
 	 * An item has dispatched progress. Propagate that progress, and update the LoadQueue's overall progress.

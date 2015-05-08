@@ -92,8 +92,6 @@ this.createjs = this.createjs || {};
 	p._formatResult = function (loader) {
 		if (this._preferXHR) {
 			var tag = loader.getTag();
-			var head = document.getElementsByTagName("head")[0]; //Note: This is unavoidable in IE678
-			head.appendChild(tag);
 
 			if (tag.styleSheet) { // IE
 				tag.styleSheet.cssText = loader.getResult(true);
@@ -104,6 +102,8 @@ this.createjs = this.createjs || {};
 		} else {
 			tag = this._tag;
 		}
+
+		createjs.DomUtils.appendToHead(tag);
 
 		return tag;
 	};
