@@ -16,8 +16,7 @@ module.exports = function (grunt) {
 								'spec/Helpers.js'
 							],
 							vendor: [
-								'../_assets/libs/easeljs-NEXT.min.js',
-								'../_assets/libs/preloadjs-NEXT.min.js'
+								'../_assets/libs/easeljs-NEXT.min.js'
 							],
 							host: 'http://127.0.0.1:<%=connect.serve.options.port%>/'
 						}

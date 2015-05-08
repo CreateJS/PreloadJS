@@ -1,7 +1,7 @@
 describe("PreloadJS.LoadQueue", function () {
 
 	beforeEach(function () {
-		jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+		jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
 
 		this.queue = new createjs.LoadQueue();
 
