@@ -790,6 +790,13 @@ this.createjs = this.createjs || {};
 	 * object will contain that value as a property.
 	 */
 
+	/**
+	 * Although it extends {{#crossLink "AbstractLoader"}}{{/crossLink}}, the `initialize` event is never fired from
+	 * a LoadQueue instance.
+	 * @event initialize
+	 * @private
+	 */
+
 // public methods
 	/**
 	 * Register a custom loaders class. New loaders are given precedence over loaders added earlier and default loaders.
