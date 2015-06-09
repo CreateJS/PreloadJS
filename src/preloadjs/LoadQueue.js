@@ -817,7 +817,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Remove a custom loader added usig {{#crossLink "registerLoader"}}{{/crossLink}}. Only custom loaders can be
+	 * Remove a custom loader added using {{#crossLink "registerLoader"}}{{/crossLink}}. Only custom loaders can be
 	 * unregistered, the default loaders will always be available.
 	 * @method unregisterLoader
 	 * @param {Function|AbstractLoader} loader The AbstractLoader class to remove
@@ -835,8 +835,8 @@ this.createjs = this.createjs || {};
 	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
 	 * the provided value argument was true.
 	 * @since 0.3.0
-	 * @deprecated use the {{#crossLink "preferXHR:property"}}{{/crossLink}} property, or the {{#crossLink "setUseXHR"}}{{/crossLink}}
-	 * method instead.
+	 * @deprecated use the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}} property, or the
+	 * {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}} method instead.
 	 */
 	p.setUseXHR = function (value) {
 		return this.setPreferXHR(value);
