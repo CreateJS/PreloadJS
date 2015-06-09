@@ -697,7 +697,7 @@ this.createjs = this.createjs || {};
 			case "abort":
 			case "timeout":
 				if (!this._isCanceled()) {
-					this.dispatchEvent(event.type);
+					this.dispatchEvent(new createjs.ErrorEvent("PRELOAD_" + event.type.toUpperCase() + "_ERROR"));
 				}
 				break;
 		}
