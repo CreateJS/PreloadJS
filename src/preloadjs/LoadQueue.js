@@ -1745,7 +1745,8 @@ this.createjs = this.createjs || {};
 		// Since LoadQueue needs maintain order, we can't append scripts in the loader.
 		// So we do it here instead. Or in _checkScriptLoadOrder();
 		if (!this.maintainScriptOrder && item.type == createjs.LoadQueue.JAVASCRIPT) {
-			createjs.DomUtils.appendToHead(item.result);
+			var tag = loader.getTag();
+			createjs.DomUtils.appendToHead(tag);
 		}
 
 		this._updateProgress();
