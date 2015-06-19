@@ -41,8 +41,24 @@ describe("PreloadJS.LoadQueue", function () {
 		it("should load and execute Javascript (tag)", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
 				expect(window.foo).toBe(true);
+				
+				delete window.foo;
 				done();
 			});
+			this.loadFile("static/scriptExample.js", false);
+		});
+				
+		it("should load and execute Javascript (tag) when maintainScriptOrder is false", function (done) {
+		
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(window.foo).toBe(true);
+				
+				delete window.foo;
+				done();
+			});
+			
+			this.queue.maintainScriptOrder = false;
+			
 			this.loadFile("static/scriptExample.js", false);
 		});
 
@@ -169,8 +185,23 @@ describe("PreloadJS.LoadQueue", function () {
 		it("should load and execute Javascript (xhr)", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
 				expect(window.foo).toBe(true);
+				
+				delete window.foo;
 				done();
 			});
+			this.loadFile("static/scriptExample.js", true);
+		});
+		
+		it("should load and execute Javascript (xhr) when maintainScriptOrder is false", function (done) {
+			this.queue.addEventListener("fileload", function (evt) {
+				expect(window.foo).toBe(true);
+				
+				delete window.foo;
+				done();
+			});
+			
+			this.queue.maintainScriptOrder = false;
+			
 			this.loadFile("static/scriptExample.js", true);
 		});
 
