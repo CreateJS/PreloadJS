@@ -28,7 +28,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load JSONp", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof Object).toBe(true);
+				expect(evt.result).toEqual(jasmine.any(Object));
 				done();
 			});
 			this.loadFile({
@@ -72,7 +72,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load sounds", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof HTMLMediaElement).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
 				done();
 			});
 
@@ -84,7 +84,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load video", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof HTMLMediaElement).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
 				done();
 			});
 
@@ -135,7 +135,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load images (tag)", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof HTMLImageElement).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(HTMLImageElement));
 				done();
 			});
 			this.loadFile("art/image0.jpg", false);
@@ -168,7 +168,7 @@ describe("PreloadJS.LoadQueue", function () {
 	describe("XHR Loading", function () {
 		it("should load XML", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof Document).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(Document));
 				done();
 			});
 			this.loadFile("static/grant.xml");
@@ -176,7 +176,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load JSON", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof Object).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(Object));
 				done();
 			});
 			this.loadFile("static/grant.json");
@@ -207,7 +207,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load css", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof HTMLElement).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(HTMLElement));
 				done();
 			});
 			this.loadFile("static/font.css");
@@ -215,7 +215,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load images (xhr)", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof HTMLImageElement).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(HTMLImageElement));
 				done();
 			});
 			this.loadFile("art/Autumn.png", true);
@@ -223,7 +223,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load binary data", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof ArrayBuffer).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(ArrayBuffer));
 				done();
 			});
 			this.loadFile({
@@ -250,7 +250,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load sounds (xhr)", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result instanceof HTMLMediaElement).toBe(true);
+                expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
 				done();
 			});
 
