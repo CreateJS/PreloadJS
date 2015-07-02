@@ -301,6 +301,33 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 	});
 
+    it("a SpriteSheetLoader should load a SpriteSheet uinsg JSON", function(done) {
+        var _this = this;
+        this.queue.addEventListener("complete", function (evt) {
+            expect(_this.queue.getResult("foo")).toEqual(jasmine.any(createjs.SpriteSheet));
+            done();
+        });
+        this.loadFile({
+            id:"foo",
+            src: "static/grant.json",
+            type: createjs.AbstractLoader.SPRITESHEET
+        });
+    });
+
+    it("a SpriteSheetLoader should load a SpriteSheet using JSONp", function(done) {
+        var _this = this;
+        this.queue.addEventListener("complete", function (evt) {
+            expect(_this.queue.getResult("foo")).toEqual(jasmine.any(createjs.SpriteSheet));
+            done();
+        });
+        this.loadFile({
+            id:"foo",
+            src: "static/grantp.json",
+            callback:"grantp",
+            type: createjs.AbstractLoader.SPRITESHEET
+        });
+    });
+
 	it("should send progress events.", function (done) {
 		var _this = this;
 		var callback = function (evt) {
