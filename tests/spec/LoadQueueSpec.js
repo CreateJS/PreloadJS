@@ -96,7 +96,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load an existing video tag", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result == tag).toBe(true);
+				expect(evt.result).toEqual(tag);
 				done();
 			});
 
@@ -108,7 +108,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load an existing sound tag", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result == tag).toBe(true);
+				expect(evt.result).toEqual(tag);
 				done();
 			});
 
@@ -119,9 +119,15 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("tag sound loading send progress events.", function (done) {
 			var _this = this;
-			var callback = function (evt) {
-				expect(true).toBe(true);
-				sound.removeEventListener("progress", callback);
+
+            var func = {
+                progress: function () { }
+            };
+            spyOn(func, 'progress');
+
+            var completeCallback = function (evt) {
+                expect(func.progress).toHaveBeenCalled();
+				sound.removeEventListener("progress", func.progress);
 				done();
 			};
 
@@ -129,7 +135,10 @@ describe("PreloadJS.LoadQueue", function () {
 				src: "audio/Thunder.mp3",
 				type: createjs.LoadQueue.SOUND
 			});
-			sound.addEventListener("progress", callback);
+
+			sound.addEventListener("progress", func.progress);
+            sound.addEventListener("complete", completeCallback);
+
 			sound.load();
 		});
 
@@ -143,7 +152,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load an existing image tag", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result === tag).toBe(true);
+				expect(evt.result).toEqual(tag);
 				done();
 			});
 
@@ -330,12 +339,20 @@ describe("PreloadJS.LoadQueue", function () {
 
 	it("should send progress events.", function (done) {
 		var _this = this;
-		var callback = function (evt) {
-			expect(true).toBe(true);
-			_this.queue.removeEventListener("progress", callback);
+
+        var func = {
+            progress: function () { }
+        };
+        spyOn(func, 'progress');
+
+		var completeCallback = function (evt) {
+            expect(func.progress).toHaveBeenCalled();
+			_this.queue.removeEventListener("progress", func.progress);
 			done();
 		};
-		this.queue.addEventListener("progress", callback);
+		this.queue.addEventListener("progress", func.progress);
+        this.queue.addEventListener("complete", completeCallback);
+
 		this.loadFile({
 			src: "audio/Thunder.mp3",
 			type: createjs.LoadQueue.SOUND
