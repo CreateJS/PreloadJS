@@ -67,7 +67,7 @@ this.createjs = this.createjs || {};
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.JSON && !item._loadAsJSONP;
+		return item.type == createjs.AbstractLoader.JSON;
 	};
 
 	// protected methods

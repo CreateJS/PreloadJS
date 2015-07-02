@@ -72,7 +72,7 @@ this.createjs = this.createjs || {};
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.JSONP || item._loadAsJSONP;
+		return item.type == createjs.AbstractLoader.JSONP;
 	};
 
 	// public methods
@@ -82,7 +82,7 @@ this.createjs = this.createjs || {};
 	};
 
 	/**
-	 * Loads the JSONp file.  Because of the unique loading needs of jsonP
+	 * Loads the JSONp file.  Because of the unique loading needs of JSONp
 	 * we don't use the AbstractLoader.load() method.
 	 *
 	 * @method load
