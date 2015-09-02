@@ -176,10 +176,11 @@ this.createjs = this.createjs || {};
 	 *     <li>{{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}: A list of files to load in JSON format, see
 	 *     {{#crossLink "AbstractLoader/loadManifest"}}{{/crossLink}}</li>
 	 *     <li>{{#crossLink "AbstractLoader/SOUND:property"}}{{/crossLink}}: Audio file formats</li>
-	 *     <li>{{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}: JSON SpriteSheet definiteions. This
+	 *     <li>{{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}: JSON SpriteSheet definitions. This
 	 *     will also load sub-images, and provide a {{#crossLink "SpriteSheet"}}{{/crossLink}} instance.</li>
 	 *     <li>{{#crossLink "AbstractLoader/SVG:property"}}{{/crossLink}}: SVG files</li>
 	 *     <li>{{#crossLink "AbstractLoader/TEXT:property"}}{{/crossLink}}: Text files - XHR only</li>
+     *     <li>{{#crossLink "AbstractLoader/VIDEO:property"}}{{/crossLink}}: Video objects</li>
 	 *     <li>{{#crossLink "AbstractLoader/XML:property"}}{{/crossLink}}: XML data</li>
 	 * </ul>
 	 *
@@ -202,6 +203,7 @@ this.createjs = this.createjs || {};
 	 *     <li>SpriteSheet: A {{#crossLink "SpriteSheet"}}{{/crossLink}} instance, containing loaded images.
 	 *     <li>SVG: An &lt;object /&gt; tag</li>
 	 *     <li>Text: Raw text</li>
+     *     <li>Video: A Video DOM node</li>
 	 *     <li>XML: An XML DOM node</li>
 	 * </ul>
 	 *
