@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+    <script src="../../lib/preloadjs-NEXT.combined.js"></script>
+    <script src="../../src/preloadjs/loaders/FontLoader.js"></script>
+	<script>
+		var fontConfig = {
+			src: "https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic",
+			type: "fontcss"
+		}
+		
+		var loader = new createjs.FontLoader(fontConfig, true);
+		loader.on("complete", function() { result.innerHTML = "COMPLETE"; });
+		loader.load();
+	</script>
+	<div style="font-family: Roboto; font-size:72pt;">
+		Hello World!
+	</div>
+	<div id="result">
+		
+		
+	</div>
+	
+</body>
+</html>

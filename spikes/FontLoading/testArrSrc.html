@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+    <script src="../../lib/preloadjs-NEXT.combined.js"></script>
+    <script src="../../src/preloadjs/loaders/FontLoader.js"></script>
+	<script>
+		var fontConfig = {
+			src: [
+				"fonts/regul-book.woff",
+				"fonts/regul-bold.woff"
+			],
+			type: "font"
+		};
+		
+		var loader = new createjs.FontLoader(fontConfig, true);
+		loader.on("complete", function() { result.innerHTML = "COMPLETE"; });
+		loader.load();
+	</script>
+	<div style="font-family: regul; font-size:72pt;">
+		Hello World!
+	</div>
+	<div style="font-family: regul; font-weight: bold; font-size:72pt;">
+		Hello World!
+	</div>
+	<div id="result">
+		
+		
+	</div>
+	
+</body>
+</html>
