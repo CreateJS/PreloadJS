@@ -55,6 +55,18 @@
 
 	}
 	var p = createjs.extend(FontLoader, createjs.AbstractLoader);
+    
+    /**
+     * Determines if the loader can load a specific item. This loader can only load items that are of type
+     * {{#crossLink "AbstractLoader/FONT:property"}}{{/crossLink}}.
+     * @method canLoadItem
+     * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+     * @returns {Boolean} Whether the loader can load the item.
+     * @static
+     */
+    FontLoader.canLoadItem = function (item) {
+        return item.type == createjs.AbstractLoader.FONT || item.type == createjs.AbstractLoader.FONTCSS;
+    };
 
 
 // static properties:
