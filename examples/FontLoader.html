@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PreloadJS: Font Loading</title>
+
+	<link href="../_assets/css/shared.css" rel="stylesheet" type="text/css"/>
+	<link href="../_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+	
+	<style type="text/css">
+		#template {
+			display:none;
+		}
+        .font-display {
+            display: block;
+            position: relative;
+            line-height: normal;
+        }
+	</style>
+</head>
+<body onload="init()">
+
+	<header id="header" class="PreloadJS">
+	    <h1><span class="text-product">Preload<strong>JS</strong></span> Font Loading Approaches</h1>
+	    <p>
+            This sample shows the different approaches for loading fonts in PreloadJS. Currently supported are
+            local font loading using a CSS file and manual definitions, and remote loading using Google Fonts. Currently,
+            Typekit is not supported.
+        </p>
+	</header>
+
+    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
+
+    <!-- Internal Stylsheet for loading CSS -->
+    <!--<style id="foo">
+        @font-face {
+            font-family: 'regul';
+            font-style: normal;
+            font-weight: bold;
+            src: local('regul bold'), url('../_assets/fonts/regul-bold.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'regul';
+            font-style: normal;
+            font-weight: normal;
+            src: local('regul book'), url('../_assets/fonts/regul-book.woff') format('woff');
+        }
+    </style>-->
+
+    <script type="text/javascript">
+
+        function init() {
+            if (window.top != window) {
+                document.getElementById("header").style.display = "none";
+            }
+        }
+
+        function loadFonts(config) {
+            var loader = new createjs.FontLoader(config, true);
+            loader.on("complete", handleLoad);
+            loader.load();
+        }
+        function handleLoad() {
+            var div = document.createElement("div");
+            div.className = "resultItem";
+            div.innerHTML = "COMPLETE";
+            result.appendChild(div);
+        }
+
+        function loadManualList() {
+            loadFonts({
+                src: [
+                    {
+                        src: "local('regul'), url(../_assets/fonts/regul-book.woff) format('woff')",
+                        family: "regul"
+                    },
+                    {
+                        src: "local('regul'), url(../_assets/fonts/regul-bold.woff) format('woff')",
+                        family: "regul",
+                        weight: "bold"
+                    }
+                ],
+                type: "font",
+                injectCSS: true
+            });
+            return false;
+        }
+        function loadSrc() {
+            loadFonts({
+                src: "../_assets/fonts/regul-bold.woff"
+            });
+            return false;
+        }
+        function loadSrcList() {
+            loadFonts({
+                src: [
+                    "../_assets/fonts/regul-book.woff",
+                    "../_assets/fonts/regul-bold.woff"
+                ],
+                type: "font"
+            });
+            return false;
+        }
+        function loadCSS() {
+            loadFonts({
+                src: foo,
+                type: "fontcss"
+            });
+            return false;
+        }
+        function loadGoogleFonts() {
+            loadFonts({
+                src: "https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic",
+                type: "fontcss"
+            });
+            return false;
+        }
+    </script>
+
+    <a href="#" onclick="return loadSrc()">Load CSS Source</a> |
+    <a href="#" onclick="return loadSrcList()">Load CSS Source List</a> |
+    <a href="#" onclick="return loadManualList()">Load Manual List</a> |
+    <a href="#" onclick="return loadCSS()">Load CSS Tag</a> |
+    <a href="#" onclick="return loadGoogleFonts()">Load Google Fonts</a>
+
+    <!-- Display Results -->
+    <div style="font-family: regul; font-size:72pt;" class="font-display">
+   		Hello World!
+   	</div>
+   	<div style="font-family: regul; font-weight: bold; font-size:72pt;" class="font-display">
+   		Hello World (bold)!
+   	</div>
+    <div style="font-family: Roboto; font-size:72pt;" class="font-display">
+        Hello World (google)!
+    </div>
+   	<div id="result">
+
+   	</div>
+
+</body>
+</html>
