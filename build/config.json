@@ -37,5 +37,5 @@
 		"../src/preloadjs/loaders/XMLLoader.js"
 	],
 
-	"docs_out_path":"./output/PreloadJSDocs/"
+  "docs_out_path": "../../createjs-com_version2/docs/preloadjs/"
 }
