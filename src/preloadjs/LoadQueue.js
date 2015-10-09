@@ -389,7 +389,7 @@ this.createjs = this.createjs || {};
 			createjs.SVGLoader,
 			createjs.BinaryLoader,
 			createjs.VideoLoader,
-			createjs.TextLoader,
+			createjs.TextLoader
 		];
 
 		/**
