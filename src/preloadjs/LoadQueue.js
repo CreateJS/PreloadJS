@@ -892,7 +892,7 @@ this.createjs = this.createjs || {};
 	p.remove = function (idsOrUrls) {
 		var args = null;
 
-		if (idsOrUrls && !(idsOrUrls instanceof Array)) {
+		if (idsOrUrls && !Array.isArray(idsOrUrls)) {
 			args = [idsOrUrls];
 		} else if (idsOrUrls) {
 			args = idsOrUrls;
@@ -1126,7 +1126,7 @@ this.createjs = this.createjs || {};
 		var path = null;
 
 		// Array-based list of items
-		if (manifest instanceof Array) {
+		if (Array.isArray(manifest)) {
 			if (manifest.length == 0) {
 				var event = new createjs.ErrorEvent("PRELOAD_MANIFEST_EMPTY");
 				this._sendError(event);
