@@ -2,6 +2,7 @@ loadMediaGrid({
 	"path": "../_assets/",
 	"manifest": [
 		{"id":"art/Texas.jpg", "src":"art/Texas.jpg"},
+		{"id":"NoFileHere.png", "src":"NoFileHere.png"},
 		{"id":"static/bg.css", "src":"static/bg.css"},
 		{"id":"static/alert1.js", "src":"static/alert1.js"},
 		{"id":"static/grant.xml", "src":"static/grant.xml"},
@@ -10,7 +11,6 @@ loadMediaGrid({
 		{"id":"static/font.css", "src":"static/font.css"},
 		{"id":"audio/Thunder.mp3", "src":"audio/Thunder.mp3"},
 		{"id":"//gskinner.com/assets/createjs/mapsJSONP.json", "callback":"maps", "type":"jsonp", "src":"//gskinner.com/assets/createjs/mapsJSONP.json"},
-		{"id":"art/Autumn.png", "src":"art/Autumn.png"},
-		{"id":"NoFileHere.png", "src":"NoFileHere.png"}
+		{"id":"art/Autumn.png", "src":"art/Autumn.png"}
 	]
 });
