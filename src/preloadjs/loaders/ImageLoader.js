@@ -125,31 +125,56 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._formatResult = function (loader) {
-		var _this = this;
-		return function (done) {
-			var tag = _this._tag;
-			var URL = window.URL || window.webkitURL;
+		return this._formatImage;
+	};
 
-			if (!_this._preferXHR) {
-				//document.body.removeChild(tag);
-			} else if (URL) {
-				var objURL = URL.createObjectURL(loader.getResult(true));
-				tag.src = objURL;
-				tag.onload = function () {
-					URL.revokeObjectURL(_this.src);
-				}
-			} else {
-				tag.src = loader.getItem().src;
-			}
+	/**
+	 * The asynchronous image formatter function. This is required because images have
+	 * a short delay before they are ready.
+	 * @method _formatImage
+	 * @param {Function} successCallback The method to call when the result has finished formatting
+	 * @param {Function} errorCallback The method to call if an error occurs during formatting
+	 * @private
+	 */
+	p._formatImage = function (successCallback, errorCallback) {
+		var tag = this._tag;
+		var URL = window.URL || window.webkitURL;
 
-			if (tag.complete) {
-				done(tag);
-			} else {
-				tag.onload = function () {
-					done(this);
-				}
-			}
-		};
+		if (!this._preferXHR) {
+			//document.body.removeChild(tag);
+		} else if (URL) {
+			var objURL = URL.createObjectURL(this.getResult(true));
+			tag.src = objURL;
+
+			tag.addEventListener("load", this._cleanUpURL, false);
+			tag.addEventListener("error", this._cleanUpURL, false);
+		} else {
+			tag.src = loader.getItem().src;
+		}
+
+		if (tag.complete) {
+			successCallback(tag);
+		} else {
+			tag.addEventListener("load", createjs.proxy(function(event) {
+				successCallback(this._tag);
+			}, this), false);
+			tag.addEventListener("error", createjs.proxy(function(event) {
+				errorCallback(this._tag);
+			}, this), false);
+		}
+	};
+
+	/**
+	 * Clean up the ObjectURL, the tag is done with it. Note that this function is run
+	 * as an event listener without a proxy/closure, as it doesn't require it - so do not
+	 * include any functionality that requires scope without changing it.
+	 * @method _cleanUpURL
+	 * @param event
+	 * @private
+	 */
+	p._cleanUpURL = function (event) {
+		var URL = window.URL || window.webkitURL;
+		URL.revokeObjectURL(event.target.src);
 	};
 
 	createjs.ImageLoader = createjs.promote(ImageLoader, "AbstractLoader");
