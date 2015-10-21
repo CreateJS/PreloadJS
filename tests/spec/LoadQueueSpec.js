@@ -84,8 +84,11 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load video", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-                expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
-				done();
+                evt.result.addEventListener("playing", function() {
+                    expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
+                    done();
+                });
+                evt.result.play();
 			});
 
 			this.loadFile({
@@ -108,8 +111,12 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load an existing sound tag", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(evt.result).toEqual(tag);
-				done();
+                evt.result.addEventListener("playing", function() {
+                   expect(evt.result).toEqual(tag);
+                    done();
+                })
+
+                evt.result.play();
 			});
 
 			var tag = document.createElement("audio");
@@ -257,17 +264,37 @@ describe("PreloadJS.LoadQueue", function () {
 			this.loadFile({src: "art/gbot.svg", type: createjs.LoadQueue.TEXT});
 		});
 
-		it("should load sounds (xhr)", function (done) {
-			this.queue.addEventListener("fileload", function (evt) {
-                expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
-				done();
-			});
+        describe("MediaElement Loading", function() {
+            it("should load sounds (xhr)", function (done) {
+                this.queue.addEventListener("fileload", function (evt) {
+                    evt.result.addEventListener("playing", function() {
+                        expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
+                        done();
+                    });
+                    evt.result.play();
+                });
 
-			this.loadFile({
-				src: "audio/Thunder.mp3",
-				type: createjs.AbstractLoader.SOUND
-			}, true);
-		});
+                this.loadFile({
+                    src: "audio/Thunder.mp3",
+                    type: createjs.AbstractLoader.SOUND
+                }, true);
+            });
+
+            it("should load video (xhr)", function (done) {
+                this.queue.addEventListener("fileload", function (evt) {
+                    evt.result.addEventListener("playing", function() {
+                        expect(evt.result).toEqual(jasmine.any(HTMLMediaElement));
+                        done();
+                    });
+                    evt.result.play();
+                });
+
+                this.loadFile({
+                    src: "static/video.mp4",
+                    type: createjs.AbstractLoader.VIDEO
+                }, true);
+            });
+        });
 	});
 
 	// This fails in Opera and IE (expected, as crossOrigin is not supported)

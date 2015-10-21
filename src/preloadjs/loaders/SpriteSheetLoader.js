@@ -45,13 +45,23 @@ this.createjs = this.createjs || {};
 	 * and {{#crossLink "JSONPLoader"}}{{/crossLink}} are higher priority loaders, so SpriteSheets <strong>must</strong>
 	 * set the {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property
 	 * to {{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}.
+	 *
+	 * The {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/crossOrigin:property"}}{{/crossLink}} as well
+	 * as the {{#crossLink "LoadQueue's"}}{{/crossLink}} `basePath` argument and {{#crossLink "LoadQueue/_preferXHR"}}{{/crossLink}}
+	 * property supplied to the {{#crossLink "LoadQueue"}}{{/crossLink}} are passed on to the sub-manifest that loads
+	 * the SpriteSheet images.
+	 *
+	 * Note that the SpriteSheet JSON does not respect the {{#crossLink "LoadQueue/_preferXHR:property"}}{{/crossLink}}
+	 * property, which should instead be determined by the presence of a {{#crossLink "LoadItem/callback:property"}}{{/crossLink}}
+	 * property on the SpriteSheet load item. This is because the JSON loaded will have a different format depending on
+	 * if it is loaded as JSON, so just changing `preferXHR` is not enough to change how it is loaded.
 	 * @class SpriteSheetLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @extends AbstractLoader
 	 * @constructor
 	 */
-	function SpriteSheetLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, null, createjs.AbstractLoader.SPRITESHEET);
+	function SpriteSheetLoader(loadItem, preferXHR) {
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.SPRITESHEET);
 
 		// protected properties
 		/**
@@ -132,7 +142,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._loadManifest = function (json) {
 		if (json && json.images) {
-			var queue = this._manifestQueue = new createjs.LoadQueue();
+			var queue = this._manifestQueue = new createjs.LoadQueue(this._preferXHR, this._item.path, this._item.crossOrigin);
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("fileload", this._handleManifestFileLoad, this);
 			queue.on("progress", this._handleManifestProgress, this);

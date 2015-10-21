@@ -56,14 +56,14 @@
 		assets = [];
 
 		manifest = [
-			{src: "../_assets/art/sky.png", id: "sky"},
-			{src: "../_assets/art/ground.png", id: "ground"},
-			{src: "../_assets/art/hill2.png", id: "hill2"},
-			{src: "../_assets/art/hill1.png", id: "hill"},
-			{src: "../_assets/static/grant.json", id:"grant", type:"spritesheet"}
+			{src: "art/sky.png", id: "sky"},
+			{src: "art/ground.png", id: "ground"},
+			{src: "art/hill2.png", id: "hill2"},
+			{src: "art/hill1.png", id: "hill"},
+			{src: "static/grant.json", id:"grant", type:"spritesheet", crossOrigin:true}
 		];
 
-		var loader = new createjs.LoadQueue();
+		var loader = new createjs.LoadQueue(true, "../_assets/");
 		loader.on("fileload", handleFileLoad);
 		loader.on("complete", handleComplete);
 		loader.loadManifest(manifest);

@@ -105,7 +105,18 @@ this.createjs = this.createjs || {};
 		 * can be overridden to provide custom formatting.
 		 *
 		 * Optionally, a resultFormatter can return a callback function in cases where the formatting needs to be
-		 * asynchronous, such as creating a new image.
+		 * asynchronous, such as creating a new image. The callback function is passed 2 parameters, which are callbacks
+		 * to handle success and error conditions in the resultFormatter. Note that the resultFormatter method is
+		 * called in the current scope, as well as the success and error callbacks.
+		 *
+		 * <h4>Example asynchronous resultFormatter</h4>
+		 *
+		 * 	function _formatResult(loader) {
+		 * 		return function(success, error) {
+		 * 			if (errorCondition) { error(errorDetailEvent); }
+		 * 			success(result);
+		 * 		}
+		 * 	}
 		 * @property resultFormatter
 		 * @type {Function}
 		 * @default null
@@ -677,12 +688,11 @@ this.createjs = this.createjs || {};
 			case "complete":
 				this._rawResult = event.target._response;
 				var result = this.resultFormatter && this.resultFormatter(this);
-				var _this = this;
 				if (result instanceof Function) {
-					result(function(result) {
-						_this._result = result;
-						_this._sendComplete();
-					});
+					result.call(this,
+							createjs.proxy(this._resultFormatSuccess, this),
+							createjs.proxy(this._resultFormatFailed, this)
+					);
 				} else {
 					this._result =  result || this._rawResult;
 					this._sendComplete();
@@ -704,6 +714,29 @@ this.createjs = this.createjs || {};
 				}
 				break;
 		}
+	};
+
+	/**
+	 * The "success" callback passed to {{#crossLink "AbstractLoader/resultFormatter"}}{{/crossLink}} asynchronous
+	 * functions.
+	 * @method _resultFormatSuccess
+	 * @param {Object} result The formatted result
+	 * @private
+	 */
+	p._resultFormatSuccess = function (result) {
+		this._result = result;
+		this._sendComplete();
+	};
+
+	/**
+	 * The "error" callback passed to {{#crossLink "AbstractLoader/resultFormatter"}}{{/crossLink}} asynchronous
+	 * functions.
+	 * @method _resultFormatSuccess
+	 * @param {Object} error The error event
+	 * @private
+	 */
+	p._resultFormatFailed = function (event) {
+		this._sendError(event);
 	};
 
 	/**
