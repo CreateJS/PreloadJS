@@ -5,7 +5,6 @@
 		"../src/createjs/utils/promote.js",
 		"../src/createjs/utils/indexOf.js",
 		"../src/createjs/utils/proxy.js",
-		"../src/createjs/utils/BrowserDetect.js",
 		"../src/createjs/events/Event.js",
 		"../src/createjs/events/ErrorEvent.js",
 		"../src/createjs/events/EventDispatcher.js",

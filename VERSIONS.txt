@@ -5,6 +5,7 @@ Version NEXT [not yet released]
 - Fixed using XHR to load sounds and video
 - Fixed issue with XHR-loaded images, where bad content stalls a load (and a queue)
 - Fixed issue where XHR-loaded images might not clean up their respective ObjectURL
+- Removed BrowserDetect from utils (no longer used)
 
 
 Version 0.6.1 [May 21, 2015]
