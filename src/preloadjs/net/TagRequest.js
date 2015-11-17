@@ -82,12 +82,12 @@ this.createjs = this.createjs || {};
 		this._addedToDOM = false;
 
 		/**
-		 * Determines what the tags initial style.visibility was, so we can set it correctly after a load.
-		 *
+		 * Determines what the tags initial style.display was, so we can set it correctly after a load.
+		 * @property _startTagDisplay
 		 * @type {null}
 		 * @private
 		 */
-		this._startTagVisibility = null;
+		this._startTagDisplay = null;
 	};
 
 	var p = createjs.extend(TagRequest, createjs.AbstractRequest);
@@ -193,12 +193,12 @@ this.createjs = this.createjs || {};
 	};
 
 	p._hideTag = function() {
-		this._startTagVisibility = this._tag.style.visibility;
-		this._tag.style.visibility = "hidden";
+		this._startTagDisplay = this._tag.style.display;
+		this._tag.style.display = 'none';
 	};
 
 	p._showTag = function() {
-		this._tag.style.visibility = this._startTagVisibility;
+		this._tag.style.display = this._startTagDisplay;
 	};
 
 	/**
