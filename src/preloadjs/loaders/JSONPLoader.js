@@ -44,9 +44,34 @@ this.createjs = this.createjs || {};
 	 * use {{#crossLink "ManifestLoader"}}{{/crossLink}}, and to load EaselJS SpriteSheets, use
 	 * {{#crossLink "SpriteSheetLoader"}}{{/crossLink}}.
 	 *
+	 * JSONP is a format that provides a solution for loading JSON files cross-domain <em>without</em> requiring CORS.
+	 * JSONP files are loaded as JavaScript, and the "callback" is executed once they are loaded. The callback in the
+	 * JSONP must match the callback passed to the loadItem.
+	 *
+	 * <h4>Example JSONP</h4>
+	 *
+	 * 		callbackName({
+	 * 			"name": "value",
+	 *	 		"num": 3,
+	 *			"obj": { "bool":true }
+	 * 		});
+	 *
+	 * <h4>Example</h4>
+	 *
+	 * 		var loadItem = {id:"json", type:"jsonp", src:"http://server.com/text.json", callback:"callbackName"}
+	 * 		var queue = new createjs.LoadQueue();
+	 * 		queue.on("complete", handleComplete);
+	 * 		queue.loadItem(loadItem);
+	 *
+	 * 		function handleComplete(event) }
+	 * 			var json = queue.getResult("json");
+	 * 			console.log(json.obj.bool); // true
+	 * 		}
+	 *
 	 * Note that JSONP files loaded concurrently require a <em>unique</em> callback. To ensure JSONP files are loaded
 	 * in order, either use the {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}} method (set to 1),
 	 * or set {{#crossLink "LoadItem/maintainOrder:property"}}{{/crossLink}} on items with the same callback.
+	 *
 	 * @class JSONPLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @extends AbstractLoader
