@@ -1475,7 +1475,7 @@ this.createjs = this.createjs || {};
 		for (var i = 0; i < this._availableLoaders.length; i++) {
 			var loader = this._availableLoaders[i];
 			if (loader && loader.canLoadItem(item)) {
-				return new loader(item, preferXHR);
+				return new loader(item, preferXHR, this._basePath);
 			}
 		}
 
