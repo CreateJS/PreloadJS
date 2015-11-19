@@ -6,6 +6,8 @@ Version NEXT [not yet released]
 - Fixed issue with XHR-loaded images, where bad content stalls a load (and a queue)
 - Fixed issue where XHR-loaded images might not clean up their respective ObjectURL
 - Removed BrowserDetect from utils (no longer used)
+- Changed tag-loading images to be display:none instead of visibility:hidden, which was causing the scrollbar to flicker
+	when large images were being loaded in iOS 8 (not an issue in iOS9).
 
 
 Version 0.6.1 [May 21, 2015]
