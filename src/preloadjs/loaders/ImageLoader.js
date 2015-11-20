@@ -149,18 +149,20 @@ this.createjs = this.createjs || {};
 			tag.addEventListener("load", this._cleanUpURL, false);
 			tag.addEventListener("error", this._cleanUpURL, false);
 		} else {
-			tag.src = loader.getItem().src;
+			tag.src = this._item.src;
 		}
 
 		if (tag.complete) {
 			successCallback(tag);
 		} else {
-			tag.addEventListener("load", createjs.proxy(function(event) {
-				successCallback(this._tag);
-			}, this), false);
-			tag.addEventListener("error", createjs.proxy(function(event) {
-				errorCallback(this._tag);
-			}, this), false);
+            var _this = this;
+            tag.onload = function() {
+                successCallback(_this._tag);
+            }
+
+            tag.onerror = function() {
+                errorCallback(_this._tag);
+            }
 		}
 	};
 
