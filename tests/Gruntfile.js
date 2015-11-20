@@ -6,8 +6,7 @@ module.exports = function (grunt) {
 				jasmine: {
 					run: {
 						src: [
-							'../lib/preloadjs-NEXT.combined.js',
-							'../lib/movieclip-NEXT.combined.js'
+                            '../lib/preloadjs-NEXT.combined.js'
 						],
 
 						options: {
@@ -16,7 +15,7 @@ module.exports = function (grunt) {
 								'spec/Helpers.js'
 							],
 							vendor: [
-								'../_assets/libs/easeljs-NEXT.min.js'
+                                '../_assets/libs/easeljs-NEXT.min.js'
 							],
 							host: 'http://127.0.0.1:<%=connect.serve.options.port%>/'
 						}

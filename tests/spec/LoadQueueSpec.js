@@ -238,14 +238,19 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 
 		it("should load binary data", function (done) {
-			this.queue.addEventListener("fileload", function (evt) {
-                expect(evt.result).toEqual(jasmine.any(ArrayBuffer));
-				done();
-			});
-			this.loadFile({
-				src: "audio/Thunder.mp3",
-				type: createjs.AbstractLoader.BINARY
-			});
+            if (window['ArrayBuffer']) {
+                this.queue.addEventListener("fileload", function (evt) {
+                    expect(evt.result).toEqual(jasmine.any(ArrayBuffer));
+                    done();
+                });
+                this.loadFile({
+                    src: "audio/Thunder.mp3",
+                    type: createjs.AbstractLoader.BINARY
+                });
+            } else {
+                expect("IE 9").toBe("not working");
+                done();
+            }
 		});
 
 		it("should load svg (xhr)", function (done) {
