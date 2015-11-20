@@ -155,14 +155,13 @@ this.createjs = this.createjs || {};
 		if (tag.complete) {
 			successCallback(tag);
 		} else {
-            var _this = this;
-            tag.onload = function() {
-                successCallback(_this._tag);
-            }
+            tag.onload = createjs.proxy(function() {
+                successCallback(this._tag);
+            }, this);
 
-            tag.onerror = function() {
+            tag.onerror = createjs.proxy(function() {
                 errorCallback(_this._tag);
-            }
+            }, this);
 		}
 	};
 
