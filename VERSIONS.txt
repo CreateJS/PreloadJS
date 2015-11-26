@@ -7,7 +7,8 @@ Version NEXT [not yet released]
 - Fixed issue where XHR-loaded images might not clean up their respective ObjectURL
 - Removed BrowserDetect from utils (no longer used)
 - Bug fixes
-- documentation updates
+- Documentation updates
+- Fixed issues with GET requests that have values introduced during refactor
 
 
 Version 0.6.1 [May 21, 2015]
