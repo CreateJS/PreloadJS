@@ -1,3 +1,5 @@
+var url = require('url');
+
 module.exports = function (grunt) {
 	grunt.initConfig(
 			{
@@ -6,7 +8,7 @@ module.exports = function (grunt) {
 				jasmine: {
 					run: {
 						src: [
-                            '../lib/preloadjs-NEXT.combined.js'
+							'../lib/preloadjs-NEXT.combined.js'
 						],
 
 						options: {
@@ -15,7 +17,7 @@ module.exports = function (grunt) {
 								'spec/Helpers.js'
 							],
 							vendor: [
-                                '../_assets/libs/easeljs-NEXT.min.js'
+								'../_assets/libs/easeljs-NEXT.min.js'
 							],
 							host: 'http://127.0.0.1:<%=connect.serve.options.port%>/'
 						}
@@ -37,20 +39,26 @@ module.exports = function (grunt) {
 							useAvailablePort: true,
 							port: 8000,
 							open: true,
-							// Used to test the POST functionality, it just echo's back what data was sent.
+							// Used to test the POST / GET functionality, it just echo's back what data was sent.
 							middleware: function (connect, options, middlewares) {
-								middlewares.unshift(function echo (req, res, next) {
+								middlewares.unshift(function (req, res, next) {
 									if (req.method == "POST") {
 										res.end(JSON.stringify(req.body));
+									} else if(req.method == "GET") {
+										var url_parts = url.parse(req.originalUrl, true);
+										if (url_parts.query.foo != null) {
+											res.end(JSON.stringify(url_parts.query));
+										} else {
+											next();
+										}
 									} else {
 										next();
 									}
 								});
+
 								var bodyParser = require('body-parser')
 								middlewares.unshift(bodyParser.json());
-								middlewares.unshift(bodyParser.urlencoded({
-									extended: true
-								}));
+								middlewares.unshift(bodyParser.urlencoded({extended: false}));
 
 								return middlewares;
 							},

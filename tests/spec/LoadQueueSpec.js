@@ -467,6 +467,25 @@ describe("PreloadJS.LoadQueue", function () {
 		});
 	});
 
+	it("should GET data.", function (done) {
+		// !!! If you change value.foo to something else teh Gruntfile connect.middleware function needs to be updated.
+		var value = {foo: "bar", bar: "foo"};
+
+		var q = new createjs.LoadQueue();
+
+		q.addEventListener("fileload", function (evt) {
+			expect(evt.result).toBe(JSON.stringify(value));
+			done();
+		});
+
+		// the grunt server will echo back whatever we send it.
+		q.loadFile({
+			src: "/",
+			method: createjs.LoadQueue.GET,
+			values: value
+		});
+	});
+
 	it("destroy() should remove all references in a LoadQueue", function () {
 		this.queue.addEventListener("fileload", function (evt) {
 		});
