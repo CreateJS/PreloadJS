@@ -7,9 +7,9 @@ progress events, and a plugin model to assist with preloading in other libraries
 ## Example
 
 ```javascript
-var preload = new createjs.LoadQueue();
+var preload = new createjs.LoadQueue(false);
 preload.addEventListener("fileload", handleFileComplete);
-preload.loadFile('http://createjs.com/images/404/gBot-confused.jpg');
+preload.loadFile('http://createjs.com/assets/images/png/createjs-badge-dark.png');
 function handleFileComplete(event) {
 	document.body.appendChild(event.result);
 }
