@@ -1,6 +1,6 @@
 {
 	"name": "PreloadJS",
-	"version": "0.6.1",
+	"version": "0.6.2",
 	"homepage": "https://github.com/CreateJS/PreloadJS",
 	"authors": [
 		"gskinner",
@@ -8,7 +8,7 @@
 		"wdamien"
 	],
 	"description": "PreloadJS makes preloading assets & getting aggregate progress events easier in JavaScript. It uses XHR2 when available, and falls back to tag-based loading when not. Part of the CreateJS suite of libraries.",
-	"main": "lib/preloadjs-0.6.1.combined.js",
+	"main": "lib/preloadjs-0.6.2.combined.js",
 	"keywords": [
 		"preload",
 		"xhr",
