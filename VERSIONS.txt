@@ -1,5 +1,9 @@
 Version NEXT [not yet released]
 ****************************************************************************************************
+
+
+Version 0.6.2 [November 26, 2015]
+****************************************************************************************************
 - Fixed SpriteSheetLoader's JSONP loading
 - Changed LoadQueue Array checks from instanceof to Array.isArray()
 - Fixed using XHR to load sounds and video
