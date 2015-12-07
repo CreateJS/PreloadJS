@@ -44,11 +44,10 @@
 	 * Parse XML using the DOM. This is required when preloading XML or SVG.
 	 * @method parseXML
 	 * @param {String} text The raw text or XML that is loaded by XHR.
-	 * @param {String} type The mime type of the XML. Use "text/xml" for XML, and  "image/svg+xml" for SVG parsing.
 	 * @return {XML} An XML document
 	 * @static
 	 */
-	s.parseXML = function (text, type) {
+	s.parseXML = function (text) {
 		var xml = null;
 		// CocoonJS does not support XML parsing with either method.
 
@@ -57,7 +56,7 @@
 		try {
 			if (window.DOMParser) {
 				var parser = new DOMParser();
-				xml = parser.parseFromString(text, type);
+				xml = parser.parseFromString(text, "text/xml");
 			}
 		} catch (e) {
 		}
