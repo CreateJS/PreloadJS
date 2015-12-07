@@ -69,7 +69,7 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._createTag = function () {
-		return document.createElement("video");
+		return createjs.Elements.video();
 	};
 
 	// static methods

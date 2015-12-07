@@ -56,9 +56,9 @@ this.createjs = this.createjs || {};
 		this._tagSrcAttribute = "data";
 
 		if (preferXHR) {
-			this.setTag(document.createElement("svg"));
+			this.setTag(createjs.Elements.svg());
 		} else {
-			this.setTag(document.createElement("object"));
+			this.setTag(createjs.Elements.object());
 			this.getTag().type = "image/svg+xml";
 		}
 	};

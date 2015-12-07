@@ -84,7 +84,7 @@ this.createjs = this.createjs || {};
 
 	// protected methods
 	p._createTag = function (src) {
-		var tag = document.createElement("audio");
+		var tag = createjs.Elements.audio();
 		tag.autoplay = false;
 		tag.preload = "none";
 

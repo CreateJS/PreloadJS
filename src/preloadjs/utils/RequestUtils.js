@@ -163,10 +163,10 @@
 	 * @static
 	 */
 	s.isCrossDomain = function (item) {
-		var target = document.createElement("a");
+		var target = createjs.Elements.a();
 		target.href = item.src;
 
-		var host = document.createElement("a");
+		var host = createjs.Elements.a();
 		host.href = location.href;
 
 		var crossdomain = (target.hostname != "") &&
@@ -184,7 +184,7 @@
 	 * @static
 	 */
 	s.isLocal = function (item) {
-		var target = document.createElement("a");
+		var target = createjs.Elements.a();
 		target.href = item.src;
 		return target.hostname == "" && target.protocol == "file:";
 	};

@@ -79,7 +79,7 @@ this.createjs = this.createjs || {};
 	 */
 	function JSONPLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, false, createjs.AbstractLoader.JSONP);
-		this.setTag(document.createElement("script"));
+		this.setTag(createjs.Elements.script());
 		this.getTag().type = "text/javascript";
 	};
 

@@ -63,7 +63,7 @@ this.createjs = this.createjs || {};
 		if (this._tag != null) {
 			this._preferXHR = false;
 		} else {
-			this._tag = document.createElement("img");
+			this._tag = createjs.Elements.img();
 		}
 
 		this.on("initialize", this._updateXHR, this);

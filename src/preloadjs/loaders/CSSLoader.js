@@ -56,9 +56,9 @@ this.createjs = this.createjs || {};
 		this._tagSrcAttribute = "href";
 
 		if (preferXHR) {
-			this._tag = document.createElement("style");
+			this._tag = createjs.Elements.style();
 		} else {
-			this._tag = document.createElement("link");
+			this._tag = createjs.Elements.link();
 		}
 
 		this._tag.rel = "stylesheet";
@@ -96,7 +96,7 @@ this.createjs = this.createjs || {};
 			if (tag.styleSheet) { // IE
 				tag.styleSheet.cssText = loader.getResult(true);
 			} else {
-				var textNode = document.createTextNode(loader.getResult(true));
+				var textNode = createjs.Elements.text(loader.getResult(true));
 				tag.appendChild(textNode);
 			}
 		} else {
