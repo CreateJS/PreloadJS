@@ -49,8 +49,8 @@ this.createjs = this.createjs || {};
 	function VideoLoader(loadItem, preferXHR) {
 		this.AbstractMediaLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.VIDEO);
 
-		if (createjs.RequestUtils.isVideoTag(loadItem) || createjs.RequestUtils.isVideoTag(loadItem.src)) {
-			this.setTag(createjs.RequestUtils.isVideoTag(loadItem)?loadItem:loadItem.src);
+		if (createjs.DomUtils.isVideoTag(loadItem) || createjs.DomUtils.isVideoTag(loadItem.src)) {
+			this.setTag(createjs.DomUtils.isVideoTag(loadItem)?loadItem:loadItem.src);
 
 			// We can't use XHR for a tag that's passed in.
 			this._preferXHR = false;

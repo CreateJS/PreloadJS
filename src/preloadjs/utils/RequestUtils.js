@@ -211,47 +211,6 @@
 	};
 
 	/**
-	 * Check if item is a valid HTMLImageElement
-	 * @method isImageTag
-	 * @param {Object} item
-	 * @returns {Boolean}
-	 * @static
-	 */
-	s.isImageTag = function(item) {
-		return item instanceof HTMLImageElement;
-	};
-
-	/**
-	 * Check if item is a valid HTMLAudioElement
-	 * @method isAudioTag
-	 * @param {Object} item
-	 * @returns {Boolean}
-	 * @static
-	 */
-	s.isAudioTag = function(item) {
-		if (window.HTMLAudioElement) {
-			return item instanceof HTMLAudioElement;
-		} else {
-			return false;
-		}
-	};
-
-	/**
-	 * Check if item is a valid HTMLVideoElement
-	 * @method isVideoTag
-	 * @param {Object} item
-	 * @returns {Boolean}
-	 * @static
-	 */
-	s.isVideoTag = function(item) {
-		if (window.HTMLVideoElement) {
-			return item instanceof HTMLVideoElement;
-		} else {
-			return false;
-		}
-	};
-
-	/**
 	 * Determine if a specific type is a text-based asset, and should be loaded as UTF-8.
 	 * @method isText
 	 * @param {String} type The item type.

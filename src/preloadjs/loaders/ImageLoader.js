@@ -52,11 +52,11 @@ this.createjs = this.createjs || {};
 		this._tagSrcAttribute = "src";
 
 		// Check if the preload item is already a tag.
-		if (createjs.RequestUtils.isImageTag(loadItem)) {
+		if (createjs.DomUtils.isImageTag(loadItem)) {
 			this._tag = loadItem;
-		} else if (createjs.RequestUtils.isImageTag(loadItem.src)) {
+		} else if (createjs.DomUtils.isImageTag(loadItem.src)) {
 			this._tag = loadItem.src;
-		} else if (createjs.RequestUtils.isImageTag(loadItem.tag)) {
+		} else if (createjs.DomUtils.isImageTag(loadItem.tag)) {
 			this._tag = loadItem.tag;
 		}
 
