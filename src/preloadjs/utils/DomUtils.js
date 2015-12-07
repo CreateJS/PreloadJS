@@ -43,12 +43,22 @@
 		s.getHead().appendChild(el)
 	}
 
+	s.appendToBody = function (el) {
+		s.getBody().appendChild(el)
+	}
+
 	s.getHead = function () {
 		return document.head || document.getElementsByTagName("head")[0];
 	}
 
 	s.getBody = function () {
 		return document.body || document.getElementsByTagName("body")[0];
+	}
+
+	s.removeChild = function(el) {
+		if (el.parent) {
+			el.parent.removeChild(el);
+		}
 	}
 
 	createjs.DomUtils = s;
