@@ -160,7 +160,7 @@ this.createjs = this.createjs || {};
             }, this);
 
             tag.onerror = createjs.proxy(function() {
-                errorCallback(_this._tag);
+                errorCallback(this._tag);
             }, this);
 		}
 	};
