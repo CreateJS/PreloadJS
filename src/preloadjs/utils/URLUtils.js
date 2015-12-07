@@ -154,14 +154,14 @@
 
 	/**
 	 * A utility method that builds a file path using a source and a data object, and formats it into a new path.
-	 * @method buildPath
+	 * @method buildURI
 	 * @param {String} src The source path to add values to.
 	 * @param {Object} [data] Object used to append values to this request as a query string. Existing parameters on the
 	 * path will be preserved.
 	 * @returns {string} A formatted string that contains the path and the supplied parameters.
 	 * @static
 	 */
-	s.buildPath = function (src, data) {
+	s.buildURI = function (src, data) {
 		if (data == null) {
 			return src;
 		}

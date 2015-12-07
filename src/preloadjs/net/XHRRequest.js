@@ -487,7 +487,7 @@ this.createjs = this.createjs || {};
 
 		var src = null;
 		if (item.method == createjs.AbstractLoader.GET) {
-			src = createjs.URLUtils.buildPath(item.src, item.values);
+			src = createjs.URLUtils.buildURI(item.src, item.values);
 		} else {
 			src = item.src;
 		}
