@@ -73,15 +73,39 @@
 	 *     <li>The file extension. This is determined by the filename with an extension. Query strings are dropped, and
 	 *     the file path is expected to follow the format `name.ext`.</li>
 	 * </ul>
+	 *
 	 * @method parseURI
 	 * @param {String} path
-	 * @returns {Object} An Object with an `absolute` and `relative` Boolean values, as well as an optional 'extension`
-	 * property, which is the lowercase extension.
+	 * @returns {Object} An Object with an `absolute` and `relative` Boolean values,
+	 * 	the pieces of the path (protocol, hostname, port, pathname, search, hash, host)
+	 * 	as well as an optional 'extension` property, which is the lowercase extension.
+	 *
 	 * @static
 	 */
 	s.parseURI = function (path) {
-		var info = {absolute: false, relative: false};
+		var info = {
+			absolute: false,
+			relative: false,
+			protocol: null,
+			hostname: null,
+			port: null,
+			pathname: null,
+			search: null,
+			hash: null,
+			host: null
+		};
+
 		if (path == null) { return info; }
+
+		// Inject the path parts.
+		var parser = createjs.Elements.a();
+		parser.href = path;
+
+		for (var n in info) {
+			if (n in parser) {
+				info[n] = parser[n];
+			}
+		}
 
 		// Drop the query string
 		var queryIndex = path.indexOf("?");
@@ -103,6 +127,7 @@
 		if (match = path.match(s.EXTENSION_PATT)) {
 			info.extension = match[1].toLowerCase();
 		}
+
 		return info;
 	};
 
@@ -115,16 +140,16 @@
 	 */
 	s.formatQueryString = function (data, query) {
 		if (data == null) {
-			throw new Error('You must specify data.');
+			throw new Error("You must specify data.");
 		}
 		var params = [];
 		for (var n in data) {
-			params.push(n + '=' + escape(data[n]));
+			params.push(n + "=" + escape(data[n]));
 		}
 		if (query) {
 			params = params.concat(query);
 		}
-		return params.join('&');
+		return params.join("&");
 	};
 
 	/**
@@ -142,17 +167,17 @@
 		}
 
 		var query = [];
-		var idx = src.indexOf('?');
+		var idx = src.indexOf("?");
 
 		if (idx != -1) {
 			var q = src.slice(idx + 1);
-			query = query.concat(q.split('&'));
+			query = query.concat(q.split("&"));
 		}
 
 		if (idx != -1) {
-			return src.slice(0, idx) + '?' + this.formatQueryString(data, query);
+			return src.slice(0, idx) + "?" + this.formatQueryString(data, query);
 		} else {
-			return src + '?' + this.formatQueryString(data, query);
+			return src + "?" + this.formatQueryString(data, query);
 		}
 	};
 
