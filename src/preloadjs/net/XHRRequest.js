@@ -210,7 +210,7 @@ this.createjs = this.createjs || {};
 			if (!this._item.values || this._item.method == createjs.AbstractLoader.GET) {
 				this._request.send();
 			} else if (this._item.method == createjs.AbstractLoader.POST) {
-				this._request.send(createjs.RequestUtils.formatQueryString(this._item.values));
+				this._request.send(createjs.URLUtils.formatQueryString(this._item.values));
 			}
 		} catch (error) {
 			this.dispatchEvent(new createjs.ErrorEvent("XHR_SEND", null, error));
@@ -447,7 +447,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._createXHR = function (item) {
 		// Check for cross-domain loads. We can't fully support them, but we can try.
-		var crossdomain = createjs.RequestUtils.isCrossDomain(item);
+		var crossdomain = createjs.URLUtils.isCrossDomain(item);
 		var headers = {};
 
 		// Create the request. Fallback to whatever support we have.
@@ -487,7 +487,7 @@ this.createjs = this.createjs || {};
 
 		var src = null;
 		if (item.method == createjs.AbstractLoader.GET) {
-			src = createjs.RequestUtils.buildPath(item.src, item.values);
+			src = createjs.URLUtils.buildPath(item.src, item.values);
 		} else {
 			src = item.src;
 		}

@@ -1378,7 +1378,7 @@ this.createjs = this.createjs || {};
 			} // the the src is an object, type is required to pass off to plugin
 			if (path) {
 				bp = path;
-				var pathMatch = createjs.RequestUtils.parseURI(path);
+				var pathMatch = createjs.URLUtils.parseURI(path);
 				// Also append basePath
 				if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
 					bp = useBasePath + bp;
@@ -1388,7 +1388,7 @@ this.createjs = this.createjs || {};
 			}
 		} else {
 			// Determine Extension, etc.
-			var match = createjs.RequestUtils.parseURI(item.src);
+			var match = createjs.URLUtils.parseURI(item.src);
 			if (match.extension) {
 				item.ext = match.extension;
 			}
@@ -1401,7 +1401,7 @@ this.createjs = this.createjs || {};
 			if (!match.absolute && !match.relative) {
 				if (path) {
 					bp = path;
-					var pathMatch = createjs.RequestUtils.parseURI(path);
+					var pathMatch = createjs.URLUtils.parseURI(path);
 					autoId = path + autoId;
 					// Also append basePath
 					if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
@@ -1440,7 +1440,7 @@ this.createjs = this.createjs || {};
 			}
 
 			// Update the extension in case the type changed:
-			match = createjs.RequestUtils.parseURI(item.src);
+			match = createjs.URLUtils.parseURI(item.src);
 			if (match.extension != null) {
 				item.ext = match.extension;
 			}

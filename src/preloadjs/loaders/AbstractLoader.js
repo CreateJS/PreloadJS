@@ -739,11 +739,11 @@ this.createjs = this.createjs || {};
 	/**
 	 * @method buildPath
 	 * @protected
-	 * @deprecated Use the {{#crossLink "RequestUtils"}}{{/crossLink}} method {{#crossLink "RequestUtils/buildPath"}}{{/crossLink}}
+	 * @deprecated Use the {{#crossLink "URLUtils"}}{{/crossLink}} method {{#crossLink "URLUtils/buildPath"}}{{/crossLink}}
 	 * instead.
 	 */
 	p.buildPath = function (src, data) {
-		return createjs.RequestUtils.buildPath(src, data);
+		return createjs.URLUtils.buildPath(src, data);
 	};
 
 	/**
