@@ -4,15 +4,26 @@ Version NEXT [not yet released]
 
 Version 0.6.2 [November 26, 2015]
 ****************************************************************************************************
-- Fixed SpriteSheetLoader's JSONP loading
+- Fixed SpriteSheetLoader's JSONP loading (thanks @JonLucas)
+- Added SpriteSheetLoader support for crossOrigin, basePath, and preferXHR for sub-images
+- Removed legacy code in JSON loaders
 - Changed LoadQueue Array checks from instanceof to Array.isArray()
-- Fixed using XHR to load sounds and video
-- Fixed issue with XHR-loaded images, where bad content stalls a load (and a queue)
+- Fixed using XHR to load sounds and video (fixes #160)
+- Fixed issue with XHR-loaded images, where bad content stalls a load (and a queue).
+	Updated the example that shows this in action.
 - Fixed issue where XHR-loaded images might not clean up their respective ObjectURL
+- Changed resultFormatter to call methods in scope, and handle both success and fail callbacks
+- Removed anonymous functions from resultFormatter
 - Removed BrowserDetect from utils (no longer used)
-- Bug fixes
-- Documentation updates
+- Updated error event propagation from AbstractLoader to generate new ErrorEvents instead of
+	redispatching the existing event
+- Fixed script loading when maintainScriptOrder is false (thanks @emlyn)
 - Fixed issues with GET requests that have values introduced during refactor
+- Added SpriteSheetLoader tests
+- Updated tests to do better type checking
+- Bower updates: removed bower.json from the exclusions
+- Changed callbacks to use createjs.proxy instead of _this
+- Documentation updates
 
 
 Version 0.6.1 [May 21, 2015]
