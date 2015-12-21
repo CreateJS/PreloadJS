@@ -1,5 +1,6 @@
 Version NEXT [not yet released]
 ****************************************************************************************************
+* Fixed XHRRequest to append values in both GET and POST scenarios
 
 
 Version 0.6.2 [November 26, 2015]
