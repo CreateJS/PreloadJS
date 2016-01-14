@@ -14,6 +14,8 @@
         "../src/preloadjs/utils/URLUtils.js",
         "../src/preloadjs/utils/DomUtils.js",
 		"../src/preloadjs/utils/DataUtils.js",
+        "../src/preloadjs/data/Types.js",
+        "../src/preloadjs/data/Methods.js",
 		"../src/preloadjs/data/LoadItem.js",
 		"../src/preloadjs/utils/RequestUtils.js",
 		"../src/preloadjs/loaders/AbstractLoader.js",

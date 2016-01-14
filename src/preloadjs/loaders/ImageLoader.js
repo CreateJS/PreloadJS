@@ -141,6 +141,7 @@ this.createjs = this.createjs || {};
 		var URL = window.URL || window.webkitURL;
 
 		if (!this._preferXHR) {
+
 			//document.body.removeChild(tag);
 		} else if (URL) {
 			var objURL = URL.createObjectURL(this.getResult(true));
