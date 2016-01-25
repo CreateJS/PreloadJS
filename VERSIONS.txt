@@ -1,7 +1,8 @@
 Version NEXT [not yet released]
 ****************************************************************************************************
-* Fixed XHRRequest to append values in both GET and POST scenarios
-* Fixed documentation error with LoadItem.method, which showed the wrong case in the default value.
+- Fixed XHRRequest to append values in both GET and POST scenarios
+- Fixed documentation error with LoadItem.method, which showed the wrong case in the default value.
+- Fixed issue with SpriteSheetLoader.destroy (thanks @Kiv)
 
 
 Version 0.6.2 [November 26, 2015]
