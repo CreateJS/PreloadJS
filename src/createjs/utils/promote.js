@@ -30,9 +30,6 @@
  * @module CreateJS
  */
 
-// namespace:
-var scope = (typeof window == 'undefined')?this:window;
-scope.createjs = scope.createjs || {};
 /**
  * @class Utility Methods
  */
@@ -74,7 +71,7 @@ scope.createjs = scope.createjs || {};
  * @param {String} prefix The prefix to add to the promoted method names. Usually the name of the superclass.
  * @return {Function} Returns the subclass.
  */
-scope.createjs.promote = function(subclass, prefix) {
+module.exports = function(subclass, prefix) {
 	"use strict";
 
 	var subP = subclass.prototype, supP = (Object.getPrototypeOf&&Object.getPrototypeOf(subP))||subP.__proto__;

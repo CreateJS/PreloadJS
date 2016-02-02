@@ -4,9 +4,20 @@
     <meta charset="UTF-8">
     <title>Browserify Test</title>
 
-</head>
-<body>
+    <script>
+        function init() {
+            var q = new createjs.LoadQueue();
+            q.addEventListener("complete", function(evt) {
+                console.log(evt);
+            });
+            q.loadFile('https://www.google.ca/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png');
+        }
+    </script>
 
-<script src="build.js"></script>
+</head>
+<body onload="init();">
+
+<script src="../build.js"></script>
+<script src="main.min.js"></script>
 </body>
 </html>

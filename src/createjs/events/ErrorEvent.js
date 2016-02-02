@@ -1,81 +1,78 @@
 /*
-* Event
-* Visit http://createjs.com/ for documentation, updates and examples.
-*
-* Copyright (c) 2010 gskinner.com, inc.
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without
-* restriction, including without limitation the rights to use,
-* copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following
-* conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-* OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Event
+ * Visit http://createjs.com/ for documentation, updates and examples.
+ *
+ * Copyright (c) 2010 gskinner.com, inc.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 /**
  * @module CreateJS
  */
 
-// namespace:
-var scope = (typeof window == 'undefined')?this:window;
-scope.createjs = scope.createjs || {};
+var extend = require('../utils/extend');
+var promote = require('../utils/promote');
+var Event = require('./Event');
 
-(function(createjs) {
-	"use strict";
+// namespace:
+/**
+ * A general error {{#crossLink "Event"}}{{/crossLink}}, that describes an error that occurred, as well as any details.
+ * @class ErrorEvent
+ * @param {String} [title] The error title
+ * @param {String} [message] The error description
+ * @param {Object} [data] Additional error data
+ * @constructor
+ */
+function ErrorEvent(title, message, data) {
+	this.Event_constructor("error");
 
 	/**
-	 * A general error {{#crossLink "Event"}}{{/crossLink}}, that describes an error that occurred, as well as any details.
-	 * @class ErrorEvent
-	 * @param {String} [title] The error title
-	 * @param {String} [message] The error description
-	 * @param {Object} [data] Additional error data
-	 * @constructor
+	 * The short error title, which indicates the type of error that occurred.
+	 * @property title
+	 * @type String
 	 */
-	function ErrorEvent(title, message, data) {
-		this.Event_constructor("error");
+	this.title = title;
 
-		/**
-		 * The short error title, which indicates the type of error that occurred.
-		 * @property title
-		 * @type String
-		 */
-		this.title = title;
+	/**
+	 * The verbose error message, containing details about the error.
+	 * @property message
+	 * @type String
+	 */
+	this.message = message;
 
-		/**
-		 * The verbose error message, containing details about the error.
-		 * @property message
-		 * @type String
-		 */
-		this.message = message;
+	/**
+	 * Additional data attached to an error.
+	 * @property data
+	 * @type {Object}
+	 */
+	this.data = data;
+}
 
-		/**
-		 * Additional data attached to an error.
-		 * @property data
-		 * @type {Object}
-		 */
-		this.data = data;
-	}
+var p = extend(ErrorEvent, Event);
 
-	var p = createjs.extend(ErrorEvent, createjs.Event);
+p.clone = function () {
+	return new ErrorEvent(this.title, this.message, this.data);
+};
 
-	p.clone = function() {
-		return new createjs.ErrorEvent(this.title, this.message, this.data);
-	};
-
-	createjs.ErrorEvent = createjs.promote(ErrorEvent, "Event");
-
-}(scope.createjs));
+var ErrorEvent = promote(ErrorEvent, "Event");
+module.exports = ErrorEvent;

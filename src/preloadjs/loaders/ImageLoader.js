@@ -27,158 +27,159 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// namespace:
-var scope = (typeof window == 'undefined')?this:window;
-scope.createjs = scope.createjs || {};
+// constructor
+/**
+ * A loader for image files.
+ * @class ImageLoader
+ * @param {LoadItem|Object} loadItem
+ * @param {Boolean} preferXHR
+ * @extends AbstractLoader
+ * @constructor
+ */
 
-(function (createjs) {
-	"use strict";
+var AbstractLoader = require('./AbstractLoader');
+var RequestUtils = require('../utils/RequestUtils');
+var extend = require('../../createjs/utils/extend');
+var promote = require('../../createjs/utils/promote');
+var proxy = require('../../createjs/utils/proxy');
 
-	// constructor
-	/**
-	 * A loader for image files.
-	 * @class ImageLoader
-	 * @param {LoadItem|Object} loadItem
-	 * @param {Boolean} preferXHR
-	 * @extends AbstractLoader
-	 * @constructor
-	 */
-	function ImageLoader (loadItem, preferXHR) {
-		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.IMAGE);
+function ImageLoader(loadItem, preferXHR) {
+	this.AbstractLoader_constructor(loadItem, preferXHR, AbstractLoader.IMAGE);
 
-		// public properties
-		this.resultFormatter = this._formatResult;
+	// public properties
+	this.resultFormatter = this._formatResult;
 
-		// protected properties
-		this._tagSrcAttribute = "src";
+	// protected properties
+	this._tagSrcAttribute = "src";
 
-		// Check if the preload item is already a tag.
-		if (createjs.RequestUtils.isImageTag(loadItem)) {
-			this._tag = loadItem;
-		} else if (createjs.RequestUtils.isImageTag(loadItem.src)) {
-			this._tag = loadItem.src;
-		} else if (createjs.RequestUtils.isImageTag(loadItem.tag)) {
-			this._tag = loadItem.tag;
-		}
+	// Check if the preload item is already a tag.
+	if (RequestUtils.isImageTag(loadItem)) {
+		this._tag = loadItem;
+	} else if (RequestUtils.isImageTag(loadItem.src)) {
+		this._tag = loadItem.src;
+	} else if (RequestUtils.isImageTag(loadItem.tag)) {
+		this._tag = loadItem.tag;
+	}
 
-		if (this._tag != null) {
-			this._preferXHR = false;
-		} else {
-			this._tag = document.createElement("img");
-		}
+	if (this._tag != null) {
+		this._preferXHR = false;
+	} else {
+		this._tag = document.createElement("img");
+	}
 
-		this.on("initialize", this._updateXHR, this);
-	};
+	this.on("initialize", this._updateXHR, this);
+};
 
-	var p = createjs.extend(ImageLoader, createjs.AbstractLoader);
-	var s = ImageLoader;
+var p = extend(ImageLoader, AbstractLoader);
+var s = ImageLoader;
 
-	// static methods
-	/**
-	 * Determines if the loader can load a specific item. This loader can only load items that are of type
-	 * {{#crossLink "AbstractLoader/IMAGE:property"}}{{/crossLink}}.
-	 * @method canLoadItem
-	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
-	 * @returns {Boolean} Whether the loader can load the item.
-	 * @static
-	 */
-	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.IMAGE;
-	};
+// static methods
+/**
+ * Determines if the loader can load a specific item. This loader can only load items that are of type
+ * {{#crossLink "AbstractLoader/IMAGE:property"}}{{/crossLink}}.
+ * @method canLoadItem
+ * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
+ * @returns {Boolean} Whether the loader can load the item.
+ * @static
+ */
+s.canLoadItem = function (item) {
+	return item.type == AbstractLoader.IMAGE;
+};
 
-	// public methods
-	p.load = function () {
-		if (this._tag.src != "" && this._tag.complete) {
-			this._sendComplete();
-			return;
-		}
+// public methods
+p.load = function () {
+	if (this._tag.src != "" && this._tag.complete) {
+		this._sendComplete();
+		return;
+	}
 
-		var crossOrigin = this._item.crossOrigin;
-		if (crossOrigin == true) { crossOrigin = "Anonymous"; }
-		if (crossOrigin != null && !createjs.RequestUtils.isLocal(this._item.src)) {
-			this._tag.crossOrigin = crossOrigin;
-		}
+	var crossOrigin = this._item.crossOrigin;
+	if (crossOrigin == true) {
+		crossOrigin = "Anonymous";
+	}
+	if (crossOrigin != null && !RequestUtils.isLocal(this._item.src)) {
+		this._tag.crossOrigin = crossOrigin;
+	}
 
-		this.AbstractLoader_load();
-	};
+	this.AbstractLoader_load();
+};
 
-	// protected methods
-	/**
-	 * Before the item loads, set its mimeType and responseType.
-	 * @property _updateXHR
-	 * @param {Event} event
-	 * @private
-	 */
-	p._updateXHR = function (event) {
-		event.loader.mimeType = 'text/plain; charset=x-user-defined-binary';
+// protected methods
+/**
+ * Before the item loads, set its mimeType and responseType.
+ * @property _updateXHR
+ * @param {Event} event
+ * @private
+ */
+p._updateXHR = function (event) {
+	event.loader.mimeType = 'text/plain; charset=x-user-defined-binary';
 
-		// Only exists for XHR
-		if (event.loader.setResponseType) {
-			event.loader.setResponseType("blob");
-		}
-	};
+	// Only exists for XHR
+	if (event.loader.setResponseType) {
+		event.loader.setResponseType("blob");
+	}
+};
 
-	/**
-	 * The result formatter for Image files.
-	 * @method _formatResult
-	 * @param {AbstractLoader} loader
-	 * @returns {HTMLImageElement}
-	 * @private
-	 */
-	p._formatResult = function (loader) {
-		return this._formatImage;
-	};
+/**
+ * The result formatter for Image files.
+ * @method _formatResult
+ * @param {AbstractLoader} loader
+ * @returns {HTMLImageElement}
+ * @private
+ */
+p._formatResult = function (loader) {
+	return this._formatImage;
+};
 
-	/**
-	 * The asynchronous image formatter function. This is required because images have
-	 * a short delay before they are ready.
-	 * @method _formatImage
-	 * @param {Function} successCallback The method to call when the result has finished formatting
-	 * @param {Function} errorCallback The method to call if an error occurs during formatting
-	 * @private
-	 */
-	p._formatImage = function (successCallback, errorCallback) {
-		var tag = this._tag;
-		var URL = window.URL || window.webkitURL;
+/**
+ * The asynchronous image formatter function. This is required because images have
+ * a short delay before they are ready.
+ * @method _formatImage
+ * @param {Function} successCallback The method to call when the result has finished formatting
+ * @param {Function} errorCallback The method to call if an error occurs during formatting
+ * @private
+ */
+p._formatImage = function (successCallback, errorCallback) {
+	var tag = this._tag;
+	var URL = window.URL || window.webkitURL;
 
-		if (!this._preferXHR) {
-			//document.body.removeChild(tag);
-		} else if (URL) {
-			var objURL = URL.createObjectURL(this.getResult(true));
-			tag.src = objURL;
+	if (!this._preferXHR) {
+		//document.body.removeChild(tag);
+	} else if (URL) {
+		var objURL = URL.createObjectURL(this.getResult(true));
+		tag.src = objURL;
 
-			tag.addEventListener("load", this._cleanUpURL, false);
-			tag.addEventListener("error", this._cleanUpURL, false);
-		} else {
-			tag.src = this._item.src;
-		}
+		tag.addEventListener("load", this._cleanUpURL, false);
+		tag.addEventListener("error", this._cleanUpURL, false);
+	} else {
+		tag.src = this._item.src;
+	}
 
-		if (tag.complete) {
-			successCallback(tag);
-		} else {
-            tag.onload = createjs.proxy(function() {
-                successCallback(this._tag);
-            }, this);
+	if (tag.complete) {
+		successCallback(tag);
+	} else {
+		tag.onload = proxy(function () {
+			successCallback(this._tag);
+		}, this);
 
-            tag.onerror = createjs.proxy(function() {
-                errorCallback(_this._tag);
-            }, this);
-		}
-	};
+		tag.onerror = proxy(function () {
+			errorCallback(_this._tag);
+		}, this);
+	}
+};
 
-	/**
-	 * Clean up the ObjectURL, the tag is done with it. Note that this function is run
-	 * as an event listener without a proxy/closure, as it doesn't require it - so do not
-	 * include any functionality that requires scope without changing it.
-	 * @method _cleanUpURL
-	 * @param event
-	 * @private
-	 */
-	p._cleanUpURL = function (event) {
-		var URL = window.URL || window.webkitURL;
-		URL.revokeObjectURL(event.target.src);
-	};
+/**
+ * Clean up the ObjectURL, the tag is done with it. Note that this function is run
+ * as an event listener without a proxy/closure, as it doesn't require it - so do not
+ * include any functionality that requires scope without changing it.
+ * @method _cleanUpURL
+ * @param event
+ * @private
+ */
+p._cleanUpURL = function (event) {
+	var URL = window.URL || window.webkitURL;
+	URL.revokeObjectURL(event.target.src);
+};
 
-	createjs.ImageLoader = createjs.promote(ImageLoader, "AbstractLoader");
-
-}(scope.createjs));
+var ImageLoader = promote(ImageLoader, "AbstractLoader");
+module.exports = ImageLoader;

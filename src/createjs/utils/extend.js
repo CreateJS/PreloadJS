@@ -30,10 +30,6 @@
  * @module CreateJS
  */
 
-// namespace:
-var scope = (typeof window == 'undefined')?this:window;
-scope.createjs = scope.createjs || {};
-
 /**
  * @class Utility Methods
  */
@@ -56,7 +52,7 @@ scope.createjs = scope.createjs || {};
  * @param {Function} superclass The superclass to extend.
  * @return {Function} Returns the subclass's new prototype.
  */
-scope.createjs.extend = function(subclass, superclass) {
+module.exports = function(subclass, superclass) {
 	"use strict";
 
 	function o() { this.constructor = subclass; }

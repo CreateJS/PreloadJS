@@ -31,46 +31,44 @@
  * @module PreloadJS
  */
 
-// namespace:
-var scope = (typeof window == 'undefined')?this:window;
-scope.createjs = scope.createjs || {};
+var promote = require('../../createjs/utils/promote');
+var extend = require('../../createjs/utils/extend');
+var EventDispatcher = require('../../createjs/events/EventDispatcher');
 
-(function (createjs) {
-	"use strict";
+/**
+ * A base class for actual data requests, such as {{#crossLink "XHRRequest"}}{{/crossLink}}, {{#crossLink "TagRequest"}}{{/crossLink}},
+ * and {{#crossLink "MediaRequest"}}{{/crossLink}}. PreloadJS loaders will typically use a data loader under the
+ * hood to get data.
+ * @class AbstractRequest
+ * @param {LoadItem} item
+ * @constructor
+ */
+var AbstractRequest = function (item) {
+	this._item = item;
+};
 
-	/**
-	 * A base class for actual data requests, such as {{#crossLink "XHRRequest"}}{{/crossLink}}, {{#crossLink "TagRequest"}}{{/crossLink}},
-	 * and {{#crossLink "MediaRequest"}}{{/crossLink}}. PreloadJS loaders will typically use a data loader under the
-	 * hood to get data.
-	 * @class AbstractRequest
-	 * @param {LoadItem} item
-	 * @constructor
-	 */
-	var AbstractRequest = function (item) {
-		this._item = item;
-	};
+var p = extend(AbstractRequest, EventDispatcher);
 
-	var p = createjs.extend(AbstractRequest, createjs.EventDispatcher);
+// public methods
+/**
+ * Begin a load.
+ * @method load
+ */
+p.load = function () {
+};
 
-	// public methods
-	/**
-	 * Begin a load.
-	 * @method load
-	 */
-	p.load =  function() {};
+/**
+ * Clean up a request.
+ * @method destroy
+ */
+p.destroy = function () {
+};
 
-	/**
-	 * Clean up a request.
-	 * @method destroy
-	 */
-	p.destroy = function() {};
+/**
+ * Cancel an in-progress request.
+ * @method cancel
+ */
+p.cancel = function () {
+};
 
-	/**
-	 * Cancel an in-progress request.
-	 * @method cancel
-	 */
-	p.cancel = function() {};
-
-	createjs.AbstractRequest = createjs.promote(AbstractRequest, "EventDispatcher");
-
-}(scope.createjs));
+module.exports = AbstractRequest = promote(AbstractRequest, "EventDispatcher");
