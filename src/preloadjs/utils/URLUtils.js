@@ -35,7 +35,7 @@
 
 	/**
 	 * Utilities that assist with parsing load items, and determining file types, etc.
-	 * @class RequestUtils
+	 * @class URLUtils
 	 */
 	var s = {};
 
