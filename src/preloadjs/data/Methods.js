@@ -2,6 +2,8 @@
 this.createjs = this.createjs || {};
 
 (function() {
+	var s = {};
+
 	/**
 	 * Defines a POST request, use for a method value when loading data.
 	 * @property POST
