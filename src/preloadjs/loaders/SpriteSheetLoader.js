@@ -102,7 +102,7 @@ this.createjs = this.createjs || {};
 
 	// public methods
 	p.destroy = function() {
-		this.AbstractLoader_destroy;
+		this.AbstractLoader_destroy();
 		this._manifestQueue.close();
 	};
 

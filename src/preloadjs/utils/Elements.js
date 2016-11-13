@@ -1,5 +1,6 @@
 /*
- * DataUtils
+ * Elements
+ *
  * Visit http://createjs.com/ for documentation, updates and examples.
  *
  *
@@ -34,66 +35,60 @@
 (function () {
 
 	/**
-	 * A few data utilities for formatting different data types.
-	 * @class DataUtils
+	 * Convenience methods for creating various elements used by PrelaodJS.
+	 *
+	 * @class DomUtils
 	 */
 	var s = {};
 
-	// static methods
-	/**
-	 * Parse XML using the DOM. This is required when preloading XML or SVG.
-	 * @method parseXML
-	 * @param {String} text The raw text or XML that is loaded by XHR.
-	 * @return {XML} An XML document
-	 * @static
-	 */
-	s.parseXML = function (text) {
-		var xml = null;
-		// CocoonJS does not support XML parsing with either method.
+	s.a = function() {
+		return s.el("a");
+	}
 
-		// Most browsers will use DOMParser
-		// IE fails on certain SVG files, so we have a fallback below.
-		try {
-			if (window.DOMParser) {
-				var parser = new DOMParser();
-				xml = parser.parseFromString(text, "text/xml");
-			}
-		} catch (e) {
-		}
+	s.svg = function() {
+		return s.el("svg");
+	}
 
-		// Fallback for IE support.
-		if (!xml) {
-			try {
-				xml = new ActiveXObject("Microsoft.XMLDOM");
-				xml.async = false;
-				xml.loadXML(text);
-			} catch (e) {
-				xml = null;
-			}
-		}
+	s.object = function() {
+		return s.el("object");
+	}
 
-		return xml;
-	};
+	s.image = function() {
+		return s.el("image");
+	}
 
-	/**
-	 * Parse a string into an Object.
-	 * @method parseJSON
-	 * @param {String} value The loaded JSON string
-	 * @returns {Object} A JavaScript object.
-	 */
-	s.parseJSON = function (value) {
-		if (value == null) {
-			return null;
-		}
+	s.img = function() {
+		return s.el("img");
+	}
 
-		try {
-			return JSON.parse(value);
-		} catch (e) {
-			// TODO; Handle this with a custom error?
-			throw e;
-		}
-	};
+	s.style = function() {
+		return s.el("style");
+	}
 
-	createjs.DataUtils = s;
+	s.link = function() {
+		return s.el("link");
+	}
+
+	s.script = function() {
+		return s.el("script");
+	}
+
+	s.audio = function() {
+		return s.el("audio");
+	}
+
+	s.video = function() {
+		return s.el("video");
+	}
+
+	s.text = function(value) {
+		return document.createTextNode(value);
+	}
+
+	s.el = function(name) {
+		return document.createElement(name);
+	}
+
+	createjs.Elements = s;
 
 }());

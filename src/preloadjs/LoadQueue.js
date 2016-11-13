@@ -625,7 +625,7 @@ this.createjs = this.createjs || {};
 	 * @default 8000
 	 * @static
 	 * @since 0.4.1
-	 * @deprecated In favour of {{#crossLink "LoadItem/LOAD_TIMEOUT_DEFAULT:property}}{{/crossLink}} property.
+	 * @deprecated In favour of the LoadItem.LOAD_TIMEOUT_DEFAULT property.
 	 */
 	s.loadTimeout = 8000;
 
@@ -634,7 +634,7 @@ this.createjs = this.createjs || {};
 	 * @property LOAD_TIMEOUT
 	 * @type {Number}
 	 * @default 0
-	 * @deprecated in favor of the {{#crossLink "LoadQueue/loadTimeout:property"}}{{/crossLink}} property.
+	 * @deprecated in favor of the LoadQueue.loadTimeout property.
 	 */
 	s.LOAD_TIMEOUT = 0;
 
@@ -644,7 +644,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default binary
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/BINARY:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.BINARY property instead.
 	 */
 	s.BINARY = createjs.AbstractLoader.BINARY;
 
@@ -653,7 +653,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default css
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/CSS:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.CSS property instead.
 	 */
 	s.CSS = createjs.AbstractLoader.CSS;
 
@@ -680,7 +680,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default image
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/CSS:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.IMAGE property instead.
 	 */
 	s.IMAGE = createjs.AbstractLoader.IMAGE;
 
@@ -689,7 +689,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default javascript
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/JAVASCRIPT:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.JAVASCRIPT property instead.
 	 */
 	s.JAVASCRIPT = createjs.AbstractLoader.JAVASCRIPT;
 
@@ -698,7 +698,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default json
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/JSON:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.JSON property instead.
 	 */
 	s.JSON = createjs.AbstractLoader.JSON;
 
@@ -707,7 +707,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default jsonp
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/JSONP:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.JSONP property instead.
 	 */
 	s.JSONP = createjs.AbstractLoader.JSONP;
 
@@ -717,7 +717,7 @@ this.createjs = this.createjs || {};
 	 * @default manifest
 	 * @static
 	 * @since 0.4.1
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.MANIFEST property instead.
 	 */
 	s.MANIFEST = createjs.AbstractLoader.MANIFEST;
 
@@ -726,7 +726,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default sound
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/JAVASCRIPT:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.SOUND property instead.
 	 */
 	s.SOUND = createjs.AbstractLoader.SOUND;
 
@@ -735,7 +735,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default video
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/JAVASCRIPT:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.VIDEO instead.
 	 */
 	s.VIDEO = createjs.AbstractLoader.VIDEO;
 
@@ -744,7 +744,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default svg
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/SVG:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.SVG property instead.
 	 */
 	s.SVG = createjs.AbstractLoader.SVG;
 
@@ -753,7 +753,7 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default text
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/TEXT:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.TEXT instead.
 	 */
 	s.TEXT = createjs.AbstractLoader.TEXT;
 
@@ -762,21 +762,21 @@ this.createjs = this.createjs || {};
 	 * @type {String}
 	 * @default xml
 	 * @static
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/XML:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.XML instead.
 	 */
 	s.XML = createjs.AbstractLoader.XML;
 
 	/**
 	 * @property POST
 	 * @type {string}
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/POST:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.POST property instead.
 	 */
 	s.POST = createjs.AbstractLoader.POST;
 
 	/**
 	 * @property GET
 	 * @type {string}
-	 * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/GET:property"}}{{/crossLink}} instead.
+	 * @deprecated Use the AbstractLoader.GET property instead.
 	 */
 	s.GET = createjs.AbstractLoader.GET;
 
@@ -1397,7 +1397,7 @@ this.createjs = this.createjs || {};
 			} // the the src is an object, type is required to pass off to plugin
 			if (path) {
 				bp = path;
-				var pathMatch = createjs.RequestUtils.parseURI(path);
+				var pathMatch = createjs.URLUtils.parseURI(path);
 				// Also append basePath
 				if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
 					bp = useBasePath + bp;
@@ -1407,7 +1407,7 @@ this.createjs = this.createjs || {};
 			}
 		} else {
 			// Determine Extension, etc.
-			var match = createjs.RequestUtils.parseURI(item.src);
+			var match = createjs.URLUtils.parseURI(item.src);
 			if (match.extension) {
 				item.ext = match.extension;
 			}
@@ -1420,7 +1420,7 @@ this.createjs = this.createjs || {};
 			if (!match.absolute && !match.relative) {
 				if (path) {
 					bp = path;
-					var pathMatch = createjs.RequestUtils.parseURI(path);
+					var pathMatch = createjs.URLUtils.parseURI(path);
 					autoId = path + autoId;
 					// Also append basePath
 					if (useBasePath != null && !pathMatch.absolute && !pathMatch.relative) {
@@ -1459,7 +1459,7 @@ this.createjs = this.createjs || {};
 			}
 
 			// Update the extension in case the type changed:
-			match = createjs.RequestUtils.parseURI(item.src);
+			match = createjs.URLUtils.parseURI(item.src);
 			if (match.extension != null) {
 				item.ext = match.extension;
 			}

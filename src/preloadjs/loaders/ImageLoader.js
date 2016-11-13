@@ -52,18 +52,18 @@ this.createjs = this.createjs || {};
 		this._tagSrcAttribute = "src";
 
 		// Check if the preload item is already a tag.
-		if (createjs.RequestUtils.isImageTag(loadItem)) {
+		if (createjs.DomUtils.isImageTag(loadItem)) {
 			this._tag = loadItem;
-		} else if (createjs.RequestUtils.isImageTag(loadItem.src)) {
+		} else if (createjs.DomUtils.isImageTag(loadItem.src)) {
 			this._tag = loadItem.src;
-		} else if (createjs.RequestUtils.isImageTag(loadItem.tag)) {
+		} else if (createjs.DomUtils.isImageTag(loadItem.tag)) {
 			this._tag = loadItem.tag;
 		}
 
 		if (this._tag != null) {
 			this._preferXHR = false;
 		} else {
-			this._tag = document.createElement("img");
+			this._tag = createjs.Elements.img();
 		}
 
 		this.on("initialize", this._updateXHR, this);
@@ -94,7 +94,7 @@ this.createjs = this.createjs || {};
 
 		var crossOrigin = this._item.crossOrigin;
 		if (crossOrigin == true) { crossOrigin = "Anonymous"; }
-		if (crossOrigin != null && !createjs.RequestUtils.isLocal(this._item.src)) {
+		if (crossOrigin != null && !createjs.URLUtils.isLocal(this._item)) {
 			this._tag.crossOrigin = crossOrigin;
 		}
 
@@ -141,6 +141,7 @@ this.createjs = this.createjs || {};
 		var URL = window.URL || window.webkitURL;
 
 		if (!this._preferXHR) {
+
 			//document.body.removeChild(tag);
 		} else if (URL) {
 			var objURL = URL.createObjectURL(this.getResult(true));
@@ -160,7 +161,7 @@ this.createjs = this.createjs || {};
             }, this);
 
             tag.onerror = createjs.proxy(function() {
-                errorCallback(_this._tag);
+                errorCallback(this._tag);
             }, this);
 		}
 	};

@@ -64,7 +64,7 @@ describe("PreloadJS.LoadQueue", function () {
 
 		it("should load svg", function (done) {
 			this.queue.addEventListener("fileload", function (evt) {
-				expect(typeof evt.result).toBe("object");
+				expect(evt.result instanceof Object).toBeTruthy();
 				done();
 			});
 			this.loadFile("art/gbot.svg", false);

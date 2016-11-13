@@ -77,7 +77,7 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._formatResult = function (loader) {
-		return createjs.DataUtils.parseXML(loader.getResult(true), "text/xml");
+		return createjs.DataUtils.parseXML(loader.getResult(true));
 	};
 
 	createjs.XMLLoader = createjs.promote(XMLLoader, "AbstractLoader");

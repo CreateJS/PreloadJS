@@ -79,7 +79,7 @@ this.createjs = this.createjs || {};
 	 */
 	function JSONPLoader(loadItem) {
 		this.AbstractLoader_constructor(loadItem, false, createjs.AbstractLoader.JSONP);
-		this.setTag(document.createElement("script"));
+		this.setTag(createjs.Elements.script());
 		this.getTag().type = "text/javascript";
 	};
 
@@ -130,7 +130,7 @@ this.createjs = this.createjs || {};
 		}
 
 		window[this._item.callback] = createjs.proxy(this._handleLoad, this);
-		window.document.body.appendChild(this._tag);
+		createjs.DomUtils.appendToBody(this._tag);
 
 		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), this._item.loadTimeout);
 
@@ -169,7 +169,7 @@ this.createjs = this.createjs || {};
 	 * @private
 	 */
 	p._dispose = function () {
-		window.document.body.removeChild(this._tag);
+		createjs.DomUtils.removeChild(this._tag);
 		delete window[this._item.callback];
 
 		clearTimeout(this._loadTimeout);
