@@ -113,6 +113,7 @@
 				this._rawResult = event.target._response;
 				this._result = true;
 				this._parseCSS(this._rawResult);
+				return;
 				break;
 			default:
 		}
@@ -136,17 +137,9 @@
 			return true;
 		}
 
-		// Load a CSS Path. Note that we CAN NOT load it without XHR.
+		// Load a CSS Path. Note that we CAN NOT load it without XHR. LM: Why not?
 		this._request = new createjs.XHRRequest(this._item);
 		return false;
-
-		/*var request = new XMLHttpRequest();
-		var _this = this;
-		request.open("GET", src);
-		request.onreadystatechange = function() {
-			if (request.readyState === 4) { _this._parseCSS(request.responseText); }
-		};
-		request.send();*/
 	};
 	
 	p._parseCSS = function(css) {
