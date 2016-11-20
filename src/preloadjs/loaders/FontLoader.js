@@ -261,16 +261,21 @@ this.createjs = this.createjs || {};
 			for (var j = refs.length - 1; j >= 0; j--) {
 				var w = this._getTextWidth(def.family + "," + refFonts[j], def.weight, def.style);
 				if (w != refs[j]) {
+					var event = new createjs.Event("fileload");
+					event.item = def.family;
+					this.dispatchEvent(event);
 					defs.splice(i, 1);
 					break;
 				}
 			}
 		}
-		if (l !== defs.length) { this.dispatchEvent("progress"); } //TODO: need a value.
+		if (l !== defs.length) {
+			var event = new createjs.ProgressEvent(this._count-defs.length, this._count);
+			this.dispatchEvent(event);
+		}
 		if (l === 0) {
-			//this.dispatchEvent("complete"); //LM: Remove
-			this._sendComplete();
 			this._stopWatching();
+			this._sendComplete();
 		}
 	};
 	
