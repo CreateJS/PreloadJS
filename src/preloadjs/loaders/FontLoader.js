@@ -114,6 +114,7 @@ this.createjs = this.createjs || {};
 	FontLoader.FONT_FORMAT = {"woff2":"woff2", woff:"woff", ttf:"truetype", otf:"truetype"};
 	FontLoader.FONT_WEIGHT = {thin:100, extralight:200, ultralight:200, light:300, semilight:300, demilight:300, book:"normal", regular:"normal", semibold:600, demibold:600, extrabold:800, ultrabold:800, black:900, heavy:900};
 
+	FontLoader.WATCH_DURATION = 10;
 // public methods:
 	p.load = function() {
 		if (this.type == createjs.AbstractLoader.FONTCSS) {
@@ -225,7 +226,7 @@ this.createjs = this.createjs || {};
 	
 	p._parseFontFace = function(str) {
 		var family = this._getCSSValue(str, "font-family"), src = this._getCSSValue(str, "src");
-		if (!family || !src) { return; }
+		if (!family || !src) { return null; }
 		return this._defFromObj({
 			family: family,
 			src: src,
