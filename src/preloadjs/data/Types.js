@@ -26,6 +26,26 @@ this.createjs = this.createjs || {};
 	s.CSS = "css";
 
 	/**
+	 * The preload type for font files.
+	 * @property FONT
+	 * @type {String}
+	 * @default font
+	 * @static
+	 * @since 0.9.0
+	 */
+	s.FONT = "font";
+
+	/**
+	 * The preload type for fonts specified with CSS (such as Google fonts)
+	 * @property FONTCSS
+	 * @type {String}
+	 * @default fontcss
+	 * @static
+	 * @since 0.9.0
+	 */
+	s.FONTCSS = "fontcss";
+
+	/**
 	 * The preload type for image files, usually png, gif, or jpg/jpeg. Images are loaded into an &lt;image&gt; tag.
 	 * @property IMAGE
 	 * @type {String}
