@@ -241,8 +241,8 @@ this.createjs = this.createjs || {};
 	 */
 	s.CSS = createjs.Types.CSS;
 
-	s.FONT = "font";
-	s.FONTCSS = "fontcss";
+	s.FONT = createjs.Types.FONT;
+	s.FONTCSS = createjs.Types.FONTCSS;
 
 	/**
 	 * The preload type for image files, usually png, gif, or jpg/jpeg. Images are loaded into an &lt;image&gt; tag.
