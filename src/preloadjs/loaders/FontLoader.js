@@ -85,6 +85,7 @@ this.createjs = this.createjs || {};
 		this._injectCSS = loadItem.injectCSS === undefined ? true : loadItem.injectCSS;
 
 		this._watchInterval = null;
+		this._loadTimeout = null;
 	}
 	var p = createjs.extend(FontLoader, createjs.AbstractLoader);
     
@@ -131,7 +132,14 @@ this.createjs = this.createjs || {};
 		}
 
 		this.dispatchEvent("initialize");
+		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), this._item.loadTimeout);
+
 		this.dispatchEvent("loadstart");
+	};
+
+	p._handleTimeout = function () {
+		this._stopWatching();
+		this.dispatchEvent(new createjs.ErrorEvent("PRELOAD_TIMEOUT", null, event));
 	};
 
 	// WatchCSS does the work for us, and provides a modified src.
@@ -142,14 +150,18 @@ this.createjs = this.createjs || {};
 	p.handleEvent = function (event) {
 		switch (event.type) {
 			case "complete":
+				clearTimeout(this._loadTimeout);
 				this._rawResult = event.target._response;
 				this._result = true;
 				this._parseCSS(this._rawResult);
 				return;
 				break;
-			default:
+			case "error":
+				clearTimeout(this._loadTimeout);
+				this._stopWatching(); // Might not be necessary since fonts haven't started watching
+				this.AbstractLoader_handleEvent(event);
+				break;
 		}
-		this.AbstractLoader_handleEvent(event);
 	};
 
 // private methods:
