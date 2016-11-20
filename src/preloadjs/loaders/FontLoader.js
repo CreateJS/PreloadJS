@@ -86,6 +86,7 @@ this.createjs = this.createjs || {};
 
 		this._watchInterval = null;
 		this._loadTimeout = null;
+		this.dispatchEvent("initialize");
 	}
 	var p = createjs.extend(FontLoader, createjs.AbstractLoader);
     
@@ -131,7 +132,6 @@ this.createjs = this.createjs || {};
 			this._injectStyleTag(this._cssFromDef(def));
 		}
 
-		this.dispatchEvent("initialize");
 		this._loadTimeout = setTimeout(createjs.proxy(this._handleTimeout, this), this._item.loadTimeout);
 
 		this.dispatchEvent("loadstart");
