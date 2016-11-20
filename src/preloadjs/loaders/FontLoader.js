@@ -82,9 +82,9 @@ this.createjs = this.createjs || {};
 		this._faces = {};
 		this._watched = [];
 		this._count = 0;
-		this._intervalID = null;
 		this._injectCSS = loadItem.injectCSS === undefined ? true : loadItem.injectCSS;
 
+		this._watchInterval = null;
 	}
 	var p = createjs.extend(FontLoader, createjs.AbstractLoader);
     
@@ -232,13 +232,13 @@ this.createjs = this.createjs || {};
 	};
 	
 	p._startWatching = function() {
-		if (this._intervalID != null) { return; }
-		this._intervalID = setInterval(this._watch.bind(this), 10); //TODO: Sub in a proxy?
+		if (this._watchInterval != null) { return; }
+		this._watchInterval = setInterval(createjs.proxy(this._watch, this), FontLoader.WATCH_DURATION);
 	};
 	
 	p._stopWatching = function() {
-		clearInterval(this._intervalID);
-		this._intervalID = null;
+		clearInterval(this._watchInterval);
+		this._watchInterval = null;
 	};
 	
 	p._watch = function() {
