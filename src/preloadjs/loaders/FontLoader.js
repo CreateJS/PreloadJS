@@ -82,10 +82,11 @@ this.createjs = this.createjs || {};
 		this._faces = {};
 		this._watched = [];
 		this._count = 0;
-		this._injectCSS = loadItem.injectCSS === undefined ? true : loadItem.injectCSS;
 
 		this._watchInterval = null;
 		this._loadTimeout = null;
+		this._injectCSS = (loadItem.injectCSS === undefined) ? true : loadItem.injectCSS;
+
 		this.dispatchEvent("initialize");
 	}
 	var p = createjs.extend(FontLoader, createjs.AbstractLoader);
