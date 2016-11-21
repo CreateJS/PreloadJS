@@ -6,7 +6,6 @@
 </head>
 <body>
     <script src="../../lib/preloadjs-NEXT.combined.js"></script>
-	<script src="../../src/preloadjs/loaders/FontLoader.js"></script>
 	<script>
 		var fontConfig = {
 			src: [
@@ -26,6 +25,9 @@
 		
 		var loader = new createjs.FontLoader(fontConfig, true);
 		loader.on("complete", function() { result.innerHTML = "COMPLETE"; });
+		loader.on("progress", function(e) { console.log("progress", e.progress);});
+		loader.on("fileload", function(e) { console.log("fileload", e.item);});
+		loader.on("error", function(e) { console.log("error", e);});
         loader.load();
 	</script>
 	<div style="font-family: regul; font-size:72pt;">
