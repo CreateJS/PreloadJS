@@ -254,15 +254,13 @@ this.createjs = this.createjs || {};
 	p.handleEvent = function (event) {
 		switch (event.type) {
 			case "complete":
-				clearTimeout(this._loadTimeout);
 				this._rawResult = event.target._response;
 				this._result = true;
 				this._parseCSS(this._rawResult);
-				return;
 				break;
+
 			case "error":
-				clearTimeout(this._loadTimeout);
-				this._stopWatching(); // Might not be necessary since fonts haven't started watching
+				this._stopWatching();
 				this.AbstractLoader_handleEvent(event);
 				break;
 		}
@@ -405,6 +403,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._stopWatching = function() {
 		clearInterval(this._watchInterval);
+		clearTimeout(this._loadTimeout);
 		this._watchInterval = null;
 	};
 
@@ -427,7 +426,8 @@ this.createjs = this.createjs || {};
 				var w = this._getTextWidth(def.family + "," + refFonts[j], def.weight, def.style);
 				if (w != refs[j]) {
 					var event = new createjs.Event("fileload");
-					event.item = def.family;
+					def.type = "font-family";
+					event.item = def;
 					this.dispatchEvent(event);
 					defs.splice(i, 1);
 					break;
