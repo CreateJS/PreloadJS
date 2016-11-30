@@ -98,7 +98,6 @@ this.createjs = this.createjs || {};
 
 		if (xml.documentElement != null) {
 			tag.appendChild(xml.documentElement);
-			tag.style.visibility = "visible";
 			return tag;
 		} else { // For browsers that don't support SVG, just give them the XML. (IE 9-8)
 			return xml;
