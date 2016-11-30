@@ -1,10 +1,18 @@
 Version NEXT [not yet released]
 ****************************************************************************************************
 - Fixed XHRRequest to append values in both GET and POST scenarios
-- Fixed documentation error with LoadItem.method, which showed the wrong case in the default value.
+- Updated documentation:
+ 	* error with LoadItem.method, which showed the wrong case in the default value
 - Fixed issue with SpriteSheetLoader.destroy (thanks @Kiv)
 - Changed XHR error conditions to only include 400-599. Specifically removed status=0 as an error,
 	which affects compiled applications.
+- Fixed issue with parameter value in ImageLoader._isLocal check
+- Changed tag preloading to use a dedicated container instead of adding all items to the body during
+	loading, which will avoid affecting the size of the body.
+- General refactoring to utility methods
+- Fixed issue with error handler when loading images
+- Removed type from DataUtils.parseXML, just default to "text/xml"
+- Added FontLoader for preloading CSS-fonts and relative font files
 
 
 Version 0.6.2 [November 26, 2015]
