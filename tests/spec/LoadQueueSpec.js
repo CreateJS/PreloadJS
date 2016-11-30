@@ -11,7 +11,7 @@ describe("PreloadJS.LoadQueue", function () {
 				_this.queue.preferXHR = preferXHR;
 			}
 
-			if (typeof fileObj == "string") {
+			if (typeof fileObj == "string"|| fileObj.src instanceof Array) {
 				_this.queue.loadFile(this.getFilePath(fileObj));
 			} else {
 				fileObj.src = this.getFilePath(fileObj.src);
@@ -571,5 +571,75 @@ describe("PreloadJS.LoadQueue", function () {
 		this.queue.loadManifest(['static/manifest.json', "FileWill404.html", "static/grant.xml", "static/grant.json"], true);
 
 	});
+
+
+    describe("Font Loading", function () {
+
+        it ("should load fonts by src", function(done) {
+            var func = {
+                fileload: function () {
+                }
+            };
+
+            spyOn(func, "fileload");
+
+            this.queue.addEventListener("fileload", func.fileload);
+
+            this.queue.addEventListener("complete", function (evt) {
+                expect(func.fileload.calls.count()).toBe(1);
+                done();
+            });
+
+            this.loadFile({
+                src: "fonts/regul-bold.woff",
+                type: createjs.LoadQueue.FONT
+            });
+        });
+
+        it ("should load fonts by array", function(done) {
+            var func = {
+                fileload: function () {
+                }
+            };
+
+            spyOn(func, "fileload");
+
+            this.queue.addEventListener("fileload", func.fileload);
+
+            this.queue.addEventListener("complete", function (evt) {
+                expect(func.fileload.calls.count()).toBe(1);
+                done();
+            });
+
+            this.loadFile({
+                src: [
+                    "fonts/regul-book.woff",
+                    "fonts/regul-bold.woff"
+                ],
+                type: createjs.LoadQueue.FONT
+            });
+        });
+
+        it ("should load google fonts", function(done) {
+            var func = {
+                fileload: function () {
+                }
+            };
+
+            spyOn(func, "fileload");
+
+            this.queue.addEventListener("fileload", func.fileload);
+
+            this.queue.addEventListener("complete", function (evt) {
+                expect(func.fileload.calls.count()).toBe(1);
+                done();
+            });
+
+            this.loadFile({
+                src: "https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic",
+                type: createjs.LoadQueue.FONTCSS
+            });
+        });
+    });
 
 });

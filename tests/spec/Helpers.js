@@ -2,12 +2,27 @@ beforeEach(function () {
 	this.baseAssetsPath = "../_assets/";
 
 	this.getFilePath = function (fileObj) {
+        var path = "";
 		if (typeof fileObj == "string") {
-			return this.baseAssetsPath + fileObj;
+           return this._formatFilePath(fileObj);
+        } else if (fileObj.src instanceof Array) {
+            for (var i=0;i<fileObj.src.length;i++) {
+                fileObj.src[i] = this._formatFilePath(fileObj.src[i]);
+            }
+            return fileObj;
 		} else {
-			return this.baseAssetsPath + fileObj.src;
+			fileObj.src = this._formatFilePath(fileObj.src);
+            return fileObj;
 		}
 	}
+
+    this._formatFilePath = function(path) {
+        if (path.indexOf("http") == 0) {
+            return path;
+        } else {
+            return this.baseAssetsPath + path;
+        }
+    }
 
 	this.findClass = function (selector) {
 		// search backwards because the last match is more likely the right one

@@ -28,6 +28,7 @@
 		"../src/preloadjs/loaders/TextLoader.js",
 		"../src/preloadjs/loaders/BinaryLoader.js",
 		"../src/preloadjs/loaders/CSSLoader.js",
+      "../src/preloadjs/loaders/FontLoader.js",
 		"../src/preloadjs/loaders/ImageLoader.js",
 		"../src/preloadjs/loaders/JavaScriptLoader.js",
 		"../src/preloadjs/loaders/JSONLoader.js",

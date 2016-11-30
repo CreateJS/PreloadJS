@@ -377,6 +377,7 @@ this.createjs = this.createjs || {};
 		 * @since 0.6.0
 		 */
 		this._availableLoaders = [
+            createjs.FontLoader,
 			createjs.ImageLoader,
 			createjs.JavaScriptLoader,
 			createjs.CSSLoader,
@@ -655,6 +656,24 @@ this.createjs = this.createjs || {};
 	 * @deprecated Use the AbstractLoader.CSS property instead.
 	 */
 	s.CSS = createjs.AbstractLoader.CSS;
+
+    /**
+     * @property FONT
+     * @type {String}
+     * @default font
+     * @static
+     * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/FONT:property"}}{{/crossLink}} instead.
+     */
+    s.FONT = createjs.AbstractLoader.FONT;
+
+    /**
+     * @property FONTCSS
+     * @type {String}
+     * @default fontcss
+     * @static
+     * @deprecated Use the AbstractLoader {{#crossLink "AbstractLoader/FONTCDD:property"}}{{/crossLink}} instead.
+     */
+    s.FONTCSS = createjs.AbstractLoader.FONTCSS;
 
 	/**
 	 * @property IMAGE
