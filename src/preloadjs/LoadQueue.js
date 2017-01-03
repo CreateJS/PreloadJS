@@ -1083,6 +1083,7 @@ this.createjs = this.createjs || {};
 	 * its files will <strong>NOT</strong> use the basePath parameter. <strong>The basePath parameter is deprecated.</strong>
 	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
 	 * constructor, or a `path` property in a manifest definition.
+	 * @return {AbstractLoader} The loader for the file
 	 */
 	p.loadFile = function (file, loadNow, basePath) {
 		if (file == null) {
@@ -1338,6 +1339,7 @@ this.createjs = this.createjs || {};
 	 * @param {String} [basePath] <strong>Deprecated</strong>An optional basePath passed into a {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * or {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} call. This parameter will be removed in a future tagged
 	 * version.
+	 * @return {AbstractLoader} The loader for the file
 	 * @private
 	 */
 	p._addItem = function (value, path, basePath) {
