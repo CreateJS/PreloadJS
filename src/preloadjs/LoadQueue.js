@@ -1090,13 +1090,15 @@ this.createjs = this.createjs || {};
 			this._sendError(event);
 			return;
 		}
-		this._addItem(file, null, basePath);
+		var loader = this._addItem(file, null, basePath);
 
 		if (loadNow !== false) {
 			this.setPaused(false);
 		} else {
 			this.setPaused(true);
 		}
+
+		return loader;
 	};
 
 	/**
@@ -1187,8 +1189,9 @@ this.createjs = this.createjs || {};
 			return;
 		}
 
+		var items = [];
 		for (var i = 0, l = fileList.length; i < l; i++) {
-			this._addItem(fileList[i], path, basePath);
+			items.push(this._addItem(fileList[i], path, basePath));
 		}
 
 		if (loadNow !== false) {
@@ -1197,6 +1200,7 @@ this.createjs = this.createjs || {};
 			this.setPaused(true);
 		}
 
+		return items;
 	};
 
 	/**
@@ -1363,6 +1367,7 @@ this.createjs = this.createjs || {};
 				this._loadedScripts.push(null);
 			}
 		}
+		return loader;
 	};
 
 	/**
