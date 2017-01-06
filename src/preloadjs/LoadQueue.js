@@ -1833,6 +1833,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._cleanLoadItem = function(loader) {
 		var item = loader.getItem();
+		loader.removeAllEventListeners();
 		if (item) {
 			delete item._loader;
 		}
