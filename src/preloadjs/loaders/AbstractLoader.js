@@ -420,7 +420,7 @@ this.createjs = this.createjs || {};
 	 * This enables loaders to maintain internal queues, and surface file load errors.
 	 * @event fileerror
 	 * @param {Object} target The object that dispatched the event.
-	 * @param {String} type The even type ("fileerror")
+	 * @param {String} type The event type ("fileerror")
 	 * @param {LoadItem|object} The item that encountered the error
 	 * @since 0.6.0
 	 */
