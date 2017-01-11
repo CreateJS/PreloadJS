@@ -8,6 +8,7 @@
 		"../src/createjs/events/Event.js",
 		"../src/createjs/events/ErrorEvent.js",
 		"../src/createjs/events/EventDispatcher.js",
+
 		"../src/preloadjs/events/ProgressEvent.js",
 		"../src/preloadjs/utils/json3.js",
         "../src/preloadjs/utils/Elements.js",
@@ -28,7 +29,7 @@
 		"../src/preloadjs/loaders/TextLoader.js",
 		"../src/preloadjs/loaders/BinaryLoader.js",
 		"../src/preloadjs/loaders/CSSLoader.js",
-      "../src/preloadjs/loaders/FontLoader.js",
+		"../src/preloadjs/loaders/FontLoader.js",
 		"../src/preloadjs/loaders/ImageLoader.js",
 		"../src/preloadjs/loaders/JavaScriptLoader.js",
 		"../src/preloadjs/loaders/JSONLoader.js",
