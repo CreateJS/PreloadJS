@@ -804,7 +804,7 @@ this.createjs = this.createjs || {};
 	/**
 	 * This event is fired when an individual file starts to load.
 	 * @event filestart
-	 * @param {Object} The object that dispatched the event.
+	 * @param {Object} target The object that dispatched the event.
 	 * @param {String} type The event type.
 	 * @param {Object} item The file item which was specified in the {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}}
 	 * or {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}} call. If only a string path or tag was specified, the
