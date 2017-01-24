@@ -97,7 +97,12 @@ this.createjs = this.createjs || {};
 		}
 
 		if (xml.documentElement != null) {
-			tag.appendChild(xml.documentElement);
+			var element = xml.documentElement;
+			// Support loading an SVG from a different domain in ID
+			if (document.importNode) {
+				element = document.importNode(element, true);
+			}
+			tag.appendChild(element);
 			return tag;
 		} else { // For browsers that don't support SVG, just give them the XML. (IE 9-8)
 			return xml;
