@@ -242,7 +242,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._handleTimeout = function () {
 		this._stopWatching();
-		this.dispatchEvent(new createjs.ErrorEvent("PRELOAD_TIMEOUT", null, event));
+		this.dispatchEvent(new createjs.ErrorEvent("PRELOAD_TIMEOUT"));
 	};
 
 	// WatchCSS does the work for us, and provides a modified src.
