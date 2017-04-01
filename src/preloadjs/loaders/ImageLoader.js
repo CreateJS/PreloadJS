@@ -161,7 +161,7 @@ this.createjs = this.createjs || {};
             }, this);
 
             tag.onerror = createjs.proxy(function() {
-                errorCallback(this._tag);
+                errorCallback(new createjs.ErrorEvent('IMAGE_FORMAT'));
             }, this);
 		}
 	};
