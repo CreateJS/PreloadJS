@@ -13,6 +13,7 @@ Version NEXT [not yet released]
 - Fixed issue with error handler when loading images
 - Removed type from DataUtils.parseXML, just default to "text/xml"
 - Added FontLoader for preloading CSS-fonts and relative font files
+- Fixed error callback on resultFormatter in ImageLoader (thanks @xpol)
 
 
 Version 0.6.2 [November 26, 2015]
