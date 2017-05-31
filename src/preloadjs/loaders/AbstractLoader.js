@@ -703,11 +703,13 @@ this.createjs = this.createjs || {};
 			case "complete":
 				this._rawResult = event.target._response;
 				var result = this.resultFormatter && this.resultFormatter(this);
+				// The resultFormatter is asynchronous
 				if (result instanceof Function) {
 					result.call(this,
 							createjs.proxy(this._resultFormatSuccess, this),
 							createjs.proxy(this._resultFormatFailed, this)
 					);
+				// The result formatter is synchronous
 				} else {
 					this._result =  result || this._rawResult;
 					this._sendComplete();
