@@ -61,13 +61,16 @@ this.createjs = this.createjs || {};
 	 * Note that the {{#crossLink "JSONLoader"}}{{/crossLink}} and {{#crossLink "JSONPLoader"}}{{/crossLink}} are
 	 * higher priority loaders, so manifests <strong>must</strong> set the {{#crossLink "LoadItem"}}{{/crossLink}}
 	 * {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property to {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}.
+	 *
+	 * Additionally, some browsers require the server to serve a JavaScript mime-type for JSONP, so it may not work in
+	 * some conditions.
 	 * @class ManifestLoader
 	 * @param {LoadItem|Object} loadItem
 	 * @extends AbstractLoader
 	 * @constructor
 	 */
-	function ManifestLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, null, createjs.AbstractLoader.MANIFEST);
+	function ManifestLoader(loadItem, preferXHR) {
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.MANIFEST);
 
 	// Public Properties
 		/**
@@ -164,7 +167,7 @@ this.createjs = this.createjs || {};
 	 */
 	p._loadManifest = function (json) {
 		if (json && json.manifest) {
-			var queue = this._manifestQueue = new createjs.LoadQueue();
+			var queue = this._manifestQueue = new createjs.LoadQueue(this._preferXHR);
 			queue.on("fileload", this._handleManifestFileLoad, this);
 			queue.on("progress", this._handleManifestProgress, this);
 			queue.on("complete", this._handleManifestComplete, this, true);

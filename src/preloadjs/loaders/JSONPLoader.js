@@ -68,9 +68,12 @@ this.createjs = this.createjs || {};
 	 * 			console.log(json.obj.bool); // true
 	 * 		}
 	 *
-	 * Note that JSONP files loaded concurrently require a <em>unique</em> callback. To ensure JSONP files are loaded
-	 * in order, either use the {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}} method (set to 1),
-	 * or set {{#crossLink "LoadItem/maintainOrder:property"}}{{/crossLink}} on items with the same callback.
+	 * JSONP files loaded concurrently require a <em>unique</em> callback. To ensure JSONP files are loaded in order,
+	 * either use the {{#crossLink "LoadQueue/setMaxConnections"}}{{/crossLink}} method (set to 1), or set
+	 * {{#crossLink "LoadItem/maintainOrder:property"}}{{/crossLink}} on items with the same callback.
+	 *
+	 * Important note: Some browsers will prevent JSONP from firing the callback if the file was loaded as JSON, and not
+	 * JavaScript. You may have to have your server give you a JavaScript mime-type for this to work.
 	 *
 	 * @class JSONPLoader
 	 * @param {LoadItem|Object} loadItem
