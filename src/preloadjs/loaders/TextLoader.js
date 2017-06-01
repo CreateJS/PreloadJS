@@ -46,7 +46,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function TextLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.TEXT);
+		this.AbstractLoader_constructor(loadItem, true, createjs.Types.TEXT);
 	};
 
 	var p = createjs.extend(TextLoader, createjs.AbstractLoader);
@@ -54,7 +54,7 @@ this.createjs = this.createjs || {};
 
 	// static methods
 	/**
-	 * Determines if the loader can load a specific item. This loader loads items that are of type {{#crossLink "AbstractLoader/TEXT:property"}}{{/crossLink}},
+	 * Determines if the loader can load a specific item. This loader loads items that are of type {{#crossLink "Types/TEXT:property"}}{{/crossLink}},
 	 * but is also the default loader if a file type can not be determined.
 	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
@@ -62,7 +62,7 @@ this.createjs = this.createjs || {};
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.TEXT;
+		return item.type == createjs.Types.TEXT;
 	};
 
 	createjs.TextLoader = createjs.promote(TextLoader, "AbstractLoader");

@@ -81,7 +81,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function JSONPLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, false, createjs.AbstractLoader.JSONP);
+		this.AbstractLoader_constructor(loadItem, false, createjs.Types.JSONP);
 		this.setTag(createjs.Elements.script());
 		this.getTag().type = "text/javascript";
 	};
@@ -93,14 +93,14 @@ this.createjs = this.createjs || {};
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
-	 * {{#crossLink "AbstractLoader/JSONP:property"}}{{/crossLink}}.
+	 * {{#crossLink "Types/JSONP:property"}}{{/crossLink}}.
 	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
 	 * @returns {Boolean} Whether the loader can load the item.
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.JSONP;
+		return item.type == createjs.Types.JSONP;
 	};
 
 	// public methods

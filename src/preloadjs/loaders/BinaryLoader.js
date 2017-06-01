@@ -46,7 +46,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function BinaryLoader(loadItem) {
-		this.AbstractLoader_constructor(loadItem, true, createjs.AbstractLoader.BINARY);
+		this.AbstractLoader_constructor(loadItem, true, createjs.Types.BINARY);
 		this.on("initialize", this._updateXHR, this);
 	};
 
@@ -56,14 +56,14 @@ this.createjs = this.createjs || {};
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
-	 * {{#crossLink "AbstractLoader/BINARY:property"}}{{/crossLink}}
+	 * {{#crossLink "Types/BINARY:property"}}{{/crossLink}}
 	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
 	 * @returns {Boolean} Whether the loader can load the item.
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.BINARY;
+		return item.type == createjs.Types.BINARY;
 	};
 
 	// private methods

@@ -44,7 +44,7 @@ this.createjs = this.createjs || {};
 	 * as part of the {{#crossLink "LoadItem"}}{{/crossLink}}. Note that the {{#crossLink "JSONLoader"}}{{/crossLink}}
 	 * and {{#crossLink "JSONPLoader"}}{{/crossLink}} are higher priority loaders, so SpriteSheets <strong>must</strong>
 	 * set the {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property
-	 * to {{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}.
+	 * to {{#crossLink "Types/SPRITESHEET:property"}}{{/crossLink}}.
 	 *
 	 * The {{#crossLink "LoadItem"}}{{/crossLink}} {{#crossLink "LoadItem/crossOrigin:property"}}{{/crossLink}} as well
 	 * as the {{#crossLink "LoadQueue's"}}{{/crossLink}} `basePath` argument and {{#crossLink "LoadQueue/_preferXHR"}}{{/crossLink}}
@@ -61,7 +61,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function SpriteSheetLoader(loadItem, preferXHR) {
-		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.SPRITESHEET);
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.Types.SPRITESHEET);
 
 		// protected properties
 		/**
@@ -90,14 +90,14 @@ this.createjs = this.createjs || {};
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
-	 * {{#crossLink "AbstractLoader/SPRITESHEET:property"}}{{/crossLink}}
+	 * {{#crossLink "Types/SPRITESHEET:property"}}{{/crossLink}}
 	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
 	 * @returns {Boolean} Whether the loader can load the item.
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.SPRITESHEET;
+		return item.type == createjs.Types.SPRITESHEET;
 	};
 
 	// public methods

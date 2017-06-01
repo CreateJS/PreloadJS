@@ -47,7 +47,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function CSSLoader(loadItem, preferXHR) {
-		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.CSS);
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.Types.CSS);
 
 		// public properties
 		this.resultFormatter = this._formatResult;
@@ -71,14 +71,14 @@ this.createjs = this.createjs || {};
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
-	 * {{#crossLink "AbstractLoader/CSS:property"}}{{/crossLink}}.
+	 * {{#crossLink "Types/CSS:property"}}{{/crossLink}}.
 	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
 	 * @returns {Boolean} Whether the loader can load the item.
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.CSS;
+		return item.type == createjs.Types.CSS;
 	};
 
 	// protected methods

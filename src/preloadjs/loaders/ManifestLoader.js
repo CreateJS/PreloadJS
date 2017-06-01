@@ -60,7 +60,7 @@ this.createjs = this.createjs || {};
 	 *
 	 * Note that the {{#crossLink "JSONLoader"}}{{/crossLink}} and {{#crossLink "JSONPLoader"}}{{/crossLink}} are
 	 * higher priority loaders, so manifests <strong>must</strong> set the {{#crossLink "LoadItem"}}{{/crossLink}}
-	 * {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property to {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}.
+	 * {{#crossLink "LoadItem/type:property"}}{{/crossLink}} property to {{#crossLink "Types/MANIFEST:property"}}{{/crossLink}}.
 	 *
 	 * Additionally, some browsers require the server to serve a JavaScript mime-type for JSONP, so it may not work in
 	 * some conditions.
@@ -70,7 +70,7 @@ this.createjs = this.createjs || {};
 	 * @constructor
 	 */
 	function ManifestLoader(loadItem, preferXHR) {
-		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.MANIFEST);
+		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.Types.MANIFEST);
 
 	// Public Properties
 		/**
@@ -111,14 +111,14 @@ this.createjs = this.createjs || {};
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
-	 * {{#crossLink "AbstractLoader/MANIFEST:property"}}{{/crossLink}}
+	 * {{#crossLink "Types/MANIFEST:property"}}{{/crossLink}}
 	 * @method canLoadItem
 	 * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
 	 * @returns {Boolean} Whether the loader can load the item.
 	 * @static
 	 */
 	s.canLoadItem = function (item) {
-		return item.type == createjs.AbstractLoader.MANIFEST;
+		return item.type == createjs.Types.MANIFEST;
 	};
 
 	// public methods

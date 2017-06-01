@@ -109,14 +109,14 @@ this.createjs = this.createjs || {};
     
     /**
      * Determines if the loader can load a specific item. This loader can only load items that are of type
-     * {{#crossLink "AbstractLoader/FONT:property"}}{{/crossLink}}.
+     * {{#crossLink "Types/FONT:property"}}{{/crossLink}}.
      * @method canLoadItem
      * @param {LoadItem|Object} item The LoadItem that a LoadQueue is trying to load.
      * @returns {Boolean} Whether the loader can load the item.
      * @static
      */
     FontLoader.canLoadItem = function (item) {
-        return item.type == createjs.AbstractLoader.FONT || item.type == createjs.AbstractLoader.FONTCSS;
+        return item.type == createjs.Types.FONT || item.type == createjs.Types.FONTCSS;
     };
 
 // static properties:
@@ -212,7 +212,7 @@ this.createjs = this.createjs || {};
 	FontLoader.WATCH_DURATION = 10;
 // public methods:
 	p.load = function() {
-		if (this.type == createjs.AbstractLoader.FONTCSS) {
+		if (this.type == createjs.Types.FONTCSS) {
 			var loaded = this._watchCSS();
 
 			// If the CSS is not ready, it will create a request, which AbstractLoader can handle.
