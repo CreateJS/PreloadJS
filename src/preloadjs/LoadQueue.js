@@ -72,7 +72,7 @@
  *      <li>Opera has poor support for SVG loading with XHR</li>
  *      <li>CSS loading in Android and Safari will not work with tags (currently, a workaround is in progress)</li>
  *      <li>Local loading is not permitted with XHR, which is required by some file formats. When testing local content
- *      use either a local server, or enable tag loading, which is supported for most formats. See {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}}
+ *      use either a local server, or enable tag loading, which is supported for most formats. See {{#crossLink "LoadQueue/setPreferXHR"}}{{/crossLink}}
  *      for more information.</li>
  * </ul>
  *
@@ -432,14 +432,6 @@ this.createjs = this.createjs || {};
 	p.init = function (preferXHR, basePath, crossOrigin) {
 
 		// public properties
-		/**
-		 * @property useXHR
-		 * @type {Boolean}
-		 * @readonly
-		 * @default true
-		 * @deprecated Use preferXHR instead.
-		 */
-		this.useXHR = true;
 
 		/**
 		 * Try and use XMLHttpRequest (XHR) when possible. Note that LoadQueue will default to tag loading or XHR
@@ -617,27 +609,6 @@ this.createjs = this.createjs || {};
 	};
 
 // static properties
-	/**
-	 * The time in milliseconds to assume a load has failed. An {{#crossLink "AbstractLoader/error:event"}}{{/crossLink}}
-	 * event is dispatched if the timeout is reached before any data is received.
-	 * @property loadTimeout
-	 * @type {Number}
-	 * @default 8000
-	 * @static
-	 * @since 0.4.1
-	 * @deprecated In favour of the LoadItem.LOAD_TIMEOUT_DEFAULT property.
-	 */
-	s.loadTimeout = 8000;
-
-	/**
-	 * The time in milliseconds to assume a load has failed.
-	 * @property LOAD_TIMEOUT
-	 * @type {Number}
-	 * @default 0
-	 * @deprecated in favor of the LoadQueue.loadTimeout property.
-	 */
-	s.LOAD_TIMEOUT = 0;
-
 
 // events
 	/**
@@ -707,19 +678,6 @@ this.createjs = this.createjs || {};
 		if (idx != -1 && idx < this._defaultLoaderLength - 1) {
 			this._availableLoaders.splice(idx, 1);
 		}
-	};
-
-	/**
-	 * @method setUseXHR
-	 * @param {Boolean} value The new useXHR value to set.
-	 * @return {Boolean} The new useXHR value. If XHR is not supported by the browser, this will return false, even if
-	 * the provided value argument was true.
-	 * @since 0.3.0
-	 * @deprecated use the {{#crossLink "LoadQueue/preferXHR:property"}}{{/crossLink}} property, or the
-	 * {{#crossLink "LoadQueue/setUseXHR"}}{{/crossLink}} method instead.
-	 */
-	p.setUseXHR = function (value) {
-		return this.setPreferXHR(value);
 	};
 
 	/**
