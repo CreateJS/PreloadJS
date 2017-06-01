@@ -158,10 +158,12 @@ this.createjs = this.createjs || {};
 		} else {
             tag.onload = createjs.proxy(function() {
                 successCallback(this._tag);
+                tag.onload = tag.onerror = null;
             }, this);
 
-            tag.onerror = createjs.proxy(function() {
-                errorCallback(new createjs.ErrorEvent('IMAGE_FORMAT'));
+            tag.onerror = createjs.proxy(function(event) {
+                errorCallback(new createjs.ErrorEvent('IMAGE_FORMAT', null, event));
+                tag.onload = tag.onerror = null;
             }, this);
 		}
 	};
