@@ -72,6 +72,40 @@ this.createjs = this.createjs || {};
 		return createjs.Elements.video();
 	};
 
+	p._formatResult = function(loader) {
+		var tag = this.AbstractMediaLoader__formatResult(loader);
+		if (!this._preferXHR && Math.round(tag.buffered.end(0)) <= tag.duration) {
+			var fn = createjs.proxy(function() {
+				tag.pause();
+				tag.muted = true;
+			}, this);
+
+			// Force the tag to play
+			tag.addEventListener("timeupdate", fn, false);
+			tag.play();
+			return this._formatVideo; // Asynchronous
+		}
+		return tag;
+	};
+
+	/**
+	 * Monitor video buffer progress
+	 * @method _checkTagProgress
+	 * @param event
+	 * @private
+	 */
+	p._formatVideo = function(successCallback, errorCallback) {
+		var tag = this.getTag();
+		var fn = createjs.proxy(function() {
+			if (Math.round(tag.buffered.end(0)) >= tag.duration) {
+				this.removeEventListener("progress", fn);
+				successCallback(tag);
+			}
+		}, this);
+		tag.addEventListener("progress", fn, false);
+	};
+
+
 	// static methods
 	/**
 	 * Determines if the loader can load a specific item. This loader can only load items that are of type
