@@ -196,41 +196,41 @@
 			return;
 		}
 		switch (item.type) {
-			case createjs.AbstractLoader.CSS:
+			case createjs.Types.CSS:
 				(document.head || document.getElementsByTagName("head")[0]).appendChild(result);
 				div.innerHTML = "<label>CSS is complete :)</label>";
 				break;
 
-			case createjs.AbstractLoader.IMAGE:
+			case createjs.Types.IMAGE:
 				div.innerHTML = "";
 				result.width = div.clientWidth;
 				result.height = div.clientHeight;
 				div.appendChild(result);
 				break;
 
-			case createjs.AbstractLoader.JAVASCRIPT:
+			case createjs.Types.JAVASCRIPT:
 				document.body.appendChild(result);
 				div.innerHTML = "<label>Javascript is complete :)</label>";
 				break;
 
-			case createjs.AbstractLoader.JSON:
-			case createjs.AbstractLoader.XML:
+			case createjs.Types.JSON:
+			case createjs.Types.XML:
 				div.innerHTML = "<label>" +
 						item.type +
 						" loaded: <br /><xmp>" +
 						(event.rawResult ? event.rawResult : '') +
 						"</xmp></label>";
 				break;
-			case createjs.AbstractLoader.JSONP:
+			case createjs.Types.JSONP:
 				div.innerHTML = "<label>JSONP is complete :)</label>";
 				break;
-			case createjs.AbstractLoader.SOUND:
+			case createjs.Types.SOUND:
 				document.body.appendChild(result);
 				result.play();
 				div.innerHTML = "<label>Sound is complete :)</label>";
 				break;
 
-			case createjs.AbstractLoader.SVG:
+			case createjs.Types.SVG:
 				div.innerHTML = "";
 				div.appendChild(result);
 				break
