@@ -184,9 +184,7 @@ this.createjs = this.createjs || {};
 	 *     <li>{{#crossLink "Types/XML:property"}}{{/crossLink}}: XML data</li>
 	 * </ul>
 	 *
-	 * <em>Note: Loader types used to be defined on LoadQueue, but have been moved to AbstractLoader for better
-	 * portability of loader classes, which can be used individually now. The properties on LoadQueue still exist, but
-	 * are deprecated.</em>
+	 * <em>Note: Loader types used to be defined on LoadQueue, but have been moved to the Types class</em>
 	 *
 	 * <b>Handling Results</b><br />
 	 * When a file is finished downloading, a {{#crossLink "LoadQueue/fileload:event"}}{{/crossLink}} event is
