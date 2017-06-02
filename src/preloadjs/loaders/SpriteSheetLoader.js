@@ -60,7 +60,7 @@ this.createjs = this.createjs || {};
 	 * @extends AbstractLoader
 	 * @constructor
 	 */
-	function SpriteSheetLoader(loadItem, preferXHR) {
+	function SpriteSheetLoader(loadItem, preferXHR, basePath) {
 		this.AbstractLoader_constructor(loadItem, preferXHR, createjs.AbstractLoader.SPRITESHEET);
 
 		// protected properties
@@ -71,6 +71,7 @@ this.createjs = this.createjs || {};
 		 * @private
 		 */
 		this._manifestQueue = null;
+		this._basePath = basePath;
 	}
 
 	var p = createjs.extend(SpriteSheetLoader, createjs.AbstractLoader);
@@ -142,6 +143,9 @@ this.createjs = this.createjs || {};
 	 */
 	p._loadManifest = function (json) {
 		if (json && json.images) {
+			for(var i = json.images.length - 1; i >= 0; i--) {
+				json.images[i] = this._basePath + json.images[i];
+			}
 			var queue = this._manifestQueue = new createjs.LoadQueue(this._preferXHR, this._item.path, this._item.crossOrigin);
 			queue.on("complete", this._handleManifestComplete, this, true);
 			queue.on("fileload", this._handleManifestFileLoad, this);
