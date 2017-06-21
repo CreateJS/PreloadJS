@@ -1,8 +1,14 @@
 Version NEXT [not yet released]
 ****************************************************************************************************
+CRITICAL
+- Removed old deprecated properties and methods
+- removed deprecated TYPE duplicates, notably the loader types (LoadQueue.SOUND, AbstractLoader.SOUND)
+	in place of the Types.SOUND, and request methods (LoadQueue.POST, AbstractLoader.POST) in place
+	of Methods.POST.
+
+*****
 - Fixed XHRRequest to append values in both GET and POST scenarios
-- Updated documentation:
- 	* error with LoadItem.method, which showed the wrong case in the default value
+- Updated documentation
 - Fixed issue with SpriteSheetLoader.destroy (thanks @Kiv)
 - Changed XHR error conditions to only include 400-599.
 - Changed XHR error conditions to only treat status=0 as an error when on http/https
@@ -14,7 +20,6 @@ Version NEXT [not yet released]
 - Removed type from DataUtils.parseXML, just default to "text/xml"
 - Added FontLoader for preloading CSS-fonts and relative font files
 - Fixed error callback on resultFormatter in ImageLoader (thanks @xpol)
-- Removed old deprecated properties
 
 
 Version 0.6.2 [November 26, 2015]
