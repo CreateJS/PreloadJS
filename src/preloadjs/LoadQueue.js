@@ -210,7 +210,7 @@ this.createjs = this.createjs || {};
 	 *          var type = item.type;
 	 *
 	 *          // Add any images to the page body.
-	 *          if (type == createjs.LoadQueue.IMAGE) {
+	 *          if (type == createjs.Types.IMAGE) {
 	 *              document.body.appendChild(event.result);
 	 *          }
 	 *      }
@@ -1157,7 +1157,7 @@ this.createjs = this.createjs || {};
 
 			// Only worry about script order when using XHR to load scripts. Tags are only loading one at a time.
 			if ((this.maintainScriptOrder
-					&& item.type == createjs.LoadQueue.JAVASCRIPT
+					&& item.type == createjs.Types.JAVASCRIPT
 						//&& loader instanceof createjs.XHRLoader //NOTE: Have to track all JS files this way
 					)
 					|| item.maintainOrder === true) {
@@ -1500,7 +1500,7 @@ this.createjs = this.createjs || {};
 	p._finishOrderedItem = function (loader, loadFailed) {
 		var item = loader.getItem();
 
-		if ((this.maintainScriptOrder && item.type == createjs.LoadQueue.JAVASCRIPT)
+		if ((this.maintainScriptOrder && item.type == createjs.Types.JAVASCRIPT)
 				|| item.maintainOrder) {
 
 			//TODO: Evaluate removal of the _currentlyLoadingScript
@@ -1543,7 +1543,7 @@ this.createjs = this.createjs || {};
 			} // This has completed, and been processed. Move on.
 
 			var loadItem = this._loadedResults[item.id];
-			if (item.type == createjs.LoadQueue.JAVASCRIPT) {
+			if (item.type == createjs.Types.JAVASCRIPT) {
 				// Append script tags to the head automatically.
 				createjs.DomUtils.appendToHead(loadItem);
 			}
@@ -1567,7 +1567,7 @@ this.createjs = this.createjs || {};
 
 		// Since LoadQueue needs maintain order, we can't append scripts in the loader.
 		// So we do it here instead. Or in _checkScriptLoadOrder();
-		if (!this.maintainScriptOrder && item.type == createjs.LoadQueue.JAVASCRIPT) {
+		if (!this.maintainScriptOrder && item.type == createjs.Types.JAVASCRIPT) {
 			var tag = loader.getTag();
 			createjs.DomUtils.appendToHead(tag);
 		}
@@ -1591,7 +1591,7 @@ this.createjs = this.createjs || {};
 			return true;
 		}
 		var item = loader.getItem();
-		if (item.type != createjs.LoadQueue.JAVASCRIPT) {
+		if (item.type != createjs.Types.JAVASCRIPT) {
 			return true;
 		}
 		if (this._currentlyLoadingScript) {
