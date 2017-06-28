@@ -91,7 +91,7 @@
 		preload.on("fileload", handleFileLoad);
 		preload.loadManifest(manifest, true, "../_assets/art/");
 
-		createjs.Ticker.setFPS(30);
+		createjs.Ticker.framerate = 30;
 	}
 
 	function stop() {

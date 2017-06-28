@@ -125,7 +125,7 @@
 		stage.addChild(sky, hill, hill2, ground, grant);
 		stage.on("mousedown", handleJumpStart);
 
-		createjs.Ticker.setFPS(40);
+		createjs.Ticker.framerate = 40;
 		createjs.Ticker.on("tick", tick);
 	}
 
