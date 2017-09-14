@@ -1,10 +1,12 @@
-Version NEXT [not yet released]
+Version 1.0.0 (September 14, 2017)
 ****************************************************************************************************
 CRITICAL
-- Removed old deprecated properties and methods
-- removed deprecated TYPE duplicates, notably the loader types (LoadQueue.SOUND, AbstractLoader.SOUND)
+- removed old deprecated properties and methods
+- Deprecated get/set methods are now protect with an underscore (eg _setEnabled)
+- Removed deprecated TYPE duplicates, notably the loader types (LoadQueue.SOUND, AbstractLoader.SOUND)
 	in place of the Types.SOUND, and request methods (LoadQueue.POST, AbstractLoader.POST) in place
 	of Methods.POST.
+	The deprecated methods and properties will still work, but will display a console warning when used.
 
 *****
 - Fixed XHRRequest to append values in both GET and POST scenarios
@@ -20,6 +22,8 @@ CRITICAL
 - Removed type from DataUtils.parseXML, just default to "text/xml"
 - Added FontLoader for preloading CSS-fonts and relative font files
 - Fixed error callback on resultFormatter in ImageLoader (thanks @xpol)
+- added a shared createjs.deprecate() method, which wraps old methods and property getter/setters to display
+	a console warning when used.
 
 
 Version 0.6.2 [November 26, 2015]
