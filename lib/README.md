@@ -10,10 +10,12 @@ and shared caching across sites.
 
 
 # libraries
-**preloadjs-VERSION.min.js** contains minified versions of all of the EaselJS classes (comments and white space stripped).
-**preloadjs-VERSION.combined.js** contains all the EaselJS classes, including whitespace and comments.
+* **preloadjs.js** the most recent _tagged_ version of all the PreloadJS classes.
+* **preloadjs.min.js** the most recent tagged version, minified and stripped of comments and whitespace.
+* **preloadjs-NEXT.js** contains the _latest_ PreloadJS classes.
+* **preloadjs-NEXT.min.js** is a minified version of the _latest updates_ to the library.
 
 
 # license
-The libraries are ©2010 gskinner.com, inc., and made available under the highly permissive MIT open source software
+The libraries are ©2017 gskinner.com, inc., and made available under the highly permissive MIT open source software
 license. See the source file header for the full license text.
