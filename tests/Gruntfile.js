@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 				jasmine: {
 					run: {
 						src: [
-							'../lib/preloadjs-NEXT.combined.js'
+							'../lib/preloadjs-NEXT.js'
 						],
 
 						options: {
