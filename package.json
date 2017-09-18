@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "PreloadJS makes it easy to preload your assets: images, sounds, JavaScript, fonts, JSON, and text data",
   "main": "preloadjs.js",
+  "jsdelivr": "lib/preloadjs.min.js",
   "directories": {
     "doc": "docs",
     "example": "examples",
