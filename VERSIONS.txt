@@ -15,7 +15,7 @@ CRITICAL
 - Fixed issue with SpriteSheetLoader.destroy (thanks @Kiv)
 - Changed XHR error conditions to only include 400-599.
 - Changed XHR error conditions to only treat status=0 as an error when on http/https
-- Fixed issue with parameter value in ImageLoader._isLocal check
+- Fixed issue with parameter value in ImageLoader._isLocal check (moved to URLUtils._isLocal)
 - Changed tag preloading to use a dedicated container instead of adding all items to the body during
 	loading, which will avoid affecting the size of the body.
 - General refactoring to utility methods
