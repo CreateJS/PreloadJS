@@ -43,9 +43,10 @@ this.createjs = this.createjs || {};
 	 * a {{#crossLink "LoadQueue"}}{{/crossLink}}.
 	 *
 	 * <h4>Example</h4>
+	 *
 	 * 		queue.loadFile({src:"https://somecdn/wfossn3", type:createjs.Types.IMAGE});
 	 *
-	 * 	You can also use the string value:
+	 * You can also use the string value:
 	 *
 	 * 		queue.loadFile({src:"https://somecdn/wfossn3", type:"image"});
 	 *
