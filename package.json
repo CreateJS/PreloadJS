@@ -3,7 +3,7 @@
   "npmName": "preloadjs",
   "version": "1.0.1",
   "description": "PreloadJS makes it easy to preload your assets: images, sounds, JavaScript, fonts, JSON, and text data",
-  "main": "preloadjs.js",
+  "main": "lib/preloadjs.js",
   "jsdelivr": "lib/preloadjs.min.js",
   "directories": {
     "doc": "docs",
