@@ -108,6 +108,7 @@
 			case "ogg":
 			case "mp3":
 			case "webm":
+			case "aac":
 				return createjs.Types.SOUND;
 			case "mp4":
 			case "webm":
