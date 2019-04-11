@@ -909,6 +909,7 @@ this.createjs = this.createjs || {};
 	 * its files will <strong>NOT</strong> use the basePath parameter. <strong>The basePath parameter is deprecated.</strong>
 	 * This parameter will be removed in a future version. Please either use the `basePath` parameter in the LoadQueue
 	 * constructor, or a `path` property in a manifest definition.
+	 * @return {AbstractLoader} The loader for the file
 	 */
 	p.loadFile = function (file, loadNow, basePath) {
 		if (file == null) {
@@ -916,13 +917,15 @@ this.createjs = this.createjs || {};
 			this._sendError(event);
 			return;
 		}
-		this._addItem(file, null, basePath);
+		var loader = this._addItem(file, null, basePath);
 
 		if (loadNow !== false) {
 			this.setPaused(false);
 		} else {
 			this.setPaused(true);
 		}
+
+		return loader;
 	};
 
 	/**
@@ -1013,8 +1016,9 @@ this.createjs = this.createjs || {};
 			return;
 		}
 
+		var items = [];
 		for (var i = 0, l = fileList.length; i < l; i++) {
-			this._addItem(fileList[i], path, basePath);
+			items.push(this._addItem(fileList[i], path, basePath));
 		}
 
 		if (loadNow !== false) {
@@ -1023,6 +1027,7 @@ this.createjs = this.createjs || {};
 			this.setPaused(true);
 		}
 
+		return items;
 	};
 
 	/**
@@ -1160,6 +1165,7 @@ this.createjs = this.createjs || {};
 	 * @param {String} [basePath] <strong>Deprecated</strong>An optional basePath passed into a {{#crossLink "LoadQueue/loadManifest"}}{{/crossLink}}
 	 * or {{#crossLink "LoadQueue/loadFile"}}{{/crossLink}} call. This parameter will be removed in a future tagged
 	 * version.
+	 * @return {AbstractLoader} The loader for the file
 	 * @private
 	 */
 	p._addItem = function (value, path, basePath) {
@@ -1189,6 +1195,7 @@ this.createjs = this.createjs || {};
 				this._loadedScripts.push(null);
 			}
 		}
+		return loader;
 	};
 
 	/**
