@@ -200,7 +200,7 @@ this.createjs = this.createjs || {};
 	 * @type {Object}
 	 * @static
 	 */
-	FontLoader.FONT_WEIGHT = {thin:100, extralight:200, ultralight:200, light:300, semilight:300, demilight:300, book:"normal", regular:"normal", medium:500, semibold:600, demibold:600, extrabold:800, ultrabold:800, black:900, heavy:900};
+	FontLoader.FONT_WEIGHT = {thin:100, extralight:200, ultralight:200, light:300, semilight:300, demilight:300, book:"normal", regular:"normal", normal:"normal", medium:500, semibold:600, demibold:600, bold:700, extrabold:800, ultrabold:800, black:900, heavy:900};
 
 	/**
 	 * The frequency in milliseconds to check for loaded fonts.
