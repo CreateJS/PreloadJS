@@ -70,6 +70,12 @@ this.createjs = this.createjs || {};
 			this._tag = this._createTag(this._item.src);
 		}
 
+		var crossOrigin = this._item.crossOrigin;
+		if (crossOrigin === true) { crossOrigin = "Anonymous"; }
+		if (crossOrigin != null && !createjs.URLUtils.isLocal(this._item)) {
+			this._tag.crossOrigin = crossOrigin;
+		}
+
 		this._tag.preload = "auto";
 		this._tag.load();
 
