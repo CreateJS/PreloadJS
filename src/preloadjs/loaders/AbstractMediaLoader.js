@@ -71,7 +71,7 @@ this.createjs = this.createjs || {};
 		}
 
 		var crossOrigin = this._item.crossOrigin;
-		if (crossOrigin == true) { crossOrigin = "Anonymous"; }
+		if (crossOrigin === true) { crossOrigin = "Anonymous"; }
 		if (crossOrigin != null && !createjs.URLUtils.isLocal(this._item)) {
 			this._tag.crossOrigin = crossOrigin;
 		}
